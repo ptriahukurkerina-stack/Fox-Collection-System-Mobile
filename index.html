@@ -615,6 +615,7 @@
   .kr-stat.on { background:#e8f5e9; border-color:#a5d6a7; color:#1b5e20; }
   .kr-stat.off { background:#f5f5f5; border-color:#e0e0e0; color:#666; }
   .kr-list { max-height:64vh; overflow-y:auto; padding-right:2px; -webkit-overflow-scrolling:touch; }
+  #modalOnlineKaryawan .kr-list { max-height:none; overflow-y:visible; }
   .kr-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; margin-bottom:8px; background:#fff; transition:border-color .15s, box-shadow .15s; cursor:pointer; }
   .kr-item:hover { border-color:var(--primary); box-shadow:0 3px 10px rgba(42,82,152,.12); background:#f9fbff; }
   .kr-status-wrap { display:flex; flex-direction:column; align-items:center; justify-content:center; width:46px; flex-shrink:0; text-align:center; }
@@ -845,7 +846,7 @@
     margin-top:4px;
   }
 </style>
-</head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN GIF ================= -->
@@ -1013,6 +1014,31 @@
       </div>
       <div id="modalError" style="color:#fbbf24;padding:24px 0;display:none;"></div>
       <img id="modalImage" src="" style="max-width:100%;max-height:76vh;border-radius:8px;display:none;" alt="Bukti Transfer">
+    </div>
+  </div>
+</div>
+
+<!-- ================= POP UP ONLINE HARI INI (MENU DATA KARYAWAN) ================= -->
+<div class="modal" id="modalOnlineKaryawan" onclick="if(event.target===this)tutupModalOnline()">
+  <div class="mbox" style="max-width:560px">
+    <div class="mhead">
+      <h3>🟢 Online Hari Ini</h3>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button type="button" class="outline sm" onclick="segarkanDataKaryawan()">⟳ Refresh</button>
+        <button type="button" class="outline" onclick="tutupModalOnline()">Tutup ✕</button>
+      </div>
+    </div>
+    <div style="padding:12px 16px 0;background:#faf8f3;border-bottom:1px solid var(--line);flex-shrink:0">
+      <div class="tg-info" style="margin-bottom:8px">Klik nama karyawan untuk membuka ruang obrolan / kirim pesan.</div>
+      <div class="kr-summary" style="margin-bottom:10px">
+        <div class="kr-stat on" style="cursor:pointer" onclick="setFilterOnline('ONLINE')"><span>🟢 Online</span><span id="cntKrOnlineModal">0</span></div>
+        <div class="kr-stat off" style="cursor:pointer" onclick="setFilterOnline('OFFLINE')"><span>⚪ Offline</span><span id="cntKrOfflineModal">0</span></div>
+        <div class="kr-stat" style="cursor:pointer" onclick="setFilterOnline('ALL')"><span>👥 Semua</span><span id="cntKrAllModal">0</span></div>
+      </div>
+      <input type="text" id="cariKaryawanInput" placeholder="Cari nama atau jabatan karyawan..." oninput="renderListOnlineKaryawan()" style="margin-bottom:12px">
+    </div>
+    <div class="mbody" id="mbodyOnlineKaryawan">
+      <div id="boxOnlineKaryawan" class="placeholder">Memuat status online karyawan...</div>
     </div>
   </div>
 </div>
@@ -1336,6 +1362,125 @@
     $('overlay').classList.toggle('show', open);
   }
 
+  // ============================================================================
+  // FITUR KUNCI LOGIN (ANTI-LOGOUT / PERSISTENT LOGIN VIA LOCALSTORAGE)
+  // & SISTEM HEARTBEAT (DETAK JANTUNG) ONLINE/OFFLINE SETIAP 1 MENIT
+  // ============================================================================
+  const STORAGE_KEY_SESI = 'FOX_MOBILE_AUTH_SESSION';
+  const HEARTBEAT_INTERVAL_MS = 60000; // Kirim sinyal ping setiap 1 menit (60.000 ms)
+  let HEARTBEAT_TIMER = null;
+
+  function simpanSesiLokal_(sesiObj) {
+    try {
+      if (sesiObj && sesiObj.token && sesiObj.nama) {
+        localStorage.setItem(STORAGE_KEY_SESI, JSON.stringify({
+          token: sesiObj.token,
+          nama: sesiObj.nama,
+          jabatan: sesiObj.jabatan || '',
+          menus: Array.isArray(sesiObj.menus) ? sesiObj.menus : [],
+          savedAt: Date.now()
+        }));
+      }
+    } catch (e) {}
+  }
+
+  function hapusSesiLokal_() {
+    try { localStorage.removeItem(STORAGE_KEY_SESI); } catch (e) {}
+  }
+
+  function ambilSesiLokal_() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY_SESI);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.token && parsed.nama) return parsed;
+    } catch (e) {}
+    return null;
+  }
+
+  function kirimPingHeartbeatSekali_() {
+    if (!S || !S.token) return;
+    apiSilent_('kirimHeartbeat', S.token).then(res => {
+      if (res && res.sukses && typeof CUR !== 'undefined' && CUR === 'karyawan' && typeof segarkanDataKaryawanSilent_ === 'function') {
+        segarkanDataKaryawanSilent_();
+      }
+    }).catch(() => {});
+  }
+
+  function mulaiHeartbeatOnline_() {
+    hentikanHeartbeatOnline_();
+    kirimPingHeartbeatSekali_();
+    HEARTBEAT_TIMER = setInterval(kirimPingHeartbeatSekali_, HEARTBEAT_INTERVAL_MS);
+  }
+
+  function hentikanHeartbeatOnline_() {
+    if (HEARTBEAT_TIMER) {
+      clearInterval(HEARTBEAT_TIMER);
+      HEARTBEAT_TIMER = null;
+    }
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && S && S.token) {
+      kirimPingHeartbeatSekali_();
+    }
+  });
+  window.addEventListener('online', () => {
+    if (S && S.token) kirimPingHeartbeatSekali_();
+  });
+
+  function masukKeDashboard_() {
+    $('loginPass').value = '';
+    $('auth').classList.add('hidden');
+    $('app').classList.remove('hidden');
+    document.body.classList.add('dash');
+    $('uNama').textContent = S.nama;
+    $('uJabatan').textContent = S.jabatan;
+    $('tgl').textContent = new Date().toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+    resetFoto();
+    const menuPertama = terapkanMenuAkses(S.menus);
+    if (menuPertama) {
+      nav(menuPertama);
+    } else {
+      $('judul').textContent = 'Menu';
+      $('content').innerHTML = '<div class="panel placeholder"><div class="big">🔒</div><h3>Tidak Ada Menu</h3><p>Belum ada menu yang diaktifkan untuk jabatan ' + esc(S.jabatan) + '.</p></div>';
+    }
+    muatFoto();
+    mulaiPantauPesanMasuk_();
+    mulaiHeartbeatOnline_();
+  }
+
+  function pulihkanSesiLogin_() {
+    const tersimpan = ambilSesiLokal_();
+    if (!tersimpan) return;
+    S = {
+      token: tersimpan.token,
+      nama: tersimpan.nama,
+      jabatan: tersimpan.jabatan || '',
+      menus: Array.isArray(tersimpan.menus) ? tersimpan.menus : []
+    };
+    masukKeDashboard_();
+    // Sinkronkan sesi di latar belakang agar sesi di server tetap hidup tanpa meminta login ulang
+    apiSilent_('verifikasiSesi', S.token).then(res => {
+      if (!res) return;
+      if (res.sukses) {
+        const menuBerubah = JSON.stringify(S.menus) !== JSON.stringify(res.menus || []);
+        S.nama = res.nama || S.nama;
+        S.jabatan = res.jabatan || S.jabatan;
+        S.menus = res.menus || S.menus;
+        simpanSesiLokal_(S);
+        $('uNama').textContent = S.nama;
+        $('uJabatan').textContent = S.jabatan;
+        if (menuBerubah) {
+          const mPertama = terapkanMenuAkses(S.menus);
+          if (S.menus.indexOf(CUR) < 0 && mPertama) nav(mPertama);
+        }
+      } else if (res.invalidUser) {
+        doLogout();
+      }
+    }).catch(() => {});
+  }
+
   // ---------- LOGIN ----------
   function doLogin() {
     loading('btnLogin', true, 'LOGIN');
@@ -1343,30 +1488,19 @@
       loading('btnLogin', false, 'LOGIN');
       if (!res.sukses) return pesan('msgLogin', res.pesan, 'err');
       S = { token:res.token, nama:res.nama, jabatan:res.jabatan, menus:res.menus || [] };
-      $('loginPass').value = '';
-      $('auth').classList.add('hidden');
-      $('app').classList.remove('hidden');
-      document.body.classList.add('dash');
-      $('uNama').textContent = S.nama;
-      $('uJabatan').textContent = S.jabatan;
-      $('tgl').textContent = new Date().toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
-      resetFoto();
-      const menuPertama = terapkanMenuAkses(S.menus);
-      if (menuPertama) {
-        nav(menuPertama);
-      } else {
-        $('judul').textContent = 'Menu';
-        $('content').innerHTML = '<div class="panel placeholder"><div class="big">🔒</div><h3>Tidak Ada Menu</h3><p>Belum ada menu yang diaktifkan untuk jabatan ' + esc(S.jabatan) + '.</p></div>';
-      }
-      muatFoto();
-      mulaiPantauPesanMasuk_();
+      simpanSesiLokal_(S);
+      masukKeDashboard_();
     }).catch(e => { loading('btnLogin', false, 'LOGIN'); pesan('msgLogin', 'Error: '+e.message, 'err'); });
   }
   function doLogout() {
     hentikanPantauPesanMasuk_();
-    api('prosesLogout', S.token).catch(()=>{});
+    hentikanHeartbeatOnline_();
+    const oldToken = S.token;
+    hapusSesiLokal_();
+    if (oldToken) api('prosesLogout', oldToken).catch(()=>{});
     S = { token:'', nama:'', jabatan:'', menus:[] };
     toggleMenu(false);
+    tutupModalOnline();
     $('app').classList.add('hidden'); $('auth').classList.remove('hidden');
     document.body.classList.remove('dash');
     resetFoto();
@@ -1506,6 +1640,7 @@
       tutupModalNasabah();
       tutupModalHistoris();
       tutupModalBuktiBayar();
+      tutupModalOnline();
       tutupSemuaEnumDrop();
     }
   });
@@ -3908,66 +4043,74 @@
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
 
+  function bukaModalOnline(mode) {
+    if (mode) FILTER_ONLINE = mode;
+    const m = $('modalOnlineKaryawan');
+    if (m) m.classList.add('show');
+    renderListOnlineKaryawan();
+  }
+
+  function tutupModalOnline() {
+    const m = $('modalOnlineKaryawan');
+    if (m) m.classList.remove('show');
+  }
+
   function muatHalamanKaryawan() {
     $('content').innerHTML =
-      '<div class="kr-grid">' +
-        // HALAMAN 1 (KOTAK KIRI): ONLINE HARI INI
-        '<div class="panel">' +
-          '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap">' +
-            '<h3 class="pt" style="margin:0">🟢 Online Hari Ini</h3>' +
-            '<button type="button" class="outline sm" onclick="segarkanDataKaryawan()">⟳ Refresh</button>' +
-          '</div>' +
-          '<div class="tg-info" style="margin-bottom:10px">Klik nama karyawan untuk membuka ruang obrolan / kirim pesan.</div>' +
-          '<div class="kr-summary">' +
-            '<div class="kr-stat on" style="cursor:pointer" onclick="setFilterOnline(\'ONLINE\')"><span>🟢 Online</span><span id="cntKrOnline">0</span></div>' +
-            '<div class="kr-stat off" style="cursor:pointer" onclick="setFilterOnline(\'OFFLINE\')"><span>⚪ Offline</span><span id="cntKrOffline">0</span></div>' +
-            '<div class="kr-stat" style="cursor:pointer" onclick="setFilterOnline(\'ALL\')"><span>👥 Semua</span><span id="cntKrAll">0</span></div>' +
-          '</div>' +
-          '<input type="text" id="cariKaryawanInput" placeholder="Cari nama atau jabatan karyawan..." oninput="renderListOnlineKaryawan()" style="margin-bottom:10px">' +
-          '<div id="boxOnlineKaryawan" class="placeholder">Memuat status online karyawan...</div>' +
+      // KOTAK ATAS (RINGKAS & KLIK MEMUNCULKAN POP-UP): ONLINE HARI INI
+      '<div class="panel clickable" onclick="bukaModalOnline()" style="margin-bottom:14px">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap">' +
+          '<h3 class="pt" style="margin:0">🟢 Online Hari Ini</h3>' +
+          '<button type="button" class="outline sm" onclick="event.stopPropagation();bukaModalOnline()">👥 Lihat Daftar Online</button>' +
+        '</div>' +
+        '<div class="tg-info" style="margin-bottom:10px">Klik kotak ini untuk membuka pop-up daftar karyawan Online / Offline hari ini (bisa di-scroll ke bawah).</div>' +
+        '<div class="kr-summary" style="margin-bottom:0">' +
+          '<div class="kr-stat on" style="cursor:pointer" onclick="event.stopPropagation();bukaModalOnline(\'ONLINE\')"><span>🟢 Online</span><span id="cntKrOnline">0</span></div>' +
+          '<div class="kr-stat off" style="cursor:pointer" onclick="event.stopPropagation();bukaModalOnline(\'OFFLINE\')"><span>⚪ Offline</span><span id="cntKrOffline">0</span></div>' +
+          '<div class="kr-stat" style="cursor:pointer" onclick="event.stopPropagation();bukaModalOnline(\'ALL\')"><span>👥 Semua</span><span id="cntKrAll">0</span></div>' +
+        '</div>' +
+      '</div>' +
+
+      // KOTAK KIRIM PESAN ANTAR USER LOGIN (DIGRUPKAN PER USER LOGIN)
+      '<div class="panel">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;flex-wrap:wrap">' +
+          '<h3 class="pt" style="margin:0">💬 Kirim Pesan Antar User Login</h3>' +
+          '<button type="button" class="outline sm" onclick="segarkanDataKaryawan()">⟳ Sinkronkan Pesan</button>' +
         '</div>' +
 
-        // HALAMAN 2 (KOTAK KANAN): KIRIM PESAN ANTAR USER LOGIN (DIGRUPKAN PER USER LOGIN)
-        '<div class="panel">' +
-          '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;flex-wrap:wrap">' +
-            '<h3 class="pt" style="margin:0">💬 Kirim Pesan Antar User Login</h3>' +
-            '<button type="button" class="outline sm" onclick="segarkanDataKaryawan()">⟳ Sinkronkan Pesan</button>' +
+        '<div class="ps-compose">' +
+          '<div class="ps-compose-head">' +
+            '<h4>✉️ Mulai / Kirim Pesan Baru</h4>' +
+            '<span class="lk-sm">Login sebagai: <b>' + esc(S.nama || '-') + '</b> (' + esc(S.jabatan || '-') + ')</span>' +
           '</div>' +
-
-          '<div class="ps-compose">' +
-            '<div class="ps-compose-head">' +
-              '<h4>✉️ Mulai / Kirim Pesan Baru</h4>' +
-              '<span class="lk-sm">Login sebagai: <b>' + esc(S.nama || '-') + '</b> (' + esc(S.jabatan || '-') + ')</span>' +
+          '<div class="ps-row-2">' +
+            '<div>' +
+              '<label for="psPenerima">Kepada (User Login Tujuan)</label>' +
+              '<select id="psPenerima">' +
+                '<option value="">-- Pilih User Tujuan --</option>' +
+              '</select>' +
             '</div>' +
-            '<div class="ps-row-2">' +
-              '<div>' +
-                '<label for="psPenerima">Kepada (User Login Tujuan)</label>' +
-                '<select id="psPenerima">' +
-                  '<option value="">-- Pilih User Tujuan --</option>' +
-                '</select>' +
-              '</div>' +
-              '<div>' +
-                '<label for="psSubjek">Subjek / Topik Obrolan (Opsional)</label>' +
-                '<input type="text" id="psSubjek" placeholder="Contoh: Koordinasi Kunjungan / Info Penting">' +
-              '</div>' +
+            '<div>' +
+              '<label for="psSubjek">Subjek / Topik Obrolan (Opsional)</label>' +
+              '<input type="text" id="psSubjek" placeholder="Contoh: Koordinasi Kunjungan / Info Penting">' +
             '</div>' +
-            '<label for="psIsi">Isi Pesan</label>' +
-            '<textarea id="psIsi" style="min-height:85px" placeholder="Tulis pesan Anda di sini..."></textarea>' +
-            '<button type="button" id="btnKirimPesan" class="full" onclick="kirimPesanSekarang()">🚀 Kirim Pesan</button>' +
-            '<div id="msgKirimPesan" class="msg"></div>' +
           '</div>' +
-
-          '<div class="ps-tabs">' +
-            '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
-              '<button type="button" class="chip" id="tabPesanSemua" onclick="pilihTabPesan(\'semua\')">💬 Semua Grup Obrolan <span id="badgePesanSemua"></span></button>' +
-              '<button type="button" class="chip" id="tabPesanBelum" onclick="pilihTabPesan(\'belum_dibaca\')">📥 Belum Dibaca <span id="badgePesanMasuk"></span></button>' +
-              '<button type="button" class="chip" id="tabPesanBroadcast" onclick="pilihTabPesan(\'broadcast\')">📢 Pengumuman (Semua)</button>' +
-            '</div>' +
-            '<input type="text" id="cariPesanInput" placeholder="Cari nama user / isi obrolan..." oninput="renderDaftarPesan()" style="max-width:240px;margin-bottom:0;padding:8px 12px;font-size:13px">' +
-          '</div>' +
-          '<div class="tg-info" style="margin-top:-4px;margin-bottom:10px">📌 Obrolan dikelompokkan per User Login (pesan masuk &amp; balasan Anda tersambung dalam satu ruang obrolan). Klik nama user di bawah untuk membuka percakapan.</div>' +
-          '<div id="boxDaftarPesan" class="placeholder">Memuat grup obrolan...</div>' +
+          '<label for="psIsi">Isi Pesan</label>' +
+          '<textarea id="psIsi" style="min-height:85px" placeholder="Tulis pesan Anda di sini..."></textarea>' +
+          '<button type="button" id="btnKirimPesan" class="full" onclick="kirimPesanSekarang()">🚀 Kirim Pesan</button>' +
+          '<div id="msgKirimPesan" class="msg"></div>' +
         '</div>' +
+
+        '<div class="ps-tabs">' +
+          '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
+            '<button type="button" class="chip" id="tabPesanSemua" onclick="pilihTabPesan(\'semua\')">💬 Semua Grup Obrolan <span id="badgePesanSemua"></span></button>' +
+            '<button type="button" class="chip" id="tabPesanBelum" onclick="pilihTabPesan(\'belum_dibaca\')">📥 Belum Dibaca <span id="badgePesanMasuk"></span></button>' +
+            '<button type="button" class="chip" id="tabPesanBroadcast" onclick="pilihTabPesan(\'broadcast\')">📢 Pengumuman (Semua)</button>' +
+          '</div>' +
+          '<input type="text" id="cariPesanInput" placeholder="Cari nama user / isi obrolan..." oninput="renderDaftarPesan()" style="max-width:240px;margin-bottom:0;padding:8px 12px;font-size:13px">' +
+        '</div>' +
+        '<div class="tg-info" style="margin-top:-4px;margin-bottom:10px">📌 Obrolan dikelompokkan per User Login (pesan masuk &amp; balasan Anda tersambung dalam satu ruang obrolan). Klik nama user di bawah untuk membuka percakapan.</div>' +
+        '<div id="boxDaftarPesan" class="placeholder">Memuat grup obrolan...</div>' +
       '</div>';
 
     segarkanDataKaryawan();
@@ -3994,6 +4137,19 @@
     });
   }
 
+  function segarkanDataKaryawanSilent_() {
+    if (!S || !S.token) return;
+    apiSilent_('getDataKaryawan', S.token).then(r => {
+      if (!r || !r.sukses) return;
+      KARYAWAN_DATA = r.karyawan || [];
+      PESAN_DATA = r.pesanList || [];
+      isiDropdownPenerimaPesan_();
+      renderListOnlineKaryawan();
+      renderDaftarPesan();
+      muatFotoCellKaryawan_();
+    }).catch(() => {});
+  }
+
   function isiDropdownPenerimaPesan_() {
     const sel = $('psPenerima');
     if (!sel) return;
@@ -4018,15 +4174,18 @@
   }
 
   function renderListOnlineKaryawan() {
-    const box = $('boxOnlineKaryawan');
-    if (!box) return;
-    box.className = 'kr-list';
-
     const totalOnline = KARYAWAN_DATA.filter(x => x.online).length;
     const totalOffline = KARYAWAN_DATA.length - totalOnline;
     if ($('cntKrOnline')) $('cntKrOnline').textContent = totalOnline;
     if ($('cntKrOffline')) $('cntKrOffline').textContent = totalOffline;
     if ($('cntKrAll')) $('cntKrAll').textContent = KARYAWAN_DATA.length;
+    if ($('cntKrOnlineModal')) $('cntKrOnlineModal').textContent = totalOnline;
+    if ($('cntKrOfflineModal')) $('cntKrOfflineModal').textContent = totalOffline;
+    if ($('cntKrAllModal')) $('cntKrAllModal').textContent = KARYAWAN_DATA.length;
+
+    const box = $('boxOnlineKaryawan');
+    if (!box) return;
+    box.className = 'kr-list';
 
     const q = ($('cariKaryawanInput') ? $('cariKaryawanInput').value : '').trim().toLowerCase();
 
@@ -4070,7 +4229,7 @@
           '<div class="kr-nama">' + esc(k.nama) + '</div>' +
           '<div class="kr-jab">' +
             '<span>' + esc(k.jabatan) + '</span>' +
-            (k.waktuMasuk ? '<span class="tg-pill res">Masuk: ' + esc(k.waktuMasuk) + '</span>' : '') +
+            (k.waktuMasuk ? '<span class="tg-pill res">Ping: ' + esc(k.waktuMasuk) + '</span>' : '') +
           '</div>' +
         '</div>' +
         '<button type="button" class="outline kr-msg-btn" onclick="event.stopPropagation();pilihKaryawanUntukPesan(\'' + esc(k.nama) + '\')">💬 Chat</button>' +
@@ -4098,6 +4257,7 @@
   }
 
   function pilihKaryawanUntukPesan(namaTarget) {
+    tutupModalOnline();
     const sel = $('psPenerima');
     if (!sel) return;
     const targetTrim = String(namaTarget || '').trim();
@@ -4466,6 +4626,9 @@
         '<h3>' + esc(MENU[m].judul) + '</h3><p>Halaman ini sedang disiapkan.</p></div>';
     }
   }
+
+  // Jalankan pemulihan sesi otomatis dari localStorage saat aplikasi dibuka
+  pulihkanSesiLogin_();
 </script>
 </body>
 </html>
