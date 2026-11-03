@@ -1756,7 +1756,7 @@
     box-shadow: 0 6px 18px rgba(2, 132, 199, 0.25);
   }
 
-  /* ---------- DATA KARYAWAN & OBROLAN ---------- */
+  /* ----------  & OBROLAN ---------- */
   .kr-grid { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 16px; align-items: start; }
   .kr-grid > * { min-width: 0; max-width: 100%; }
   .kr-grid .panel + .panel { margin-top: 0; }
@@ -2400,7 +2400,7 @@
   </div>
 </div>
 
-<!-- ================= POP UP ONLINE HARI INI (MENU DATA KARYAWAN) ================= -->
+<!-- ================= POP UP ONLINE HARI INI (MENU Portal Karyawan) ================= -->
 <div class="modal" id="modalOnlineKaryawan" onclick="if(event.target===this)tutupModalOnline()">
   <div class="mbox" style="max-width:560px">
     <div class="mhead">
@@ -2708,7 +2708,7 @@
     tagihan:     { judul:'Data Tagihan',         ikon:'🧮' },
     uploadbukti: { judul:'Upload Bukti Bayar',   ikon:'📤' },
     buktibayar:  { judul:'Approval Bukti Bayar', ikon:'✅' },
-    karyawan:    { judul:'Data Karyawan',        ikon:'👥' },
+    karyawan:    { judul:'Portal Karyawan',        ikon:'👥' },
     rotasi:      { judul:'Rotasi Akun',          ikon:'🔄' }
   };
 
@@ -2735,7 +2735,7 @@
       judul: 'HR & KARYAWAN',
       items: [
         { key: 'slik', judul: 'Slip Gaji' },
-        { key: 'karyawan', judul: 'Data Karyawan' }
+        { key: 'karyawan', judul: 'Portal Karyawan' }
       ]
     }
   ];
@@ -5477,7 +5477,7 @@
     }
   });
 
-  // ================== MENU DATA KARYAWAN & OBROLAN ==================
+  // ================== MENU Portal Karyawan & OBROLAN ==================
   let KARYAWAN_DATA = [];
   let PESAN_DATA = [];
   let FILTER_ONLINE = 'ALL';
@@ -5563,7 +5563,7 @@
   function segarkanDataKaryawan() {
     api('getDataKaryawan', S.token).then(r => {
       if (!r || !r.sukses) {
-        const msg = (r && r.pesan) ? r.pesan : 'Gagal memuat data karyawan.';
+        const msg = (r && r.pesan) ? r.pesan : 'Gagal memuat Portal Karyawan.';
         if ($('boxOnlineKaryawan')) $('boxOnlineKaryawan').textContent = msg;
         if ($('boxDaftarPesan')) $('boxDaftarPesan').textContent = msg;
         return;
