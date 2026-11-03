@@ -2231,6 +2231,65 @@
       min-height: 44px;
     }
   }
+
+  /* ---------- MENU ABSENSI KARYAWAN (HR & KARYAWAN) ---------- */
+  .abs-wrap {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .abs-cam-box {
+    background: var(--surface-soft);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+  .abs-cam-viewport {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    max-height: 280px;
+    background: #0f172a;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .abs-cam-viewport video,
+  .abs-cam-viewport img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .abs-cam-viewport video.mirror {
+    transform: scaleX(-1);
+  }
+  .abs-cam-placeholder {
+    text-align: center;
+    color: #cbd5e1;
+    font-size: 32px;
+  }
+  .btn-abs-cam {
+    width: 100%;
+    margin-top: 10px;
+    min-height: 44px;
+    font-size: 13.5px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    color: #ffffff;
+    border-radius: var(--radius-md);
+  }
+  .btn-abs-submit {
+    width: 100%;
+    min-height: 48px;
+    font-size: 14.5px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    border-radius: var(--radius-md);
+  }
 </style>
 <script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
@@ -2709,7 +2768,8 @@
     uploadbukti: { judul:'Upload Bukti Bayar',   ikon:'📤' },
     buktibayar:  { judul:'Approval Bukti Bayar', ikon:'✅' },
     karyawan:    { judul:'Portal Karyawan',        ikon:'👥' },
-    rotasi:      { judul:'Rotasi Akun',          ikon:'🔄' }
+    rotasi:      { judul:'Rotasi Akun',          ikon:'🔄' },
+    absensi:     { judul:'Absensi',              ikon:'📍' }
   };
 
   const DEFAULT_MENU_CATEGORIES = [
@@ -2735,7 +2795,8 @@
       judul: 'HR & KARYAWAN',
       items: [
         { key: 'slik', judul: 'Slip Gaji' },
-        { key: 'karyawan', judul: 'Portal Karyawan' }
+        { key: 'karyawan', judul: 'Portal Karyawan' },
+        { key: 'absensi', judul: 'Absensi' }
       ]
     }
   ];
@@ -2755,10 +2816,31 @@
   }
 
   function terapkanMenuAkses(allowedMenus, customCategories) {
-    const list = Array.isArray(allowedMenus) ? allowedMenus : [];
-    const cats = (Array.isArray(customCategories) && customCategories.length > 0)
+    const list = Array.isArray(allowedMenus) ? allowedMenus.slice() : [];
+    if (list.length > 0 && list.indexOf('absensi') < 0) {
+      list.push('absensi');
+    }
+    const rawCats = (Array.isArray(customCategories) && customCategories.length > 0)
       ? customCategories
       : ((S && Array.isArray(S.menuCategories) && S.menuCategories.length > 0) ? S.menuCategories : DEFAULT_MENU_CATEGORIES);
+
+    // Pastikan submenu Absensi selalu muncul di bawah HR & KARYAWAN
+    const cats = rawCats.map(c => ({
+      judul: c && c.judul ? c.judul : '',
+      items: Array.isArray(c && c.items) ? c.items.slice() : []
+    }));
+    const adaAbsensiDiCats = cats.some(c => c.items.some(it => it && it.key === 'absensi'));
+    if (!adaAbsensiDiCats) {
+      const hrCat = cats.find(c => {
+        const ju = String(c.judul || '').toUpperCase();
+        return ju.indexOf('HR') >= 0 || ju.indexOf('KARYAWAN') >= 0 || ju.indexOf('KARYWAN') >= 0;
+      });
+      if (hrCat) {
+        hrCat.items.push({ key: 'absensi', judul: 'Absensi' });
+      } else {
+        cats.push({ judul: 'HR & KARYAWAN', items: [{ key: 'absensi', judul: 'Absensi' }] });
+      }
+    }
 
     const container = $('sideMenuContainer');
     let firstMenu = null;
@@ -6498,8 +6580,304 @@
     });
   }
 
+  // ============================================================================
+  // MENU ABSENSI KARYAWAN (SUB MENU HR & KARYAWAN)
+  // ============================================================================
+  const ABS_KANTOR_LAT = -6.566221;
+  const ABS_KANTOR_LNG = 106.759932;
+  const ABS_RADIUS_KM  = 1.0;
+
+  let ABS_CLOCK_TIMER = null;
+  let ABS_STREAM = null;
+  let ABS_PHOTO_BASE64 = '';
+  let ABS_PHOTO_MIME = 'image/jpeg';
+  let ABS_GPS_STATE = {
+    lat: null,
+    lng: null,
+    namaJalan: ''
+  };
+  let ABS_TODAY_STR = '';
+
+  function formatTanggalIsoLokal_(d) {
+    const dt = d || new Date();
+    const y = dt.getFullYear();
+    const m = String(dt.getMonth() + 1).padStart(2, '0');
+    const day = String(dt.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+  }
+
+  function formatJamLokal_(d) {
+    const dt = d || new Date();
+    const hh = String(dt.getHours()).padStart(2, '0');
+    const mm = String(dt.getMinutes()).padStart(2, '0');
+    const ss = String(dt.getSeconds()).padStart(2, '0');
+    return hh + ':' + mm + ':' + ss;
+  }
+
+  function hentikanKameraAbsensi_() {
+    if (ABS_STREAM) {
+      try {
+        ABS_STREAM.getTracks().forEach(t => t.stop());
+      } catch (e) {}
+      ABS_STREAM = null;
+    }
+    const vid = $('absVideo');
+    if (vid) {
+      try { vid.srcObject = null; } catch (e) {}
+    }
+  }
+
+  function hentikanJamAbsensi_() {
+    if (ABS_CLOCK_TIMER) {
+      clearInterval(ABS_CLOCK_TIMER);
+      ABS_CLOCK_TIMER = null;
+    }
+  }
+
+  function mulaiJamAbsensi_() {
+    hentikanJamAbsensi_();
+    const tick = () => {
+      const now = new Date();
+      if ($('absTanggal') && !$('absTanggal').value) {
+        $('absTanggal').value = ABS_TODAY_STR || formatTanggalIsoLokal_(now);
+      }
+      if ($('absJam')) {
+        $('absJam').value = formatJamLokal_(now);
+      }
+    };
+    tick();
+    ABS_CLOCK_TIMER = setInterval(tick, 1000);
+  }
+
+  function muatHalamanAbsensi() {
+    ABS_PHOTO_BASE64 = '';
+    ABS_PHOTO_MIME = 'image/jpeg';
+    ABS_GPS_STATE = { lat: null, lng: null, namaJalan: '' };
+    const now = new Date();
+    ABS_TODAY_STR = formatTanggalIsoLokal_(now);
+    const initJam = formatJamLokal_(now);
+
+    $('content').innerHTML =
+      '<div class="abs-wrap">' +
+        '<div class="panel">' +
+          '<label for="absTanggal">Tanggal Absen</label>' +
+          '<input type="text" id="absTanggal" class="ub-readonly" value="' + esc(ABS_TODAY_STR) + '" readonly>' +
+
+          '<label for="absNamaUser">Nama</label>' +
+          '<input type="text" id="absNamaUser" class="ub-readonly" value="' + esc(S.nama || '-') + '" readonly>' +
+
+          '<label for="absJam">Jam Absen</label>' +
+          '<input type="text" id="absJam" class="ub-readonly" value="' + esc(initJam) + '" readonly>' +
+
+          '<label>Foto</label>' +
+          '<div class="abs-cam-box">' +
+            '<div class="abs-cam-viewport">' +
+              '<video id="absVideo" class="mirror hidden" autoplay playsinline muted></video>' +
+              '<img id="absPhotoPreview" class="hidden" alt="Foto Absen">' +
+              '<div id="absCamPlaceholder" class="abs-cam-placeholder">📷</div>' +
+            '</div>' +
+            '<canvas id="absCanvas" class="hidden"></canvas>' +
+            '<input type="file" id="absFileFallback" accept="image/*" capture="user" class="hidden" onchange="handleAbsFileFallback_(event)">' +
+            '<button type="button" class="btn-abs-cam" id="btnAbsCapture" onclick="aksiTombolKameraAbsensi()">📸 Ambil Foto</button>' +
+          '</div>' +
+
+          '<button type="button" class="btn-abs-submit" id="btnSubmitAbsensi" onclick="kirimAbsensiSekarang()">Simpan Absen</button>' +
+          '<div id="msgAbsensi" class="msg"></div>' +
+        '</div>' +
+      '</div>';
+
+    mulaiJamAbsensi_();
+    bukaKameraAbsensi_();
+    deteksiLokasiAbsensi_();
+  }
+
+  function bukaKameraAbsensi_() {
+    hentikanKameraAbsensi_();
+    const vid = $('absVideo');
+    const img = $('absPhotoPreview');
+    const ph = $('absCamPlaceholder');
+    if (!vid) return;
+
+    if (img) img.classList.add('hidden');
+    if (ph) ph.classList.remove('hidden');
+
+    if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function') {
+      return;
+    }
+
+    navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 960 } },
+      audio: false
+    }).then(stream => {
+      if (CUR !== 'absensi' || !$('absVideo')) {
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
+      ABS_STREAM = stream;
+      const v = $('absVideo');
+      v.srcObject = stream;
+      v.classList.remove('hidden');
+      if ($('absCamPlaceholder')) $('absCamPlaceholder').classList.add('hidden');
+    }).catch(() => {});
+  }
+
+  function aksiTombolKameraAbsensi() {
+    const vid = $('absVideo');
+    if (ABS_PHOTO_BASE64) {
+      ABS_PHOTO_BASE64 = '';
+      bukaKameraAbsensi_();
+      return;
+    }
+    if (ABS_STREAM && vid && !vid.classList.contains('hidden') && vid.videoWidth > 0) {
+      tangkapFrameKameraAbsensi_();
+    } else {
+      const fb = $('absFileFallback');
+      if (fb) {
+        fb.value = '';
+        fb.click();
+      } else {
+        bukaKameraAbsensi_();
+      }
+    }
+  }
+
+  function tangkapFrameKameraAbsensi_() {
+    const vid = $('absVideo');
+    const canvas = $('absCanvas');
+    const img = $('absPhotoPreview');
+    if (!vid || !canvas || !vid.videoWidth) return;
+
+    const maxDim = 1080;
+    let w = vid.videoWidth;
+    let h = vid.videoHeight;
+    if (w > maxDim || h > maxDim) {
+      if (w >= h) {
+        h = Math.round((h * maxDim) / w);
+        w = maxDim;
+      } else {
+        w = Math.round((w * maxDim) / h);
+        h = maxDim;
+      }
+    }
+
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.translate(w, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(vid, 0, 0, w, h);
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.84);
+    ABS_PHOTO_BASE64 = dataUrl;
+    ABS_PHOTO_MIME = 'image/jpeg';
+
+    hentikanKameraAbsensi_();
+    vid.classList.add('hidden');
+    if ($('absCamPlaceholder')) $('absCamPlaceholder').classList.add('hidden');
+    if (img) {
+      img.src = dataUrl;
+      img.classList.remove('hidden');
+    }
+  }
+
+  function handleAbsFileFallback_(ev) {
+    const file = ev && ev.target && ev.target.files ? ev.target.files[0] : null;
+    if (!file) return;
+    kompresGambarKeBase64_(file, 1080, 0.84).then(res => {
+      ABS_PHOTO_BASE64 = res.dataUrl;
+      ABS_PHOTO_MIME = res.mimeType || 'image/jpeg';
+      hentikanKameraAbsensi_();
+      if ($('absVideo')) $('absVideo').classList.add('hidden');
+      if ($('absCamPlaceholder')) $('absCamPlaceholder').classList.add('hidden');
+      const img = $('absPhotoPreview');
+      if (img) {
+        img.src = res.dataUrl;
+        img.classList.remove('hidden');
+      }
+    }).catch(err => {
+      pesan('msgAbsensi', 'Gagal memproses foto: ' + err.message, 'err');
+    });
+  }
+
+  function deteksiLokasiAbsensi_(cb) {
+    if (!navigator.geolocation) {
+      if (typeof cb === 'function') cb(false);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        ABS_GPS_STATE.lat = lat;
+        ABS_GPS_STATE.lng = lng;
+
+        fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + encodeURIComponent(lat) + '&lon=' + encodeURIComponent(lng) + '&accept-language=id')
+          .then(r => r.ok ? r.json() : null)
+          .then(data => {
+            if (data && data.display_name) {
+              ABS_GPS_STATE.namaJalan = String(data.display_name).trim();
+            }
+            if (typeof cb === 'function') cb(true);
+          })
+          .catch(() => {
+            if (typeof cb === 'function') cb(true);
+          });
+      },
+      () => {
+        if (typeof cb === 'function') cb(false);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  }
+
+  function eksekusiKirimAbsensi_() {
+    loading('btnSubmitAbsensi', true, 'Simpan Absen');
+    api('simpanAbsensi', S.token, {
+      fileData: ABS_PHOTO_BASE64,
+      mimeType: ABS_PHOTO_MIME || 'image/jpeg',
+      lat: ABS_GPS_STATE.lat,
+      lng: ABS_GPS_STATE.lng,
+      namaJalan: ABS_GPS_STATE.namaJalan
+    }).then(res => {
+      loading('btnSubmitAbsensi', false, 'Simpan Absen');
+      if (!res || !res.sukses) {
+        pesan('msgAbsensi', (res && res.pesan) ? res.pesan : 'Gagal menyimpan absensi.', 'err');
+        return;
+      }
+      pesan('msgAbsensi', res.pesan || 'Absensi berhasil disimpan.', 'ok');
+    }).catch(err => {
+      loading('btnSubmitAbsensi', false, 'Simpan Absen');
+      pesan('msgAbsensi', 'Gagal mengirim absensi: ' + err.message, 'err');
+    });
+  }
+
+  function kirimAbsensiSekarang() {
+    pesan('msgAbsensi', '', '');
+    if (!ABS_PHOTO_BASE64) {
+      pesan('msgAbsensi', 'Silakan ambil foto terlebih dahulu.', 'err');
+      return;
+    }
+    if (ABS_GPS_STATE.lat === null || ABS_GPS_STATE.lng === null) {
+      loading('btnSubmitAbsensi', true, 'Simpan Absen');
+      deteksiLokasiAbsensi_(ok => {
+        loading('btnSubmitAbsensi', false, 'Simpan Absen');
+        if (!ok || ABS_GPS_STATE.lat === null || ABS_GPS_STATE.lng === null) {
+          pesan('msgAbsensi', 'Pastikan GPS/Lokasi perangkat aktif.', 'err');
+          return;
+        }
+        eksekusiKirimAbsensi_();
+      });
+      return;
+    }
+    eksekusiKirimAbsensi_();
+  }
+
   // ---------- NAVIGASI ----------
   function nav(m) {
+    if (typeof CUR !== 'undefined' && CUR === 'absensi' && m !== 'absensi') {
+      hentikanKameraAbsensi_();
+      hentikanJamAbsensi_();
+    }
     document.querySelectorAll('.menu a[data-m]').forEach(a => a.classList.toggle('active', a.dataset.m===m));
     syncActiveCategoryHighlight_(m);
     $('judul').textContent = MENU[m] ? MENU[m].judul : m;
@@ -6533,6 +6911,8 @@
       muatHalamanKaryawan();
     } else if (m === 'rotasi') {
       muatHalamanRotasi();
+    } else if (m === 'absensi') {
+      muatHalamanAbsensi();
     } else {
       $('content').innerHTML =
         '<div class="panel placeholder"><div class="big">' + MENU[m].ikon + '</div>' +
