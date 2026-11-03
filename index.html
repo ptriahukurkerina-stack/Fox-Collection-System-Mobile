@@ -2055,6 +2055,101 @@
     font-weight: 700;
     margin-top: 4px;
   }
+
+  /* ---------- MENU ROTASI AKUN ---------- */
+  .rot-filter-bar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .rot-hist-btn-wrap {
+    display: flex;
+    align-items: stretch;
+  }
+  .rot-btn-historis {
+    width: 100%;
+    min-height: 100%;
+    padding: 10px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .rot-box-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-bottom: 10px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .rot-mini-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .rot-mini-actions button {
+    padding: 4px 10px;
+    min-height: 28px;
+    font-size: 11.5px;
+    font-weight: 800;
+    border-radius: 8px;
+  }
+  input[type="checkbox"].rot-cb {
+    width: 18px;
+    height: 18px;
+    margin: 0 auto;
+    padding: 0;
+    display: inline-block;
+    accent-color: var(--primary);
+    cursor: pointer;
+  }
+  .rot-hist-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .rot-hist-item {
+    padding: 11px 14px;
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-left: 3.5px solid var(--primary);
+    border-radius: var(--radius-sm);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.45;
+    word-break: break-word;
+  }
+  @media (max-width: 860px) {
+    .rot-filter-bar {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .rot-btn-historis {
+      min-height: 46px;
+    }
+  }
+  @media (max-width: 600px) {
+    .rot-filter-bar {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .rot-hist-btn-wrap {
+      grid-column: 1 / -1;
+    }
+    .rot-btn-historis {
+      width: 100%;
+      min-height: 44px;
+    }
+  }
 </style>
 <script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
@@ -2134,6 +2229,7 @@
       <a data-m="kebijakan" onclick="nav('kebijakan')"><span class="ic">📜</span>Pengajuan Kebijakan</a>
       <a data-m="slik" onclick="nav('slik')"><span class="ic">💳</span>Slip Gaji</a>
       <a data-m="karyawan" onclick="nav('karyawan')"><span class="ic">👥</span>Data Karyawan<span class="menu-badge hidden" id="badgeMenuKaryawan">0</span></a>
+      <a data-m="rotasi" onclick="nav('rotasi')"><span class="ic">🔄</span>Rotasi Akun</a>
     </nav>
     <div class="side-foot">
       <button class="outline" onclick="doLogout()">Keluar Akun</button>
@@ -2252,6 +2348,22 @@
     </div>
     <div class="mbody" id="mbodyOnlineKaryawan">
       <div id="boxOnlineKaryawan" class="placeholder">Memuat status tim...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= POP UP HISTORI ASSIGNMENT (MENU ROTASI AKUN) ================= -->
+<div class="modal" id="modalHistoriRotasi" onclick="if(event.target===this)tutupModalHistoriRotasi()">
+  <div class="mbox" style="max-width:620px">
+    <div class="mhead">
+      <h3>📜 Histori Assignment</h3>
+      <button type="button" class="outline" onclick="tutupModalHistoriRotasi()">Tutup ✕</button>
+    </div>
+    <div class="mbody">
+      <div class="tg-info" style="margin:0 0 10px">Catatan aktivitas rotasi assignment:</div>
+      <div id="historyContainer" class="rot-hist-list">
+        <div class="tg-empty">Belum ada histori rotasi.</div>
+      </div>
     </div>
   </div>
 </div>
@@ -2522,7 +2634,8 @@
     tagihan:     { judul:'Data Tagihan',        ikon:'🧮' },
     uploadbukti: { judul:'Upload Bukti Bayar',  ikon:'📤' },
     buktibayar:  { judul:'Approval Bukti Bayar',ikon:'✅' },
-    karyawan:    { judul:'Data Karyawan',       ikon:'👥' }
+    karyawan:    { judul:'Data Karyawan',       ikon:'👥' },
+    rotasi:      { judul:'Rotasi Akun',         ikon:'🔄' }
   };
 
   function terapkanMenuAkses(allowedMenus) {
@@ -2839,6 +2952,7 @@
       tutupModalHistoris();
       tutupModalBuktiBayar();
       tutupModalOnline();
+      tutupModalHistoriRotasi();
       tutupSemuaEnumDrop();
     }
   });
@@ -3954,6 +4068,10 @@
   function tutupSemuaEnumDrop() {
     ['result', 'area', 'kecamatan', 'cuci'].forEach(k => {
       const el = $('dropEnum_' + k);
+      if (el) el.classList.remove('open');
+    });
+    ['picAwalMenu', 'targetPicMenu'].forEach(id => {
+      const el = $(id);
       if (el) el.classList.remove('open');
     });
   }
@@ -5706,6 +5824,494 @@
     });
   }
 
+  // ================== MENU ROTASI AKUN PENAGIHAN ==================
+  let rotAllRowsData = [];
+  let rotActiveProduct = 'ALL';
+  let rotActiveBA = 'ALL';
+  let rotActiveBD = 'ALL';
+
+  let rotSelectedPicsAwal = new Set();
+  let rotSelectedTargetPics = new Set();
+  let rotCheckedRowIndexes = new Set();
+
+  let rotAllPicsAwalList = [];
+  let rotAllTargetPicsList = [];
+  let rotHistoryLogs = [];
+
+  function muatHalamanRotasi() {
+    rotCheckedRowIndexes.clear();
+    $('content').innerHTML =
+      // 1. KOTAK SELURUH FILTER + TOMBOL HISTORIS DI UJUNG
+      '<div class="panel">' +
+        '<div class="rot-filter-bar">' +
+          '<div class="fbox">' +
+            '<div class="fbox-title"><span>PRODUK</span></div>' +
+            '<select id="selectProduct" onchange="filterByProductDropdown(this.value)">' +
+              '<option value="ALL">Semua Produk</option>' +
+            '</select>' +
+          '</div>' +
+
+          '<div class="fbox">' +
+            '<div class="fbox-title"><span>STATUS BAYAR</span></div>' +
+            '<select id="selectBA" onchange="filterByBADropdown(this.value)">' +
+              '<option value="ALL">Semua</option>' +
+              '<option value="EMPTY">(Kosong)</option>' +
+            '</select>' +
+          '</div>' +
+
+          '<div class="fbox">' +
+            '<div class="fbox-title"><span>RESULT</span></div>' +
+            '<select id="selectBD" onchange="filterByBDDropdown(this.value)">' +
+              '<option value="ALL">Semua</option>' +
+              '<option value="EMPTY">(Kosong)</option>' +
+            '</select>' +
+          '</div>' +
+
+          '<div class="rot-hist-btn-wrap">' +
+            '<button type="button" class="outline rot-btn-historis" onclick="bukaModalHistoriRotasi()">' +
+              '<span>📜</span><span>HISTORIS</span>' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      // 2. KOTAK PIC AWAL
+      '<div class="panel">' +
+        '<div class="rot-box-head">' +
+          '<h3 class="pt" style="margin:0">👤 PIC Awal</h3>' +
+          '<div class="rot-mini-actions">' +
+            '<button type="button" class="outline sm" onclick="toggleAllRotasiDropdown(\'picAwal\', true)">Semua</button>' +
+            '<button type="button" class="ghost sm" onclick="toggleAllRotasiDropdown(\'picAwal\', false)">Reset</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="tg-info" style="margin:0 0 8px">Pilih PIC sumber (bisa pilih banyak):</div>' +
+        '<div class="fbox" id="fbox_rot_picAwal" style="background:#fff;padding:0;border:0">' +
+          '<button type="button" class="enum-btn" id="picAwalDropdownButton" onclick="toggleRotasiDropdownMenu(\'picAwal\')">' +
+            '<span class="txt" id="picAwalLabel">Pilih PIC Awal...</span><span>▾</span>' +
+          '</button>' +
+          '<div class="enum-drop" id="picAwalMenu"></div>' +
+        '</div>' +
+      '</div>' +
+
+      // 3. KOTAK PINDAHKAN KE
+      '<div class="panel">' +
+        '<div class="rot-box-head">' +
+          '<h3 class="pt" style="margin:0">🔄 Pindahkan Ke</h3>' +
+          '<div class="rot-mini-actions">' +
+            '<button type="button" class="outline sm" onclick="toggleAllRotasiDropdown(\'targetPic\', true)">Semua</button>' +
+            '<button type="button" class="ghost sm" onclick="toggleAllRotasiDropdown(\'targetPic\', false)">Reset</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="tg-info" style="margin:0 0 8px">Pilih PIC tujuan alokasi (bisa pilih banyak):</div>' +
+        '<div class="fbox" id="fbox_rot_targetPic" style="background:#fff;padding:0;border:0;margin-bottom:12px">' +
+          '<button type="button" class="enum-btn" id="targetPicDropdownButton" onclick="toggleRotasiDropdownMenu(\'targetPic\')">' +
+            '<span class="txt" id="targetPicLabel">Pilih PIC Tujuan...</span><span>▾</span>' +
+          '</button>' +
+          '<div class="enum-drop" id="targetPicMenu"></div>' +
+        '</div>' +
+        '<button type="button" id="btnAssign" class="full" onclick="executeAssign()">' +
+          '<span>📌 ASSIGN AKUN</span>' +
+        '</button>' +
+        '<div id="assignStatus" class="msg"></div>' +
+      '</div>' +
+
+      // 4. KOTAK DATA AKUN PENAGIHAN
+      '<div class="panel">' +
+        '<div class="tg-head">' +
+          '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+            '<h3 class="pt" style="margin:0">📋 Data Akun Penagihan</h3>' +
+            '<span id="rowCountBadge" class="pic-badge">0 Data</span>' +
+            '<span id="checkedCountBadge" class="st-hijau">Dicentang: 0</span>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%;max-width:420px">' +
+            '<input type="text" id="rotSearchInput" class="filter-input" oninput="renderRotasiTable()" placeholder="🔍 Cari Kolom A (User ID) atau D (Nama)...">' +
+            '<button type="button" class="btn-refresh" onclick="loadRotasiData()" title="Segarkan">' +
+              '<i class="bi bi-arrow-clockwise" id="rotRefreshIcon"></i> Segarkan' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="table-container">' +
+          '<table class="data-table">' +
+            '<thead>' +
+              '<tr>' +
+                '<th style="width:42px;text-align:center">' +
+                  '<input type="checkbox" id="selectAllRows" class="rot-cb" onclick="toggleSelectAllRotasiRows(this)">' +
+                '</th>' +
+                '<th>USER ID</th>' +
+                '<th>NAMA</th>' +
+                '<th>OS TOTAL</th>' +
+                '<th>STATUS BAYAR</th>' +
+                '<th>RESULT</th>' +
+                '<th>PIC NOW</th>' +
+                '<th>PRODUK</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody id="rotTableBody">' +
+              '<tr>' +
+                '<td colspan="8" style="text-align:center;padding:24px;color:var(--muted)">Memuat data dari Google Sheets...</td>' +
+              '</tr>' +
+            '</tbody>' +
+          '</table>' +
+        '</div>' +
+      '</div>';
+
+    loadRotasiData();
+  }
+
+  function loadRotasiData() {
+    const ic = $('rotRefreshIcon');
+    if (ic) ic.className = 'spin-sm';
+    const tbody = $('rotTableBody');
+    if (tbody) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted)">Memuat data dari Google Sheets...</td></tr>';
+    }
+    api('getInitialData').then(data => {
+      if ($('rotRefreshIcon')) $('rotRefreshIcon').className = 'bi bi-arrow-clockwise';
+      onRotasiDataLoaded(data);
+    }).catch(err => {
+      if ($('rotRefreshIcon')) $('rotRefreshIcon').className = 'bi bi-arrow-clockwise';
+      if ($('rotTableBody')) {
+        $('rotTableBody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--danger-dark)">Gagal mengambil data: ' + esc(err.message) + '</td></tr>';
+      }
+    });
+  }
+
+  function onRotasiDataLoaded(data) {
+    if (!data) return;
+    rotAllRowsData = data.rows || [];
+    rotAllPicsAwalList = data.picsAwal || [];
+    rotAllTargetPicsList = data.targetPics || [];
+    rotHistoryLogs = data.history || [];
+
+    renderProductDropdownOptions(data.products || []);
+    renderBADropdownOptions(data.baList || []);
+    renderBDDropdownOptions(data.bdList || []);
+
+    rotSelectedPicsAwal.clear();
+    rotSelectedTargetPics.clear();
+    rotAllPicsAwalList.forEach(p => rotSelectedPicsAwal.add(p));
+    rotAllTargetPicsList.forEach(p => rotSelectedTargetPics.add(p));
+
+    renderRotasiDropdownMenu('picAwal');
+    renderRotasiDropdownMenu('targetPic');
+    renderRotasiHistoryLogs(rotHistoryLogs);
+    renderRotasiTable();
+  }
+
+  function renderProductDropdownOptions(products) {
+    const select = $('selectProduct');
+    if (!select) return;
+    select.innerHTML = '<option value="ALL">Semua Produk</option>' +
+      products.map(prod => '<option value="' + esc(prod) + '">' + esc(prod) + '</option>').join('');
+    if (rotActiveProduct !== 'ALL' && products.indexOf(rotActiveProduct) < 0) rotActiveProduct = 'ALL';
+    select.value = rotActiveProduct;
+  }
+
+  function filterByProductDropdown(val) {
+    rotActiveProduct = val;
+    renderRotasiTable();
+  }
+
+  function renderBADropdownOptions(baList) {
+    const select = $('selectBA');
+    if (!select) return;
+    select.innerHTML =
+      '<option value="ALL">Semua BA</option>' +
+      '<option value="EMPTY">(Kosong)</option>' +
+      baList.map(val => '<option value="' + esc(val) + '">' + esc(val) + '</option>').join('');
+    if (rotActiveBA !== 'ALL' && rotActiveBA !== 'EMPTY' && baList.indexOf(rotActiveBA) < 0) rotActiveBA = 'ALL';
+    select.value = rotActiveBA;
+  }
+
+  function filterByBADropdown(val) {
+    rotActiveBA = val;
+    renderRotasiTable();
+  }
+
+  function renderBDDropdownOptions(bdList) {
+    const select = $('selectBD');
+    if (!select) return;
+    select.innerHTML =
+      '<option value="ALL">Semua BD</option>' +
+      '<option value="EMPTY">(Kosong)</option>' +
+      bdList.map(val => '<option value="' + esc(val) + '">' + esc(val) + '</option>').join('');
+    if (rotActiveBD !== 'ALL' && rotActiveBD !== 'EMPTY' && bdList.indexOf(rotActiveBD) < 0) rotActiveBD = 'ALL';
+    select.value = rotActiveBD;
+  }
+
+  function filterByBDDropdown(val) {
+    rotActiveBD = val;
+    renderRotasiTable();
+  }
+
+  function toggleRotasiDropdownMenu(type) {
+    const menuId = type + 'Menu';
+    const otherId = type === 'picAwal' ? 'targetPicMenu' : 'picAwalMenu';
+    const menu = $(menuId);
+    const other = $(otherId);
+    if (other) other.classList.remove('open');
+    if (menu) menu.classList.toggle('open');
+  }
+
+  function renderRotasiDropdownMenu(type) {
+    const menu = $(type + 'Menu');
+    const labelEl = $(type + 'Label');
+    if (!menu || !labelEl) return;
+
+    const list = type === 'picAwal' ? rotAllPicsAwalList : rotAllTargetPicsList;
+    const selectedSet = type === 'picAwal' ? rotSelectedPicsAwal : rotSelectedTargetPics;
+
+    if (list.length === 0) {
+      menu.innerHTML = '<div class="tg-empty" style="padding:10px">Tidak ada data</div>';
+      labelEl.textContent = 'Tidak ada pilihan';
+      return;
+    }
+
+    menu.innerHTML = list.map((item, idx) => {
+      const isChecked = selectedSet.has(item);
+      return '<label class="enum-item">' +
+        '<input type="checkbox" ' + (isChecked ? 'checked' : '') + ' onchange="handleRotasiDropdownItemChange(\'' + type + '\',' + idx + ',this)">' +
+        '<span>' + esc(item) + '</span>' +
+      '</label>';
+    }).join('');
+
+    updateRotasiDropdownLabel(type);
+  }
+
+  function handleRotasiDropdownItemChange(type, idx, cb) {
+    const list = type === 'picAwal' ? rotAllPicsAwalList : rotAllTargetPicsList;
+    const item = list[idx];
+    if (item === undefined) return;
+    const selectedSet = type === 'picAwal' ? rotSelectedPicsAwal : rotSelectedTargetPics;
+    if (cb.checked) {
+      selectedSet.add(item);
+    } else {
+      selectedSet.delete(item);
+    }
+    updateRotasiDropdownLabel(type);
+    if (type === 'picAwal') {
+      renderRotasiTable();
+    }
+  }
+
+  function updateRotasiDropdownLabel(type) {
+    const labelEl = $(type + 'Label');
+    if (!labelEl) return;
+    const list = type === 'picAwal' ? rotAllPicsAwalList : rotAllTargetPicsList;
+    const selectedSet = type === 'picAwal' ? rotSelectedPicsAwal : rotSelectedTargetPics;
+
+    if (selectedSet.size === 0) {
+      labelEl.textContent = 'Belum dipilih';
+    } else if (selectedSet.size === list.length) {
+      labelEl.textContent = 'Semua Dipilih (' + list.length + ')';
+    } else if (selectedSet.size === 1) {
+      labelEl.textContent = Array.from(selectedSet)[0];
+    } else {
+      labelEl.textContent = selectedSet.size + ' PIC Dipilih';
+    }
+  }
+
+  function toggleAllRotasiDropdown(type, selectAll) {
+    const selectedSet = type === 'picAwal' ? rotSelectedPicsAwal : rotSelectedTargetPics;
+    const list = type === 'picAwal' ? rotAllPicsAwalList : rotAllTargetPicsList;
+
+    selectedSet.clear();
+    if (selectAll) {
+      list.forEach(item => selectedSet.add(item));
+    }
+    renderRotasiDropdownMenu(type);
+    if (type === 'picAwal') {
+      renderRotasiTable();
+    }
+  }
+
+  function toggleRotasiRowSelection(checkbox, rowIndex) {
+    if (checkbox.checked) {
+      rotCheckedRowIndexes.add(rowIndex);
+    } else {
+      rotCheckedRowIndexes.delete(rowIndex);
+    }
+    updateRotasiCheckedBadge();
+  }
+
+  function toggleSelectAllRotasiRows(masterCheckbox) {
+    const rowCheckboxes = document.querySelectorAll('.rot-row-checkbox');
+    rowCheckboxes.forEach(cb => {
+      cb.checked = masterCheckbox.checked;
+      const rIndex = Number(cb.dataset.rowindex);
+      if (masterCheckbox.checked) {
+        rotCheckedRowIndexes.add(rIndex);
+      } else {
+        rotCheckedRowIndexes.delete(rIndex);
+      }
+    });
+    updateRotasiCheckedBadge();
+  }
+
+  function updateRotasiCheckedBadge() {
+    const b = $('checkedCountBadge');
+    if (b) b.textContent = 'Dicentang: ' + rotCheckedRowIndexes.size;
+  }
+
+  function getRotasiFilteredRows() {
+    const searchEl = $('rotSearchInput');
+    const searchQuery = (searchEl ? searchEl.value : '').toLowerCase().trim();
+
+    return rotAllRowsData.filter(row => {
+      const matchProduct = (rotActiveProduct === 'ALL') || (row.produkBH === rotActiveProduct);
+      const matchPic = rotSelectedPicsAwal.size === 0 || rotSelectedPicsAwal.has(row.picAT);
+
+      let matchBA = true;
+      if (rotActiveBA === 'EMPTY') {
+        matchBA = !row.colBA;
+      } else if (rotActiveBA !== 'ALL') {
+        matchBA = (row.colBA === rotActiveBA);
+      }
+
+      let matchBD = true;
+      if (rotActiveBD === 'EMPTY') {
+        matchBD = !row.colBD;
+      } else if (rotActiveBD !== 'ALL') {
+        matchBD = (row.colBD === rotActiveBD);
+      }
+
+      const colAStr = String(row.colA || '').toLowerCase();
+      const colDStr = String(row.colD || '').toLowerCase();
+      const matchSearch = !searchQuery || colAStr.includes(searchQuery) || colDStr.includes(searchQuery);
+
+      return matchProduct && matchPic && matchBA && matchBD && matchSearch;
+    });
+  }
+
+  function renderRotasiTable() {
+    const tbody = $('rotTableBody');
+    if (!tbody) return;
+
+    const filtered = getRotasiFilteredRows();
+    if ($('rowCountBadge')) {
+      $('rowCountBadge').textContent = filtered.length + ' Data';
+    }
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted)">Tidak ada data yang sesuai filter.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(row => {
+      const isChecked = rotCheckedRowIndexes.has(row.rowIndex);
+      const osFormatted = (typeof row.colM === 'number') ? rp(row.colM) : (row.colM || '-');
+      return '<tr>' +
+        '<td style="text-align:center">' +
+          '<input type="checkbox" data-rowindex="' + row.rowIndex + '" ' + (isChecked ? 'checked' : '') + ' onchange="toggleRotasiRowSelection(this, ' + row.rowIndex + ')" class="rot-cb rot-row-checkbox">' +
+        '</td>' +
+        '<td style="font-family:\'JetBrains Mono\',monospace;font-weight:700;color:var(--primary)">' + esc(row.colA || '-') + '</td>' +
+        '<td><b>' + esc(row.colD || '-') + '</b></td>' +
+        '<td style="font-family:\'JetBrains Mono\',monospace;font-weight:700">' + esc(osFormatted) + '</td>' +
+        '<td>' + esc(row.colBA || '-') + '</td>' +
+        '<td>' + esc(row.colBD || '-') + '</td>' +
+        '<td><span class="pic-badge">' + esc(row.picAT || '-') + '</span></td>' +
+        '<td><span class="tg-pill kat">' + esc(row.produkBH || '-') + '</span></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function renderRotasiHistoryLogs(historyList) {
+    const container = $('historyContainer');
+    if (!container) return;
+
+    if (!historyList || historyList.length === 0) {
+      container.innerHTML = '<div class="tg-empty">Belum ada histori rotasi.</div>';
+      return;
+    }
+
+    container.innerHTML = historyList.map(log =>
+      '<div class="rot-hist-item">' + esc(log) + '</div>'
+    ).join('');
+  }
+
+  function bukaModalHistoriRotasi() {
+    renderRotasiHistoryLogs(rotHistoryLogs);
+    const m = $('modalHistoriRotasi');
+    if (m) m.classList.add('show');
+  }
+
+  function tutupModalHistoriRotasi() {
+    const m = $('modalHistoriRotasi');
+    if (m) m.classList.remove('show');
+  }
+
+  function executeAssign() {
+    const targetPicsArray = Array.from(rotSelectedTargetPics);
+    if (targetPicsArray.length === 0) {
+      alert("Silakan pilih minimal satu PIC pada kotak 'Pindahkan Ke'!");
+      return;
+    }
+
+    let rowsToAssign = [];
+    if (rotCheckedRowIndexes.size > 0) {
+      rowsToAssign = rotAllRowsData.filter(r => rotCheckedRowIndexes.has(r.rowIndex));
+    } else {
+      rowsToAssign = getRotasiFilteredRows();
+    }
+
+    if (rowsToAssign.length === 0) {
+      alert("Tidak ada baris data yang dipilih atau tampil untuk di-assign!");
+      return;
+    }
+
+    if (!confirm('Apakah Anda yakin ingin membagikan ' + rowsToAssign.length + ' data secara acak & bagi rata ke ' + targetPicsArray.length + ' PIC yang dipilih pada \'Pindahkan Ke\'?')) {
+      return;
+    }
+
+    const btn = $('btnAssign');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = '⏳ Mengubah Kolom AT & Mencatat Histori...';
+    }
+    pesan('assignStatus', 'Memproses pembaruan ke Google Sheets...', 'ok');
+
+    const shuffledTargetPics = [...targetPicsArray].sort(() => Math.random() - 0.5);
+
+    const updates = rowsToAssign.map((row, idx) => {
+      const targetPic = shuffledTargetPics[idx % shuffledTargetPics.length];
+      return {
+        rowIndex: row.rowIndex,
+        userId: row.colA,
+        namaNasabah: row.colD,
+        picAwal: row.picAT,
+        newPic: targetPic
+      };
+    });
+
+    api('assignPicsToRows', updates, S.token).then(res => {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>📌 ASSIGN AKUN</span>';
+      }
+      if (res && res.success) {
+        pesan('assignStatus', '✅ Berhasil memperbarui ' + res.count + ' data & mencatat histori! Memuat ulang...', 'ok');
+        rotCheckedRowIndexes.clear();
+        updateRotasiCheckedBadge();
+        const masterRowCb = $('selectAllRows');
+        if (masterRowCb) masterRowCb.checked = false;
+
+        setTimeout(() => {
+          pesan('assignStatus', '', '');
+          loadRotasiData();
+        }, 1500);
+      } else {
+        pesan('assignStatus', '❌ Gagal: ' + ((res && res.message) ? res.message : 'Terjadi kesalahan.'), 'err');
+      }
+    }).catch(err => {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>📌 ASSIGN AKUN</span>';
+      }
+      pesan('assignStatus', '❌ Terjadi kesalahan: ' + err.message, 'err');
+    });
+  }
+
   // ---------- NAVIGASI ----------
   function nav(m) {
     document.querySelectorAll('.menu a[data-m]').forEach(a => a.classList.toggle('active', a.dataset.m===m));
@@ -5738,6 +6344,8 @@
       muatHalamanSlipGaji();
     } else if (m === 'karyawan') {
       muatHalamanKaryawan();
+    } else if (m === 'rotasi') {
+      muatHalamanRotasi();
     } else {
       $('content').innerHTML =
         '<div class="panel placeholder"><div class="big">' + MENU[m].ikon + '</div>' +
