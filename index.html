@@ -360,29 +360,110 @@
     padding: 6px 12px 8px;
     text-transform: uppercase;
   }
+  .menu-cat-group {
+    margin-bottom: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface-soft);
+    overflow: hidden;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .menu-cat-group.has-active {
+    border-color: #bae6fd;
+    background: #f8fbff;
+    box-shadow: 0 2px 10px rgba(2, 132, 199, 0.06);
+  }
+  .menu-cat-head {
+    width: 100%;
+    background: transparent;
+    color: var(--dark);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 11px 13px;
+    min-height: 42px;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    cursor: pointer;
+    text-align: left;
+  }
+  .menu-cat-head:hover {
+    background: rgba(2, 132, 199, 0.06);
+    box-shadow: none;
+    filter: none;
+  }
+  .menu-cat-group.has-active .menu-cat-head {
+    color: var(--primary-hover);
+    background: rgba(224, 242, 254, 0.55);
+  }
+  .menu-cat-head-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+  }
+  .menu-cat-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--primary);
+    flex-shrink: 0;
+  }
+  .menu-cat-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .menu-cat-arrow {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .menu-cat-group.open .menu-cat-arrow {
+    transform: rotate(180deg);
+    color: var(--primary);
+  }
+  .menu-cat-items {
+    display: none;
+    padding: 6px 8px 8px;
+    border-top: 1px solid var(--line);
+    background: #ffffff;
+  }
+  .menu-cat-group.open .menu-cat-items {
+    display: block;
+  }
   .menu a {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    margin-bottom: 5px;
-    border-radius: var(--radius-md);
+    gap: 10px;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    border-radius: 11px;
     color: #475569;
     text-decoration: none;
-    font-size: 13.5px;
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     line-height: 1.3;
-    min-height: 46px;
+    min-height: 42px;
     transition: all 0.15s ease;
   }
+  .menu a:last-child { margin-bottom: 0; }
   .menu a:hover { background: #f1f5f9; color: var(--dark); }
   .menu a.active {
     background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
     color: #ffffff;
-    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.25);
+    box-shadow: 0 5px 14px rgba(2, 132, 199, 0.24);
   }
-  .menu a .ic { width: 22px; text-align: center; font-size: 17px; flex-shrink: 0; }
+  .menu a .ic { width: 20px; text-align: center; font-size: 15.5px; flex-shrink: 0; }
   .side-foot {
     padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
     border-top: 1px solid var(--line);
@@ -2218,18 +2299,9 @@
       <div class="fnama hidden" id="fNama"></div>
       <div class="fjab hidden" id="fJab"></div>
     </div>
-    <nav class="menu">
+    <nav class="menu" id="sideMenuNav">
       <div class="cap">NAVIGASI UTAMA</div>
-      <a data-m="home" onclick="nav('home')"><span class="ic">🏠</span>Beranda</a>
-      <a data-m="tagihan" onclick="nav('tagihan')"><span class="ic">🧮</span>Data Tagihan</a>
-      <a data-m="uploadbukti" onclick="nav('uploadbukti')"><span class="ic">📤</span>Upload Bukti Bayar</a>
-      <a data-m="buktibayar" onclick="nav('buktibayar')"><span class="ic">✅</span>Approval Bukti Bayar</a>
-      <a data-m="laporan" onclick="nav('laporan')"><span class="ic">📁</span>Laporan Keuangan</a>
-      <a data-m="biaya" onclick="nav('biaya')"><span class="ic">🧾</span>Pengajuan Biaya</a>
-      <a data-m="kebijakan" onclick="nav('kebijakan')"><span class="ic">📜</span>Pengajuan Kebijakan</a>
-      <a data-m="slik" onclick="nav('slik')"><span class="ic">💳</span>Slip Gaji</a>
-      <a data-m="karyawan" onclick="nav('karyawan')"><span class="ic">👥</span>Data Karyawan<span class="menu-badge hidden" id="badgeMenuKaryawan">0</span></a>
-      <a data-m="rotasi" onclick="nav('rotasi')"><span class="ic">🔄</span>Rotasi Akun</a>
+      <div id="sideMenuContainer"></div>
     </nav>
     <div class="side-foot">
       <button class="outline" onclick="doLogout()">Keluar Akun</button>
@@ -2517,12 +2589,14 @@
     } catch (e) {}
   }
 
+  let LAST_BADGE_KARYAWAN_COUNT = 0;
+
   function updateBadgeMenuKaryawan_(jumlah) {
+    LAST_BADGE_KARYAWAN_COUNT = Number(jumlah) || 0;
     const b = $('badgeMenuKaryawan');
     if (!b) return;
-    const n = Number(jumlah) || 0;
-    b.textContent = n > 99 ? '99+' : String(n);
-    b.classList.toggle('hidden', n <= 0);
+    b.textContent = LAST_BADGE_KARYAWAN_COUNT > 99 ? '99+' : String(LAST_BADGE_KARYAWAN_COUNT);
+    b.classList.toggle('hidden', LAST_BADGE_KARYAWAN_COUNT <= 0);
   }
 
   function triggerNotifPesanMasuk_(msg) {
@@ -2626,27 +2700,118 @@
   }
 
   const MENU = {
-    home:        { judul:'Beranda' },
-    laporan:     { judul:'Laporan Keuangan',    ikon:'📁' },
-    biaya:       { judul:'Pengajuan Biaya',     ikon:'🧾' },
-    kebijakan:   { judul:'Pengajuan Kebijakan', ikon:'📜' },
-    slik:        { judul:'Slip Gaji',           ikon:'💳' },
-    tagihan:     { judul:'Data Tagihan',        ikon:'🧮' },
-    uploadbukti: { judul:'Upload Bukti Bayar',  ikon:'📤' },
-    buktibayar:  { judul:'Approval Bukti Bayar',ikon:'✅' },
-    karyawan:    { judul:'Data Karyawan',       ikon:'👥' },
-    rotasi:      { judul:'Rotasi Akun',         ikon:'🔄' }
+    home:        { judul:'Beranda',              ikon:'🏠' },
+    laporan:     { judul:'Laporan Keuangan',     ikon:'📁' },
+    biaya:       { judul:'Pengajuan Biaya',      ikon:'🧾' },
+    kebijakan:   { judul:'Pengajuan Kebijakan',  ikon:'📜' },
+    slik:        { judul:'Slip Gaji',            ikon:'💳' },
+    tagihan:     { judul:'Data Tagihan',         ikon:'🧮' },
+    uploadbukti: { judul:'Upload Bukti Bayar',   ikon:'📤' },
+    buktibayar:  { judul:'Approval Bukti Bayar', ikon:'✅' },
+    karyawan:    { judul:'Data Karyawan',        ikon:'👥' },
+    rotasi:      { judul:'Rotasi Akun',          ikon:'🔄' }
   };
 
-  function terapkanMenuAkses(allowedMenus) {
-    const list = Array.isArray(allowedMenus) ? allowedMenus : [];
-    let firstMenu = null;
-    document.querySelectorAll('.menu a[data-m]').forEach(a => {
-      const m = a.dataset.m;
-      const boleh = list.indexOf(m) >= 0;
-      a.classList.toggle('hidden', !boleh);
-      if (boleh && !firstMenu) firstMenu = m;
+  const DEFAULT_MENU_CATEGORIES = [
+    {
+      judul: 'AREA COLLECTION',
+      items: [
+        { key: 'home', judul: 'Beranda' },
+        { key: 'tagihan', judul: 'Data Tagihan' },
+        { key: 'buktibayar', judul: 'Approval Bukti Bayar' },
+        { key: 'uploadbukti', judul: 'Upload Bukti Bayar' },
+        { key: 'rotasi', judul: 'Rotasi Akun' }
+      ]
+    },
+    {
+      judul: 'FINANCE & APPROVAL',
+      items: [
+        { key: 'laporan', judul: 'Laporan Keuangan' },
+        { key: 'biaya', judul: 'Pengajuan Biaya' },
+        { key: 'kebijakan', judul: 'Pengajuan Kebijakan' }
+      ]
+    },
+    {
+      judul: 'HR & KARYAWAN',
+      items: [
+        { key: 'slik', judul: 'Slip Gaji' },
+        { key: 'karyawan', judul: 'Data Karyawan' }
+      ]
+    }
+  ];
+
+  function toggleMenuCat(idx) {
+    const grp = $('menuCat_' + idx);
+    if (!grp) return;
+    grp.classList.toggle('open');
+  }
+
+  function syncActiveCategoryHighlight_(activeMenuKey) {
+    document.querySelectorAll('.menu-cat-group').forEach(grp => {
+      const hasActive = !!grp.querySelector('a[data-m="' + activeMenuKey + '"]');
+      grp.classList.toggle('has-active', hasActive);
+      if (hasActive) grp.classList.add('open');
     });
+  }
+
+  function terapkanMenuAkses(allowedMenus, customCategories) {
+    const list = Array.isArray(allowedMenus) ? allowedMenus : [];
+    const cats = (Array.isArray(customCategories) && customCategories.length > 0)
+      ? customCategories
+      : ((S && Array.isArray(S.menuCategories) && S.menuCategories.length > 0) ? S.menuCategories : DEFAULT_MENU_CATEGORIES);
+
+    const container = $('sideMenuContainer');
+    let firstMenu = null;
+    let html = '';
+
+    cats.forEach((cat, idx) => {
+      const judulKat = String(cat && cat.judul ? cat.judul : '').trim();
+      const rawItems = (cat && Array.isArray(cat.items)) ? cat.items : [];
+      const visibleItems = [];
+
+      rawItems.forEach(it => {
+        const key = String(it && it.key ? it.key : '').trim();
+        if (!key || !MENU[key]) return;
+        const boleh = list.indexOf(key) >= 0;
+        if (!boleh) return;
+        const labelSub = String(it.judul || MENU[key].judul).trim();
+        MENU[key].judul = labelSub;
+        if (!firstMenu) firstMenu = key;
+        visibleItems.push({ key: key, judul: labelSub, ikon: MENU[key].ikon || '📌' });
+      });
+
+      if (!judulKat || visibleItems.length === 0) return;
+
+      html +=
+        '<div class="menu-cat-group open" id="menuCat_' + idx + '">' +
+          '<button type="button" class="menu-cat-head" onclick="toggleMenuCat(' + idx + ')">' +
+            '<span class="menu-cat-head-left">' +
+              '<span class="menu-cat-dot"></span>' +
+              '<span class="menu-cat-title">' + esc(judulKat) + '</span>' +
+            '</span>' +
+            '<span class="menu-cat-arrow">▾</span>' +
+          '</button>' +
+          '<div class="menu-cat-items">' +
+            visibleItems.map(sub =>
+              '<a data-m="' + esc(sub.key) + '" onclick="nav(\'' + esc(sub.key) + '\')">' +
+                '<span class="ic">' + sub.ikon + '</span>' +
+                '<span>' + esc(sub.judul) + '</span>' +
+                (sub.key === 'karyawan'
+                  ? '<span class="menu-badge' + (LAST_BADGE_KARYAWAN_COUNT > 0 ? '' : ' hidden') + '" id="badgeMenuKaryawan">' + (LAST_BADGE_KARYAWAN_COUNT > 99 ? '99+' : LAST_BADGE_KARYAWAN_COUNT) + '</span>'
+                  : '') +
+              '</a>'
+            ).join('') +
+          '</div>' +
+        '</div>';
+    });
+
+    if (container) {
+      container.innerHTML = html;
+    }
+    if (typeof CUR !== 'undefined' && CUR) {
+      document.querySelectorAll('.menu a[data-m]').forEach(a => a.classList.toggle('active', a.dataset.m === CUR));
+      syncActiveCategoryHighlight_(CUR);
+    }
     return firstMenu;
   }
 
@@ -2690,6 +2855,7 @@
           nama: sesiObj.nama,
           jabatan: sesiObj.jabatan || '',
           menus: Array.isArray(sesiObj.menus) ? sesiObj.menus : [],
+          menuCategories: Array.isArray(sesiObj.menuCategories) ? sesiObj.menuCategories : [],
           savedAt: Date.now()
         }));
       }
@@ -2750,12 +2916,21 @@
     $('uJabatan').textContent = S.jabatan;
     $('tgl').textContent = new Date().toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
     resetFoto();
-    const menuPertama = terapkanMenuAkses(S.menus);
+    const menuPertama = terapkanMenuAkses(S.menus, S.menuCategories);
     if (menuPertama) {
       nav(menuPertama);
     } else {
       $('judul').textContent = 'Akses Menu';
       $('content').innerHTML = '<div class="panel placeholder"><div class="big">🔒</div><h3>Akses Belum Tersedia</h3><p>Belum ada menu aktif untuk jabatan ' + esc(S.jabatan) + '.</p></div>';
+    }
+    if (!Array.isArray(S.menuCategories) || S.menuCategories.length === 0) {
+      apiSilent_('getSubmenuCategories').then(r => {
+        if (r && r.sukses && Array.isArray(r.menuCategories) && r.menuCategories.length > 0) {
+          S.menuCategories = r.menuCategories;
+          simpanSesiLokal_(S);
+          terapkanMenuAkses(S.menus, S.menuCategories);
+        }
+      }).catch(() => {});
     }
     muatFoto();
     mulaiPantauPesanMasuk_();
@@ -2769,21 +2944,26 @@
       token: tersimpan.token,
       nama: tersimpan.nama,
       jabatan: tersimpan.jabatan || '',
-      menus: Array.isArray(tersimpan.menus) ? tersimpan.menus : []
+      menus: Array.isArray(tersimpan.menus) ? tersimpan.menus : [],
+      menuCategories: Array.isArray(tersimpan.menuCategories) ? tersimpan.menuCategories : []
     };
     masukKeDashboard_();
     apiSilent_('verifikasiSesi', S.token).then(res => {
       if (!res) return;
       if (res.sukses) {
-        const menuBerubah = JSON.stringify(S.menus) !== JSON.stringify(res.menus || []);
+        const menuBerubah = JSON.stringify(S.menus) !== JSON.stringify(res.menus || []) ||
+                            JSON.stringify(S.menuCategories) !== JSON.stringify(res.menuCategories || []);
         S.nama = res.nama || S.nama;
         S.jabatan = res.jabatan || S.jabatan;
         S.menus = res.menus || S.menus;
+        if (Array.isArray(res.menuCategories) && res.menuCategories.length > 0) {
+          S.menuCategories = res.menuCategories;
+        }
         simpanSesiLokal_(S);
         $('uNama').textContent = S.nama;
         $('uJabatan').textContent = S.jabatan;
         if (menuBerubah) {
-          const mPertama = terapkanMenuAkses(S.menus);
+          const mPertama = terapkanMenuAkses(S.menus, S.menuCategories);
           if (S.menus.indexOf(CUR) < 0 && mPertama) nav(mPertama);
         }
       } else if (res.invalidUser) {
@@ -2798,7 +2978,13 @@
     api('prosesLogin', $('loginNama').value, $('loginPass').value).then(res => {
       loading('btnLogin', false, 'Masuk');
       if (!res.sukses) return pesan('msgLogin', res.pesan, 'err');
-      S = { token:res.token, nama:res.nama, jabatan:res.jabatan, menus:res.menus || [] };
+      S = {
+        token: res.token,
+        nama: res.nama,
+        jabatan: res.jabatan,
+        menus: res.menus || [],
+        menuCategories: Array.isArray(res.menuCategories) ? res.menuCategories : []
+      };
       simpanSesiLokal_(S);
       masukKeDashboard_();
     }).catch(e => { loading('btnLogin', false, 'Masuk'); pesan('msgLogin', 'Gagal: '+e.message, 'err'); });
@@ -2809,7 +2995,7 @@
     const oldToken = S.token;
     hapusSesiLokal_();
     if (oldToken) api('prosesLogout', oldToken).catch(()=>{});
-    S = { token:'', nama:'', jabatan:'', menus:[] };
+    S = { token:'', nama:'', jabatan:'', menus:[], menuCategories:[] };
     toggleMenu(false);
     tutupModalOnline();
     $('app').classList.add('hidden'); $('auth').classList.remove('hidden');
@@ -6315,7 +6501,8 @@
   // ---------- NAVIGASI ----------
   function nav(m) {
     document.querySelectorAll('.menu a[data-m]').forEach(a => a.classList.toggle('active', a.dataset.m===m));
-    $('judul').textContent = MENU[m].judul;
+    syncActiveCategoryHighlight_(m);
+    $('judul').textContent = MENU[m] ? MENU[m].judul : m;
     CUR = m;
     toggleMenu(false);
     window.scrollTo(0, 0);
