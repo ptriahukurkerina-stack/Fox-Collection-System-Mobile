@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
   :root {
     --box: #f0f7ff;
@@ -2290,6 +2291,562 @@
     color: #ffffff;
     border-radius: var(--radius-md);
   }
+
+  /* ---------- MENU PERFORMANCE (FOX PERFORMANCE) ---------- */
+  .pf-hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0369a1 100%);
+    color: #ffffff;
+    border-radius: var(--radius-lg);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    border: 1px solid rgba(56, 189, 248, 0.22);
+  }
+  .pf-hero-left { min-width: 0; flex: 1; }
+  .pf-hero-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pf-hero-sub {
+    margin: 3px 0 0;
+    font-size: 12px;
+    color: #bae6fd;
+    font-weight: 600;
+  }
+  .pf-clock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    background: rgba(15, 23, 42, 0.55);
+    border: 1px solid rgba(125, 211, 252, 0.25);
+    color: #38bdf8;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+  .pf-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pf-btn-act {
+    width: auto;
+    min-height: 40px;
+    padding: 8px 13px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .pf-btn-act.refresh {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    border-color: transparent;
+  }
+  .pf-btn-act.rank {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+    border-color: transparent;
+  }
+  .pf-btn-act.acctype {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    color: #ffffff;
+    border-color: transparent;
+  }
+  .pf-btn-act.listpay {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+  }
+  .pf-btn-act.listpay:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .pf-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .pf-kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 14px 15px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+    transition: all 0.15s ease;
+  }
+  .pf-kpi-card.clickable:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .pf-kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3.5px;
+    background: var(--primary);
+  }
+  .pf-kpi-card.c-target::before { background: #64748b; }
+  .pf-kpi-card.c-ptp::before { background: var(--warning); }
+  .pf-kpi-card.c-plan::before { background: var(--accent); }
+  .pf-kpi-card.c-ach::before { background: var(--success); }
+
+  .pf-kpi-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .pf-kpi-lbl {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+  }
+  .pf-kpi-ic {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .pf-kpi-card.c-target .pf-kpi-ic { background: #f1f5f9; color: #475569; }
+  .pf-kpi-card.c-ptp .pf-kpi-ic { background: var(--warning-soft); color: var(--warning-dark); }
+  .pf-kpi-card.c-plan .pf-kpi-ic { background: #e0f2fe; color: #0284c7; }
+  .pf-kpi-card.c-ach .pf-kpi-ic { background: var(--success-soft); color: var(--success-dark); }
+
+  .pf-kpi-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16.5px;
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.25;
+    word-break: break-word;
+  }
+  .pf-kpi-card.c-ptp .pf-kpi-val { color: var(--warning-dark); }
+  .pf-kpi-card.c-plan .pf-kpi-val { color: var(--primary); }
+  .pf-kpi-card.c-ach .pf-kpi-val { color: var(--success-dark); font-size: 20px; }
+
+  .pf-kpi-hint {
+    margin-top: 5px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--warning-dark);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .pf-toolbar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .pf-view-switch {
+    display: inline-flex;
+    background: #e2e8f0;
+    padding: 4px;
+    border-radius: 12px;
+    gap: 4px;
+  }
+  .pf-view-btn {
+    width: auto;
+    min-height: 34px;
+    padding: 6px 12px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 800;
+    background: transparent;
+    color: #475569;
+    box-shadow: none;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pf-view-btn:hover {
+    background: rgba(255, 255, 255, 0.5);
+    color: var(--dark);
+    box-shadow: none;
+  }
+  .pf-view-btn.active, .pf-view-btn.active:hover {
+    background: #ffffff;
+    color: var(--primary);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .pf-cat-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    margin-bottom: 14px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .pf-cat-bar::-webkit-scrollbar { display: none; }
+  .pf-cat-btn {
+    width: auto;
+    min-height: 36px;
+    padding: 7px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    background: var(--surface-soft);
+    color: var(--muted);
+    border: 1px solid var(--line);
+    box-shadow: none;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .pf-cat-btn:hover {
+    border-color: #7dd3fc;
+    color: var(--primary);
+    background: #f0f9ff;
+    box-shadow: none;
+  }
+  .pf-cat-btn.active, .pf-cat-btn.active:hover {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+  }
+
+  /* --- VERSI KARTU (EFEKTIF UNTUK LAYAR ANDROID) --- */
+  .pf-team-block {
+    margin-bottom: 18px;
+  }
+  .pf-team-block:last-child {
+    margin-bottom: 0;
+  }
+  .pf-team-banner {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #ffffff;
+    padding: 11px 15px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  .pf-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 10px;
+  }
+  .pf-dc-card {
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 13px 14px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.15s ease;
+  }
+  .pf-dc-card.is-tl {
+    background: linear-gradient(180deg, #fffbeb 0%, #ffffff 65%);
+    border-color: #fde68a;
+  }
+  .pf-dc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-bottom: 9px;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .pf-dc-name {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    word-break: break-word;
+  }
+  .pf-tl-crown {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .pf-tl-tag {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 6px;
+    letter-spacing: 0.4px;
+  }
+  .pf-dc-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .pf-dc-metric {
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 9px;
+    min-width: 0;
+  }
+  .pf-dc-metric.clickable {
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .pf-dc-metric.clickable:hover {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+  }
+  .pf-dc-metric.m-pay {
+    border-left: 3px solid var(--primary);
+  }
+  .pf-dc-metric.m-ptp {
+    border-left: 3px solid var(--warning);
+  }
+  .pf-dc-metric.m-plan {
+    border-left: 3px solid var(--success);
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+  }
+  .pf-dc-m-lbl {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3px;
+  }
+  .pf-dc-m-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--dark);
+    word-break: break-word;
+    line-height: 1.25;
+  }
+  .pf-dc-metric.m-pay .pf-dc-m-val { color: var(--primary); }
+  .pf-dc-metric.m-ptp .pf-dc-m-val { color: var(--warning-dark); }
+  .pf-dc-metric.m-plan .pf-dc-m-val { color: var(--success-dark); }
+
+  .pf-team-subtotal-card {
+    margin-top: 10px;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1.5px solid #7dd3fc;
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .pf-team-subtotal-title {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #0369a1;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .pf-team-subtotal-metrics {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  /* --- VERSI TABEL & ACH BADGES --- */
+  .pf-ach-badge {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 800;
+    min-width: 58px;
+    text-align: center;
+  }
+  .pf-ach-red { background: var(--danger-soft); color: var(--danger-dark); border: 1px solid #fecaca; }
+  .pf-ach-yellow { background: var(--warning-soft); color: var(--warning-dark); border: 1px solid #fde68a; }
+  .pf-ach-green { background: var(--success-soft); color: var(--success-dark); border: 1px solid #a7f3d0; }
+
+  tr.pf-group-row td {
+    background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%) !important;
+    color: #38bdf8 !important;
+    font-weight: 800 !important;
+    font-size: 12px !important;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 10px 14px !important;
+  }
+  tr.pf-leader-row td {
+    background: #fffbeb !important;
+    font-weight: 700;
+  }
+  tr.pf-subtotal-row td {
+    background: #f0f9ff !important;
+    font-weight: 800 !important;
+    color: var(--dark) !important;
+    border-top: 2px solid #7dd3fc !important;
+    border-bottom: 2px solid #bae6fd !important;
+  }
+  .pf-click-num {
+    color: var(--primary);
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .pf-click-ptp {
+    color: var(--warning-dark);
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* --- PAYMENT BY ACCOUNT TYPE CARDS --- */
+  .pf-acctype-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .pf-acctype-card {
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .pf-acctype-head {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: #ffffff;
+    padding: 12px 15px;
+    font-size: 13.5px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pf-acctype-meta {
+    background: var(--surface-soft);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+  }
+  .pf-acctype-meta-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+  }
+  .pf-acctype-list {
+    padding: 10px 14px;
+  }
+  .pf-acctype-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--line);
+    font-size: 12.5px;
+  }
+  .pf-acctype-item:last-child { border-bottom: none; }
+  .pf-acctype-foot {
+    background: #f0f9ff;
+    padding: 11px 14px;
+    border-top: 1px solid #bae6fd;
+  }
+
+  @media (max-width: 860px) {
+    .pf-kpi-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .pf-kpi-grid > .pf-kpi-card:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 600px) {
+    .pf-hero { padding: 15px 14px; }
+    .pf-actions { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .pf-btn-act { width: 100%; }
+    .pf-cards-grid { grid-template-columns: minmax(0, 1fr); }
+    .pf-dc-metrics { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+    .pf-dc-metric {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 9px 12px;
+    }
+    .pf-dc-m-lbl { margin-bottom: 0; font-size: 11px; }
+    .pf-dc-m-val { font-size: 13px; }
+  }
+
 </style>
 <script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
@@ -2511,6 +3068,115 @@
     <div class="chat-notif-cta">Ketuk untuk membalas ➔</div>
   </div>
 </div>
+
+<!-- ================= MODAL PERFORMANCE: LIST PAYMENT ================= -->
+<div id="pfPaymentModal" class="modal" onclick="if(event.target===this)tutupModalPerformance('pfPaymentModal')">
+  <div class="mbox" style="max-width:980px">
+    <div class="mhead">
+      <h3 id="pfPaymentModalTitle">💸 List Payment (Sudah Bayar)</h3>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="pfPaymentRowCount" class="pic-badge">0 Data</span>
+        <button type="button" class="mclose" onclick="tutupModalPerformance('pfPaymentModal')">✕</button>
+      </div>
+    </div>
+    <div class="mbody">
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Account Type</th>
+              <th>Nama Nasabah</th>
+              <th>Payment</th>
+              <th>OS</th>
+              <th>Dragon</th>
+              <th>PIC</th>
+              <th>Tgl Bayar</th>
+            </tr>
+          </thead>
+          <tbody id="pfPaymentTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL PERFORMANCE: DETAIL PTP ================= -->
+<div id="pfPtpModal" class="modal" onclick="if(event.target===this)tutupModalPerformance('pfPtpModal')">
+  <div class="mbox" style="max-width:1060px">
+    <div class="mhead">
+      <h3 id="pfPtpModalTitle">🤝 Detail PTP</h3>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="pfPtpRowCount" class="pic-badge">0 Data</span>
+        <button type="button" class="mclose" onclick="tutupModalPerformance('pfPtpModal')">✕</button>
+      </div>
+    </div>
+    <div class="mbody">
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Nama</th>
+              <th>Total OS</th>
+              <th>SDP</th>
+              <th>Jumlah Bayar</th>
+              <th>Status Bayar</th>
+              <th>Jumlah PTP</th>
+              <th>Tgl PTP</th>
+              <th>Kurang PTP</th>
+              <th>PIC</th>
+            </tr>
+          </thead>
+          <tbody id="pfPtpTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL PERFORMANCE: TOP RANK DESKCOLL ================= -->
+<div id="pfRankModal" class="modal" onclick="if(event.target===this)tutupModalPerformance('pfRankModal')">
+  <div class="mbox" style="max-width:900px">
+    <div class="mhead">
+      <h3>🏆 Top Rank Deskcoll (Berdasarkan Payment)</h3>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="pfRankRowCount" class="pic-badge">0 User</span>
+        <button type="button" class="mclose" onclick="tutupModalPerformance('pfRankModal')">✕</button>
+      </div>
+    </div>
+    <div class="mbody">
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="text-align:center">Rank</th>
+              <th>User Name</th>
+              <th>Jabatan</th>
+              <th>Total Payment</th>
+              <th>Target</th>
+              <th>Plan Closing</th>
+              <th style="text-align:center">Ach %</th>
+            </tr>
+          </thead>
+          <tbody id="pfRankTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL PERFORMANCE: PAYMENT BY ACCOUNT TYPE ================= -->
+<div id="pfAccTypeModal" class="modal" onclick="if(event.target===this)tutupModalPerformance('pfAccTypeModal')">
+  <div class="mbox" style="max-width:980px">
+    <div class="mhead">
+      <h3>📊 Payment by Account Type (Per Team)</h3>
+      <button type="button" class="mclose" onclick="tutupModalPerformance('pfAccTypeModal')">✕</button>
+    </div>
+    <div class="mbody" id="pfAccTypeBody"></div>
+  </div>
+</div>
+
 <script>
   // ============================================================================
   // KONFIGURASI BACKEND GOOGLE APPS SCRIPT (UNTUK HOSTING GITHUB PAGES & APK)
@@ -2767,6 +3433,7 @@
     tagihan:     { judul:'Data Tagihan',         ikon:'🧮' },
     uploadbukti: { judul:'Upload Bukti Bayar',   ikon:'📤' },
     buktibayar:  { judul:'Approval Bukti Bayar', ikon:'✅' },
+    performance: { judul:'Performance',          ikon:'📈' },
     karyawan:    { judul:'Portal Karyawan',        ikon:'👥' },
     rotasi:      { judul:'Rotasi Akun',          ikon:'🔄' },
     absensi:     { judul:'Absensi',              ikon:'📍' }
@@ -2777,6 +3444,7 @@
       judul: 'AREA COLLECTION',
       items: [
         { key: 'home', judul: 'Beranda' },
+        { key: 'performance', judul: 'Performance' },
         { key: 'tagihan', judul: 'Data Tagihan' },
         { key: 'buktibayar', judul: 'Approval Bukti Bayar' },
         { key: 'uploadbukti', judul: 'Upload Bukti Bayar' },
@@ -2820,6 +3488,9 @@
     if (list.length > 0 && list.indexOf('absensi') < 0) {
       list.push('absensi');
     }
+    if (list.length > 0 && list.indexOf('performance') < 0) {
+      list.push('performance');
+    }
     const rawCats = (Array.isArray(customCategories) && customCategories.length > 0)
       ? customCategories
       : ((S && Array.isArray(S.menuCategories) && S.menuCategories.length > 0) ? S.menuCategories : DEFAULT_MENU_CATEGORIES);
@@ -2839,6 +3510,18 @@
         hrCat.items.push({ key: 'absensi', judul: 'Absensi' });
       } else {
         cats.push({ judul: 'HR & KARYAWAN', items: [{ key: 'absensi', judul: 'Absensi' }] });
+      }
+    }
+    const adaPerfDiCats = cats.some(c => c.items.some(it => it && it.key === 'performance'));
+    if (!adaPerfDiCats) {
+      const colCat = cats.find(c => {
+        const ju = String(c.judul || '').toUpperCase();
+        return ju.indexOf('COLLECTION') >= 0 || ju.indexOf('AREA') >= 0;
+      });
+      if (colCat) {
+        colCat.items.splice(1, 0, { key: 'performance', judul: 'Performance' });
+      } else if (cats.length > 0) {
+        cats[0].items.push({ key: 'performance', judul: 'Performance' });
       }
     }
 
@@ -6872,11 +7555,557 @@
     eksekusiKirimAbsensi_();
   }
 
+
+  // ============================================================================
+  // MENU PERFORMANCE (FOX PERFORMANCE - VERSI KARTU ANDROID & VERSI TABEL)
+  // ============================================================================
+  let PF_RAW_DATA = null;
+  let PF_ACTIVE_CATEGORY = 'ALL';
+  let PF_VIEW_MODE = 'card'; // 'card' (Versi Kartu Android) | 'table' (Versi Tabel)
+  let PF_CLOCK_TIMER = null;
+
+  function pfFmtRp_(n) {
+    return 'Rp ' + Math.floor(Number(n) || 0).toLocaleString('id-ID') + ',-';
+  }
+
+  function pfIsLeader_(name) {
+    return /(^|[^A-Za-z0-9])TL([^A-Za-z0-9]|$)/i.test(String(name || ''));
+  }
+
+  function pfAchClass_(val) {
+    const n = parseFloat(val);
+    if (n <= 50) return 'pf-ach-red';
+    if (n > 50 && n <= 75) return 'pf-ach-yellow';
+    return 'pf-ach-green';
+  }
+
+  function mulaiJamPerformance_() {
+    hentikanJamPerformance_();
+    const updateClock = () => {
+      const el = $('pfLiveClock');
+      if (!el) return;
+      const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+      const now = new Date();
+      const day = days[now.getDay()];
+      const date = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const year = now.getFullYear();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      el.innerHTML = '<i class="far fa-clock"></i> ' + day + ' | ' + date + '/' + month + '/' + year + ' | ' + hours + ':' + minutes + ':' + seconds;
+    };
+    updateClock();
+    PF_CLOCK_TIMER = setInterval(updateClock, 1000);
+  }
+
+  function hentikanJamPerformance_() {
+    if (PF_CLOCK_TIMER) {
+      clearInterval(PF_CLOCK_TIMER);
+      PF_CLOCK_TIMER = null;
+    }
+  }
+
+  function tutupModalPerformance(id) {
+    const m = $(id);
+    if (m) m.classList.remove('show');
+  }
+
+  function muatHalamanPerformance() {
+    $('content').innerHTML =
+      '<div class="pf-hero">' +
+        '<div class="pf-hero-left">' +
+          '<h2 class="pf-hero-title">📈 FOX PERFORMANCE</h2>' +
+          '<p class="pf-hero-sub">Monitoring Realtime Koleksi, PTP, Plan Closing & Produktivitas Tim</p>' +
+          '<div class="pf-clock-badge" id="pfLiveClock"><i class="far fa-clock"></i> Memuat waktu...</div>' +
+        '</div>' +
+        '<div class="pf-actions">' +
+          '<button type="button" class="pf-btn-act refresh" onclick="muatDataPerformance(true)"><i class="fas fa-sync-alt"></i> Refresh Data</button>' +
+          '<button type="button" class="pf-btn-act rank" onclick="bukaModalRankPerformance()"><i class="fas fa-trophy"></i> Top Rank</button>' +
+          '<button type="button" class="pf-btn-act acctype" onclick="bukaModalAccTypePerformance()"><i class="fas fa-layer-group"></i> Payment by Type</button>' +
+          '<button type="button" class="pf-btn-act listpay" onclick="bukaModalPaymentPerformance()"><i class="fas fa-list-ul"></i> List Payment</button>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="pf-kpi-grid">' +
+        '<div class="pf-kpi-card">' +
+          '<div class="pf-kpi-top"><span class="pf-kpi-lbl" id="pfLblPayment">Total Payment</span><span class="pf-kpi-ic"><i class="fas fa-wallet"></i></span></div>' +
+          '<div class="pf-kpi-val" id="pfValPayment">Rp 0,-</div>' +
+        '</div>' +
+        '<div class="pf-kpi-card c-target">' +
+          '<div class="pf-kpi-top"><span class="pf-kpi-lbl" id="pfLblTarget">Target (1%)</span><span class="pf-kpi-ic"><i class="fas fa-bullseye"></i></span></div>' +
+          '<div class="pf-kpi-val" id="pfValTarget">Rp 0,-</div>' +
+        '</div>' +
+        '<div class="pf-kpi-card c-ptp clickable" onclick="bukaModalPtpPerformance()">' +
+          '<div class="pf-kpi-top"><span class="pf-kpi-lbl" id="pfLblPtp">PTP</span><span class="pf-kpi-ic"><i class="fas fa-handshake"></i></span></div>' +
+          '<div class="pf-kpi-val" id="pfValPtp">Rp 0,-</div>' +
+          '<div class="pf-kpi-hint">Klik rincian PTP ➔</div>' +
+        '</div>' +
+        '<div class="pf-kpi-card c-plan">' +
+          '<div class="pf-kpi-top"><span class="pf-kpi-lbl" id="pfLblPlan">Plan Closing</span><span class="pf-kpi-ic"><i class="fas fa-flag-checkered"></i></span></div>' +
+          '<div class="pf-kpi-val" id="pfValPlan">Rp 0,-</div>' +
+        '</div>' +
+        '<div class="pf-kpi-card c-ach">' +
+          '<div class="pf-kpi-top"><span class="pf-kpi-lbl">Overall ACH</span><span class="pf-kpi-ic"><i class="fas fa-chart-pie"></i></span></div>' +
+          '<div class="pf-kpi-val" id="pfValAch">0%</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="panel">' +
+        '<div class="pf-toolbar-head">' +
+          '<div>' +
+            '<h3 class="pt" style="margin:0">Performance Deskcoll</h3>' +
+            '<div style="font-size:12px;color:var(--muted);margin-top:2px">Pilih tampilan Versi Kartu (efektif untuk layar Android) atau Versi Tabel lengkap</div>' +
+          '</div>' +
+          '<div class="pf-view-switch">' +
+            '<button type="button" id="pfBtnViewCard" class="pf-view-btn ' + (PF_VIEW_MODE === 'card' ? 'active' : '') + '" onclick="ubahModeTampilanPerformance(\'card\')">' +
+              '<i class="fas fa-th-large"></i> Versi Kartu' +
+            '</button>' +
+            '<button type="button" id="pfBtnViewTable" class="pf-view-btn ' + (PF_VIEW_MODE === 'table' ? 'active' : '') + '" onclick="ubahModeTampilanPerformance(\'table\')">' +
+              '<i class="fas fa-table"></i> Versi Tabel' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+        '<div id="pfCategoryButtons" class="pf-cat-bar"></div>' +
+        '<div id="pfDeskcollContainer"><div class="placeholder">Memuat data performance...</div></div>' +
+      '</div>';
+
+    mulaiJamPerformance_();
+    if (PF_RAW_DATA) {
+      renderKategoriPerformance_(PF_RAW_DATA.categories || []);
+      terapkanKategoriPerformance(PF_ACTIVE_CATEGORY);
+    } else {
+      muatDataPerformance(false);
+    }
+  }
+
+  function muatDataPerformance(doRefresh) {
+    const fn = doRefresh ? 'refreshAndGetData' : 'getDashboardData';
+    api(fn).then(res => {
+      if (!res) return;
+      PF_RAW_DATA = res;
+      if (PF_ACTIVE_CATEGORY !== 'ALL' && (!res.categories || res.categories.indexOf(PF_ACTIVE_CATEGORY) === -1)) {
+        PF_ACTIVE_CATEGORY = 'ALL';
+      }
+      renderKategoriPerformance_(res.categories || []);
+      terapkanKategoriPerformance(PF_ACTIVE_CATEGORY);
+    }).catch(err => {
+      const box = $('pfDeskcollContainer');
+      if (box) box.innerHTML = '<div class="placeholder" style="color:var(--danger)">Gagal memuat data performance: ' + esc(err && err.message ? err.message : String(err)) + '</div>';
+    });
+  }
+
+  function ubahModeTampilanPerformance(mode) {
+    PF_VIEW_MODE = mode === 'table' ? 'table' : 'card';
+    const bCard = $('pfBtnViewCard');
+    const bTbl = $('pfBtnViewTable');
+    if (bCard) bCard.classList.toggle('active', PF_VIEW_MODE === 'card');
+    if (bTbl) bTbl.classList.toggle('active', PF_VIEW_MODE === 'table');
+    if (PF_RAW_DATA) {
+      terapkanKategoriPerformance(PF_ACTIVE_CATEGORY);
+    }
+  }
+
+  function renderKategoriPerformance_(categories) {
+    const wrap = $('pfCategoryButtons');
+    if (!wrap) return;
+    let html = '<button type="button" class="pf-cat-btn ' + (PF_ACTIVE_CATEGORY === 'ALL' ? 'active' : '') + '" data-cat="ALL" onclick="terapkanKategoriPerformance(\'ALL\')">SEMUA</button>';
+    (categories || []).forEach(c => {
+      const active = PF_ACTIVE_CATEGORY === c ? 'active' : '';
+      html += '<button type="button" class="pf-cat-btn ' + active + '" data-cat="' + esc(c) + '" onclick="terapkanKategoriPerformance(\'' + esc(c).replace(/'/g, "\\'") + '\')">' + esc(c) + '</button>';
+    });
+    wrap.innerHTML = html;
+  }
+
+  function renderSummaryPerformance_(cat) {
+    if (!PF_RAW_DATA || !PF_RAW_DATA.summaryAll) return;
+    const rate = PF_RAW_DATA.targetRate || 0.01;
+    const s = (cat === 'ALL')
+      ? PF_RAW_DATA.summaryAll
+      : (PF_RAW_DATA.summaryByCat && PF_RAW_DATA.summaryByCat[cat]) || { payment: 0, outstanding: 0, ptp: 0 };
+
+    const target = s.outstanding * rate;
+    const plan = s.payment + s.ptp;
+    const ach = target > 0 ? (s.payment / target) * 100 : 0;
+
+    if ($('pfValPayment')) $('pfValPayment').textContent = pfFmtRp_(s.payment);
+    if ($('pfValTarget')) $('pfValTarget').textContent = pfFmtRp_(target);
+    if ($('pfValPtp')) $('pfValPtp').textContent = pfFmtRp_(s.ptp);
+    if ($('pfValPlan')) $('pfValPlan').textContent = pfFmtRp_(plan);
+    if ($('pfValAch')) $('pfValAch').textContent = ach.toFixed(1) + '%';
+
+    const suffix = (cat === 'ALL') ? '' : ' · ' + cat;
+    if ($('pfLblPayment')) $('pfLblPayment').textContent = 'Total Payment' + suffix;
+    if ($('pfLblTarget')) $('pfLblTarget').textContent = 'Target (1%)' + suffix;
+    if ($('pfLblPtp')) $('pfLblPtp').textContent = 'PTP' + suffix;
+    if ($('pfLblPlan')) $('pfLblPlan').textContent = 'Plan Closing' + suffix;
+  }
+
+  function terapkanKategoriPerformance(cat) {
+    if (!PF_RAW_DATA) return;
+    PF_ACTIVE_CATEGORY = cat;
+    document.querySelectorAll('#pfCategoryButtons .pf-cat-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-cat') === cat);
+    });
+    renderSummaryPerformance_(cat);
+    const list = (cat === 'ALL')
+      ? (PF_RAW_DATA.performanceDeskcoll || [])
+      : ((PF_RAW_DATA.performanceByCategory && PF_RAW_DATA.performanceByCategory[cat]) || []);
+    renderDeskcollPerformance_(list);
+  }
+
+  function renderDeskcollPerformance_(list) {
+    const container = $('pfDeskcollContainer');
+    if (!container) return;
+
+    if (!list || list.length === 0) {
+      container.innerHTML = '<div class="placeholder">Tidak ada data pada kategori ini.</div>';
+      return;
+    }
+
+    // Kelompokkan per Jabatan / Tim
+    const groups = [];
+    let curGrp = null;
+    list.forEach(item => {
+      if (!curGrp || curGrp.jabatan !== item.jabatan) {
+        if (curGrp) groups.push(curGrp);
+        curGrp = {
+          jabatan: item.jabatan || 'No Jabatan',
+          items: [],
+          subPay: 0,
+          subTarget: 0,
+          subPtp: 0,
+          subPlan: 0,
+          subAcc: 0
+        };
+      }
+      curGrp.items.push(item);
+      curGrp.subPay += Number(item.payment) || 0;
+      curGrp.subTarget += parseFloat(item.target) || 0;
+      curGrp.subPtp += Number(item.ptp) || 0;
+      curGrp.subPlan += Number(item.plan) || 0;
+      curGrp.subAcc += Number(item.accountCount) || 0;
+    });
+    if (curGrp) groups.push(curGrp);
+
+    // 1) VERSI KARTU (Menampilkan Nama, Jumlah Payment, PTP, dan Plan Closing agar efektif di Android)
+    if (PF_VIEW_MODE === 'card') {
+      let html = '';
+      groups.forEach(g => {
+        const subAch = g.subTarget > 0 ? ((g.subPay / g.subTarget) * 100).toFixed(1) : '0';
+        const safeJab = esc(g.jabatan).replace(/'/g, "\\'");
+        html +=
+          '<div class="pf-team-block">' +
+            '<div class="pf-team-banner">' +
+              '<span><i class="fas fa-users" style="margin-right:6px"></i> TIM / JABATAN: ' + esc(g.jabatan) + '</span>' +
+              '<span class="pf-ach-badge ' + pfAchClass_(subAch) + '">ACH TIM: ' + subAch + '%</span>' +
+            '</div>' +
+            '<div class="pf-cards-grid">';
+
+        g.items.forEach(item => {
+          const leader = pfIsLeader_(item.userName);
+          const safeUser = esc(item.userName).replace(/'/g, "\\'");
+          html +=
+            '<div class="pf-dc-card ' + (leader ? 'is-tl' : '') + '">' +
+              '<div class="pf-dc-head">' +
+                '<div class="pf-dc-name">' +
+                  (leader ? '<span class="pf-tl-crown" title="Team Leader"><i class="fas fa-crown"></i></span>' : '') +
+                  '<span>' + esc(item.userName) + '</span>' +
+                  (leader ? '<span class="pf-tl-tag">TL</span>' : '') +
+                '</div>' +
+                '<span class="pf-ach-badge ' + pfAchClass_(item.ach) + '">' + esc(item.ach) + '%</span>' +
+              '</div>' +
+              '<div class="pf-dc-metrics">' +
+                '<div class="pf-dc-metric m-pay clickable" onclick="bukaModalPaymentPerformance(\'' + safeUser + '\')" title="Klik untuk lihat rincian payment">' +
+                  '<div class="pf-dc-m-lbl"><span>Jumlah Payment</span><i class="fas fa-chevron-right" style="font-size:9px"></i></div>' +
+                  '<div class="pf-dc-m-val">' + pfFmtRp_(item.payment) + '</div>' +
+                '</div>' +
+                '<div class="pf-dc-metric m-ptp clickable" onclick="bukaModalPtpPerformance(\'' + safeUser + '\')" title="Klik untuk lihat rincian PTP">' +
+                  '<div class="pf-dc-m-lbl"><span>PTP</span><i class="fas fa-chevron-right" style="font-size:9px"></i></div>' +
+                  '<div class="pf-dc-m-val">' + pfFmtRp_(item.ptp) + '</div>' +
+                '</div>' +
+                '<div class="pf-dc-metric m-plan">' +
+                  '<div class="pf-dc-m-lbl"><span>Plan Closing</span></div>' +
+                  '<div class="pf-dc-m-val">' + pfFmtRp_(item.plan) + '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+        });
+
+        html +=
+            '</div>' +
+            '<div class="pf-team-subtotal-card">' +
+              '<div class="pf-team-subtotal-title">TOTAL ' + esc(g.jabatan) + '</div>' +
+              '<div class="pf-team-subtotal-metrics">' +
+                '<span>Payment: <b style="color:var(--primary)">' + pfFmtRp_(g.subPay) + '</b></span>' +
+                '<span style="cursor:pointer;text-decoration:underline" onclick="bukaModalPtpPerformance(null, \'' + safeJab + '\')">PTP: <b style="color:var(--warning-dark)">' + pfFmtRp_(g.subPtp) + '</b></span>' +
+                '<span>Plan Closing: <b style="color:var(--success-dark)">' + pfFmtRp_(g.subPlan) + '</b></span>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+      });
+
+      container.innerHTML = html;
+      return;
+    }
+
+    // 2) VERSI TABEL (7 Kolom Lengkap seperti versi tabel asli)
+    let tblHtml =
+      '<div class="tbl-wrap">' +
+        '<table class="tbl">' +
+          '<thead>' +
+            '<tr>' +
+              '<th>User Name</th>' +
+              '<th style="text-align:center">Jlh Account</th>' +
+              '<th>Jumlah Payment</th>' +
+              '<th>Target Payment</th>' +
+              '<th>PTP</th>' +
+              '<th>Plan Closing</th>' +
+              '<th style="text-align:center">Ach %</th>' +
+            '</tr>' +
+          '</thead>' +
+          '<tbody>';
+
+    groups.forEach(g => {
+      const subAch = g.subTarget > 0 ? ((g.subPay / g.subTarget) * 100).toFixed(1) : '0';
+      const safeJab = esc(g.jabatan).replace(/'/g, "\\'");
+      tblHtml +=
+        '<tr class="pf-group-row">' +
+          '<td colspan="7"><i class="fas fa-users" style="margin-right:8px"></i> JABATAN / TIM : ' + esc(g.jabatan) + '</td>' +
+        '</tr>';
+
+      g.items.forEach(item => {
+        const leader = pfIsLeader_(item.userName);
+        const safeUser = esc(item.userName).replace(/'/g, "\\'");
+        const nameCell = leader
+          ? '<span class="pf-tl-crown" style="margin-right:6px"><i class="fas fa-crown"></i></span><b>' + esc(item.userName) + '</b> <span class="pf-tl-tag">LEADER</span>'
+          : '<b>' + esc(item.userName) + '</b>';
+
+        tblHtml +=
+          '<tr class="' + (leader ? 'pf-leader-row' : '') + '">' +
+            '<td>' + nameCell + '</td>' +
+            '<td class="num" style="text-align:center">' + Number(item.accountCount || 0).toLocaleString('id-ID') + '</td>' +
+            '<td class="num"><span class="pf-click-num" onclick="bukaModalPaymentPerformance(\'' + safeUser + '\')">' + pfFmtRp_(item.payment) + '</span></td>' +
+            '<td class="num" style="color:var(--muted)">' + pfFmtRp_(item.target) + '</td>' +
+            '<td class="num"><span class="pf-click-ptp" onclick="bukaModalPtpPerformance(\'' + safeUser + '\')">' + pfFmtRp_(item.ptp) + '</span></td>' +
+            '<td class="num" style="color:var(--primary);font-weight:800">' + pfFmtRp_(item.plan) + '</td>' +
+            '<td style="text-align:center"><span class="pf-ach-badge ' + pfAchClass_(item.ach) + '">' + esc(item.ach) + '%</span></td>' +
+          '</tr>';
+      });
+
+      tblHtml +=
+        '<tr class="pf-subtotal-row">' +
+          '<td>TOTAL ' + esc(g.jabatan) + '</td>' +
+          '<td class="num" style="text-align:center">' + g.subAcc.toLocaleString('id-ID') + '</td>' +
+          '<td class="num" style="color:var(--primary)">' + pfFmtRp_(g.subPay) + '</td>' +
+          '<td class="num">' + pfFmtRp_(g.subTarget) + '</td>' +
+          '<td class="num"><span class="pf-click-ptp" onclick="bukaModalPtpPerformance(null, \'' + safeJab + '\')">' + pfFmtRp_(g.subPtp) + '</span></td>' +
+          '<td class="num" style="color:var(--success-dark)">' + pfFmtRp_(g.subPlan) + '</td>' +
+          '<td style="text-align:center"><span class="pf-ach-badge ' + pfAchClass_(subAch) + '">' + subAch + '%</span></td>' +
+        '</tr>';
+    });
+
+    tblHtml += '</tbody></table></div>';
+    container.innerHTML = tblHtml;
+  }
+
+  function bukaModalPaymentPerformance(userName) {
+    if (!PF_RAW_DATA) return;
+    let source = PF_RAW_DATA.listPayment || [];
+    const titleEl = $('pfPaymentModalTitle');
+    if (userName) {
+      source = source.filter(r => r.pic === userName && (PF_ACTIVE_CATEGORY === 'ALL' || r.kategori === PF_ACTIVE_CATEGORY));
+      if (titleEl) {
+        titleEl.textContent = '💸 Payment: ' + userName + (PF_ACTIVE_CATEGORY === 'ALL' ? '' : ' (' + PF_ACTIVE_CATEGORY + ')');
+      }
+    } else {
+      if (titleEl) titleEl.textContent = '💸 List Payment (Sudah Bayar)';
+    }
+
+    if ($('pfPaymentRowCount')) $('pfPaymentRowCount').textContent = source.length + ' Data';
+    const tbody = $('pfPaymentTableBody');
+    if (tbody) {
+      if (source.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted)">Belum ada data pembayaran</td></tr>';
+      } else {
+        tbody.innerHTML = source.map(row =>
+          '<tr>' +
+            '<td class="num">' + esc(row.user_id) + '</td>' +
+            '<td><span class="pic-badge">' + esc(row.label) + '</span></td>' +
+            '<td><b>' + esc(row.nasabah) + '</b></td>' +
+            '<td class="num" style="color:var(--success-dark);font-weight:800">' + pfFmtRp_(row.payment) + '</td>' +
+            '<td class="num">Rp ' + esc(row.outstanding) + ',-</td>' +
+            '<td>' + esc(row.dragon) + '</td>' +
+            '<td><span class="pic-badge">' + esc(row.pic) + '</span></td>' +
+            '<td class="num">' + esc(row.tgl_bayar) + '</td>' +
+          '</tr>'
+        ).join('');
+      }
+    }
+    const m = $('pfPaymentModal');
+    if (m) m.classList.add('show');
+  }
+
+  function bukaModalPtpPerformance(userName, jabatan) {
+    if (!PF_RAW_DATA) return;
+    let source = PF_RAW_DATA.ptpDetails || [];
+    const catInfo = (PF_ACTIVE_CATEGORY === 'ALL') ? '' : ' · ' + PF_ACTIVE_CATEGORY;
+    if (PF_ACTIVE_CATEGORY !== 'ALL') {
+      source = source.filter(r => r.kategori === PF_ACTIVE_CATEGORY);
+    }
+
+    const titleEl = $('pfPtpModalTitle');
+    if (userName) {
+      source = source.filter(r => r.pic === userName);
+      if (titleEl) titleEl.textContent = '🤝 Detail PTP: ' + userName + catInfo;
+    } else if (jabatan) {
+      source = source.filter(r => r.jabatan === jabatan);
+      if (titleEl) titleEl.textContent = '🤝 Detail PTP Tim: ' + jabatan + catInfo;
+    } else {
+      if (titleEl) titleEl.textContent = '🤝 Detail Semua PTP' + catInfo;
+    }
+
+    let totOs = 0, totBayar = 0, totPtp = 0, totKurang = 0;
+    let rowsHtml = '';
+
+    if (source.length === 0) {
+      rowsHtml = '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--muted)">Tidak ada data PTP</td></tr>';
+    } else {
+      source.forEach(r => {
+        totOs += Number(r.total_os) || 0;
+        totBayar += Number(r.jumlah_bayar) || 0;
+        totPtp += Number(r.jumlah_ptp) || 0;
+        totKurang += Number(r.kurang_ptp) || 0;
+        const isPaid = String(r.status_bayar || '').toUpperCase().indexOf('SUDAH') !== -1;
+        const stBadge = isPaid
+          ? '<span class="st-hijau">' + esc(r.status_bayar) + '</span>'
+          : '<span class="st-wait">' + esc(r.status_bayar) + '</span>';
+
+        rowsHtml +=
+          '<tr>' +
+            '<td class="num">' + esc(r.user_id) + '</td>' +
+            '<td><b>' + esc(r.nama) + '</b></td>' +
+            '<td class="num">' + pfFmtRp_(r.total_os) + '</td>' +
+            '<td>' + esc(r.sdp) + '</td>' +
+            '<td class="num" style="color:var(--success-dark);font-weight:700">' + pfFmtRp_(r.jumlah_bayar) + '</td>' +
+            '<td>' + stBadge + '</td>' +
+            '<td class="num" style="color:var(--warning-dark);font-weight:700">' + pfFmtRp_(r.jumlah_ptp) + '</td>' +
+            '<td class="num">' + esc(r.tgl_ptp) + '</td>' +
+            '<td class="num" style="color:var(--danger-dark);font-weight:700">' + pfFmtRp_(r.kurang_ptp) + '</td>' +
+            '<td><span class="pic-badge">' + esc(r.pic) + '</span></td>' +
+          '</tr>';
+      });
+
+      rowsHtml +=
+        '<tr class="pf-subtotal-row">' +
+          '<td colspan="2">TOTAL (' + source.length + ' Akun)</td>' +
+          '<td class="num">' + pfFmtRp_(totOs) + '</td>' +
+          '<td>-</td>' +
+          '<td class="num" style="color:var(--success-dark)">' + pfFmtRp_(totBayar) + '</td>' +
+          '<td>-</td>' +
+          '<td class="num" style="color:var(--warning-dark)">' + pfFmtRp_(totPtp) + '</td>' +
+          '<td>-</td>' +
+          '<td class="num" style="color:var(--danger-dark)">' + pfFmtRp_(totKurang) + '</td>' +
+          '<td>-</td>' +
+        '</tr>';
+    }
+
+    if ($('pfPtpRowCount')) $('pfPtpRowCount').textContent = source.length + ' Data';
+    if ($('pfPtpTableBody')) $('pfPtpTableBody').innerHTML = rowsHtml;
+    const m = $('pfPtpModal');
+    if (m) m.classList.add('show');
+  }
+
+  function bukaModalRankPerformance() {
+    if (!PF_RAW_DATA) return;
+    const sorted = (PF_RAW_DATA.performanceDeskcoll || []).slice().sort((a, b) => b.payment - a.payment);
+    if ($('pfRankRowCount')) $('pfRankRowCount').textContent = sorted.length + ' User';
+    const tbody = $('pfRankTableBody');
+    if (tbody) {
+      tbody.innerHTML = sorted.map((item, idx) => {
+        const rank = idx + 1;
+        let rankDisp = '<b>#' + rank + '</b>';
+        if (rank === 1) rankDisp = '🥇 #1';
+        else if (rank === 2) rankDisp = '🥈 #2';
+        else if (rank === 3) rankDisp = '🥉 #3';
+        const leader = pfIsLeader_(item.userName);
+        return (
+          '<tr class="' + (leader ? 'pf-leader-row' : '') + '">' +
+            '<td class="num" style="text-align:center">' + rankDisp + '</td>' +
+            '<td><b>' + esc(item.userName) + '</b> ' + (leader ? '<span class="pf-tl-tag">TL</span>' : '') + '</td>' +
+            '<td><span class="pic-badge">' + esc(item.jabatan) + '</span></td>' +
+            '<td class="num" style="color:var(--success-dark);font-weight:800">' + pfFmtRp_(item.payment) + '</td>' +
+            '<td class="num">' + pfFmtRp_(item.target) + '</td>' +
+            '<td class="num" style="color:var(--primary);font-weight:800">' + pfFmtRp_(item.plan) + '</td>' +
+            '<td style="text-align:center"><span class="pf-ach-badge ' + pfAchClass_(item.ach) + '">' + esc(item.ach) + '%</span></td>' +
+          '</tr>'
+        );
+      }).join('');
+    }
+    const m = $('pfRankModal');
+    if (m) m.classList.add('show');
+  }
+
+  function bukaModalAccTypePerformance() {
+    if (!PF_RAW_DATA) return;
+    const dataObj = PF_RAW_DATA.paymentByAccType || {};
+    const osByTeam = PF_RAW_DATA.osByTeam || {};
+    const teams = Object.keys(dataObj).sort();
+    const body = $('pfAccTypeBody');
+    if (!body) return;
+
+    if (teams.length === 0) {
+      body.innerHTML = '<div class="placeholder">Belum ada payment masuk</div>';
+    } else {
+      let html = '<div class="pf-acctype-grid">';
+      teams.forEach(team => {
+        const types = Object.keys(dataObj[team]).sort();
+        let subtotal = 0;
+        let itemsHtml = '';
+        types.forEach(t => {
+          const val = dataObj[team][t];
+          subtotal += val;
+          itemsHtml +=
+            '<div class="pf-acctype-item">' +
+              '<span><b>' + esc(t) + '</b></span>' +
+              '<span class="num" style="color:var(--success-dark);font-weight:800">' + pfFmtRp_(val) + '</span>' +
+            '</div>';
+        });
+
+        const totalOs = osByTeam[team] || 0;
+        const targetOnePct = totalOs * 0.01;
+        const achVal = targetOnePct > 0 ? ((subtotal / targetOnePct) * 100).toFixed(2) : '0.00';
+
+        html +=
+          '<div class="pf-acctype-card">' +
+            '<div class="pf-acctype-head"><i class="fas fa-users"></i> TIM: ' + esc(team) + '</div>' +
+            '<div class="pf-acctype-meta">' +
+              '<div class="pf-acctype-meta-row"><span>Total OS Tim</span><b class="num">' + pfFmtRp_(totalOs) + '</b></div>' +
+              '<div class="pf-acctype-meta-row"><span>Target (1% OS)</span><b class="num" style="color:var(--warning-dark)">' + pfFmtRp_(targetOnePct) + '</b></div>' +
+            '</div>' +
+            '<div class="pf-acctype-list">' + itemsHtml + '</div>' +
+            '<div class="pf-acctype-foot">' +
+              '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span><b>TOTAL PAYMENT</b></span><b class="num" style="color:var(--primary)">' + pfFmtRp_(subtotal) + '</b></div>' +
+              '<div style="display:flex;justify-content:space-between;align-items:center"><span><b>PENCAPAIAN TARGET</b></span><span class="pf-ach-badge ' + pfAchClass_(achVal) + '">' + achVal + '%</span></div>' +
+            '</div>' +
+          '</div>';
+      });
+      html += '</div>';
+      body.innerHTML = html;
+    }
+
+    const m = $('pfAccTypeModal');
+    if (m) m.classList.add('show');
+  }
+
   // ---------- NAVIGASI ----------
   function nav(m) {
     if (typeof CUR !== 'undefined' && CUR === 'absensi' && m !== 'absensi') {
       hentikanKameraAbsensi_();
       hentikanJamAbsensi_();
+    }
+    if (typeof CUR !== 'undefined' && CUR === 'performance' && m !== 'performance') {
+      hentikanJamPerformance_();
     }
     document.querySelectorAll('.menu a[data-m]').forEach(a => a.classList.toggle('active', a.dataset.m===m));
     syncActiveCategoryHighlight_(m);
@@ -6913,6 +8142,8 @@
       muatHalamanRotasi();
     } else if (m === 'absensi') {
       muatHalamanAbsensi();
+    } else if (m === 'performance') {
+      muatHalamanPerformance();
     } else {
       $('content').innerHTML =
         '<div class="panel placeholder"><div class="big">' + MENU[m].ikon + '</div>' +
