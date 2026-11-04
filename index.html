@@ -2297,65 +2297,65 @@
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0369a1 100%);
     color: #ffffff;
     border-radius: var(--radius-lg);
-    padding: 18px 20px;
-    margin-bottom: 16px;
+    padding: 13px 15px;
+    margin-bottom: 12px;
     box-shadow: var(--shadow-md);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
+    gap: 10px;
     flex-wrap: wrap;
     border: 1px solid rgba(56, 189, 248, 0.22);
   }
   .pf-hero-left { min-width: 0; flex: 1; }
   .pf-hero-title {
     margin: 0;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 800;
     letter-spacing: -0.3px;
     color: #ffffff;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
   }
   .pf-hero-sub {
-    margin: 3px 0 0;
-    font-size: 12px;
+    margin: 2px 0 0;
+    font-size: 11px;
     color: #bae6fd;
     font-weight: 600;
   }
   .pf-clock-badge {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    margin-top: 8px;
-    padding: 4px 10px;
-    border-radius: 8px;
+    gap: 5px;
+    margin-top: 6px;
+    padding: 3px 8px;
+    border-radius: 6px;
     background: rgba(15, 23, 42, 0.55);
     border: 1px solid rgba(125, 211, 252, 0.25);
     color: #38bdf8;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11.5px;
+    font-size: 10.5px;
     font-weight: 700;
   }
   .pf-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
   }
   .pf-btn-act {
     width: auto;
-    min-height: 40px;
-    padding: 8px 13px;
-    border-radius: 10px;
-    font-size: 12px;
+    min-height: 34px;
+    padding: 6px 11px;
+    border-radius: 8px;
+    font-size: 11.5px;
     font-weight: 800;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 5px;
     border: 1px solid rgba(255, 255, 255, 0.16);
     box-shadow: var(--shadow-sm);
     cursor: pointer;
@@ -2378,24 +2378,24 @@
     border-color: transparent;
   }
   .pf-btn-act.listpay {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.14);
     color: #ffffff;
   }
   .pf-btn-act.listpay:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.22);
   }
 
   .pf-kpi-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
+    gap: 8px;
+    margin-bottom: 12px;
   }
   .pf-kpi-card {
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    padding: 14px 15px;
+    border-radius: 11px;
+    padding: 10px 11px;
     box-shadow: var(--shadow-sm);
     position: relative;
     overflow: hidden;
@@ -2404,7 +2404,7 @@
   }
   .pf-kpi-card.clickable:hover {
     border-color: var(--accent);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     box-shadow: var(--shadow-md);
   }
   .pf-kpi-card::before {
@@ -2413,7 +2413,7 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 3.5px;
+    height: 3px;
     background: var(--primary);
   }
   .pf-kpi-card.c-target::before { background: #64748b; }
@@ -2425,26 +2425,26 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 6px;
-    margin-bottom: 6px;
+    gap: 4px;
+    margin-bottom: 4px;
   }
   .pf-kpi-lbl {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     color: var(--muted);
   }
   .pf-kpi-ic {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
     background: var(--primary-soft);
     color: var(--primary);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 11px;
     flex-shrink: 0;
   }
   .pf-kpi-card.c-target .pf-kpi-ic { background: #f1f5f9; color: #475569; }
@@ -2454,34 +2454,35 @@
 
   .pf-kpi-val {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 16.5px;
+    font-size: 14px;
     font-weight: 800;
     color: var(--dark);
-    line-height: 1.25;
+    line-height: 1.2;
     word-break: break-word;
+    font-variant-numeric: tabular-nums;
   }
   .pf-kpi-card.c-ptp .pf-kpi-val { color: var(--warning-dark); }
   .pf-kpi-card.c-plan .pf-kpi-val { color: var(--primary); }
-  .pf-kpi-card.c-ach .pf-kpi-val { color: var(--success-dark); font-size: 20px; }
+  .pf-kpi-card.c-ach .pf-kpi-val { color: var(--success-dark); font-size: 16px; }
 
   .pf-kpi-hint {
-    margin-top: 5px;
-    font-size: 10.5px;
+    margin-top: 3px;
+    font-size: 9.5px;
     font-weight: 700;
     color: var(--warning-dark);
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
   }
 
   .pf-toolbar-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 14px;
-    padding-bottom: 12px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
     border-bottom: 1px solid var(--line);
   }
   .pf-view-switch {
@@ -2520,20 +2521,21 @@
   .pf-cat-bar {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     overflow-x: auto;
-    padding-bottom: 6px;
-    margin-bottom: 14px;
+    padding-bottom: 4px;
+    margin-bottom: 10px;
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
     scrollbar-width: none;
   }
   .pf-cat-bar::-webkit-scrollbar { display: none; }
   .pf-cat-btn {
     width: auto;
-    min-height: 36px;
-    padding: 7px 14px;
-    border-radius: 10px;
-    font-size: 12px;
+    min-height: 30px;
+    padding: 5px 11px;
+    border-radius: 8px;
+    font-size: 11px;
     font-weight: 800;
     background: var(--surface-soft);
     color: var(--muted);
@@ -2541,7 +2543,7 @@
     box-shadow: none;
     flex-shrink: 0;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.3px;
   }
   .pf-cat-btn:hover {
     border-color: #7dd3fc;
@@ -2553,12 +2555,16 @@
     background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
     color: #ffffff;
     border-color: transparent;
-    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    box-shadow: 0 3px 8px rgba(2, 132, 199, 0.22);
   }
 
-  /* --- VERSI KARTU (EFEKTIF UNTUK LAYAR ANDROID) --- */
+  /* --- KOTAK PERFORMANCE DESKCOLL (KOMPAK & PROFESIONAL UNTUK ANDROID) --- */
   .pf-team-block {
-    margin-bottom: 18px;
+    margin-bottom: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 8px;
   }
   .pf-team-block:last-child {
     margin-bottom: 0;
@@ -2566,175 +2572,341 @@
   .pf-team-banner {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     color: #ffffff;
-    padding: 11px 15px;
-    border-radius: 12px;
-    font-size: 13px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-size: 11px;
     font-weight: 800;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.35px;
     text-transform: uppercase;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 10px;
-    border-left: 4px solid var(--accent);
+    gap: 8px;
+    margin-bottom: 7px;
+    border-left: 3.5px solid var(--accent);
+  }
+  .pf-team-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    flex: 1;
+  }
+  .pf-team-banner-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pf-team-count {
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 1.5px 6px;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.18);
+    color: #7dd3fc;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    flex-shrink: 0;
+    text-transform: none;
   }
   .pf-cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 6px;
   }
   .pf-dc-card {
     background: #ffffff;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 13px 14px;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.15s ease;
+    border: 1px solid #e2e8f0;
+    border-left: 3px solid var(--primary);
+    border-radius: 9px;
+    padding: 7px 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .pf-dc-card.is-tl {
-    background: linear-gradient(180deg, #fffbeb 0%, #ffffff 65%);
+    background: linear-gradient(180deg, #fffbeb 0%, #ffffff 70%);
     border-color: #fde68a;
+    border-left: 3px solid #f59e0b;
+  }
+  .pf-dc-card.is-fc {
+    border-left: 3px solid #0d9488;
   }
   .pf-dc-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
-    padding-bottom: 9px;
-    margin-bottom: 10px;
-    border-bottom: 1px dashed var(--line);
+    gap: 6px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #f1f5f9;
   }
   .pf-dc-name {
-    font-size: 14px;
+    font-size: 11.5px;
     font-weight: 800;
     color: var(--dark);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     min-width: 0;
-    word-break: break-word;
+    flex: 1;
+  }
+  .pf-dc-name-txt {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+  .pf-dc-acc {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--muted);
+    background: #f1f5f9;
+    padding: 1px 5px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
   }
   .pf-tl-crown {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 6px;
+    width: 17px;
+    height: 17px;
+    border-radius: 4px;
     background: linear-gradient(135deg, #f59e0b, #d97706);
     color: #fff;
-    font-size: 11px;
+    font-size: 9px;
     flex-shrink: 0;
   }
-  .pf-tl-tag {
+  .pf-tl-tag, .pf-role-tag {
+    font-size: 9px;
+    font-weight: 800;
+    padding: 1.5px 5px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+  .pf-tl-tag, .pf-role-tag.role-tl {
     background: #fef3c7;
     color: #b45309;
     border: 1px solid #fde68a;
-    font-size: 10px;
-    font-weight: 800;
-    padding: 2px 6px;
-    border-radius: 6px;
-    letter-spacing: 0.4px;
+  }
+  .pf-role-tag.role-dc {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+  }
+  .pf-role-tag.role-fc {
+    background: #ccfbf1;
+    color: #0f766e;
+    border: 1px solid #99f6e4;
   }
   .pf-dc-metrics {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
+    gap: 5px;
   }
   .pf-dc-metric {
-    background: var(--surface-soft);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 8px 9px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    padding: 4.5px 6px;
     min-width: 0;
   }
   .pf-dc-metric.clickable {
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.14s ease;
   }
-  .pf-dc-metric.clickable:hover {
+  .pf-dc-metric.clickable:hover,
+  .pf-dc-metric.clickable:active {
     border-color: var(--primary);
     background: var(--primary-soft);
   }
   .pf-dc-metric.m-pay {
-    border-left: 3px solid var(--primary);
+    border-left: 2.5px solid var(--primary);
   }
   .pf-dc-metric.m-ptp {
-    border-left: 3px solid var(--warning);
+    border-left: 2.5px solid var(--warning);
   }
   .pf-dc-metric.m-plan {
-    border-left: 3px solid var(--success);
+    border-left: 2.5px solid var(--success);
     background: #f0fdf4;
     border-color: #bbf7d0;
   }
   .pf-dc-m-lbl {
-    font-size: 10px;
+    font-size: 8.5px;
     font-weight: 800;
-    color: var(--muted);
+    color: #64748b;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
-    margin-bottom: 3px;
+    letter-spacing: 0.2px;
+    margin-bottom: 2px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 3px;
+    gap: 2px;
+    white-space: nowrap;
   }
   .pf-dc-m-val {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-size: 10.5px;
     font-weight: 800;
     color: var(--dark);
-    word-break: break-word;
-    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
   }
   .pf-dc-metric.m-pay .pf-dc-m-val { color: var(--primary); }
   .pf-dc-metric.m-ptp .pf-dc-m-val { color: var(--warning-dark); }
   .pf-dc-metric.m-plan .pf-dc-m-val { color: var(--success-dark); }
 
   .pf-team-subtotal-card {
-    margin-top: 10px;
+    margin-top: 7px;
     background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-    border: 1.5px solid #7dd3fc;
-    border-radius: 14px;
-    padding: 12px 14px;
+    border: 1px solid #7dd3fc;
+    border-radius: 8px;
+    padding: 6px 9px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 6px;
     flex-wrap: wrap;
   }
   .pf-team-subtotal-title {
-    font-size: 12.5px;
+    font-size: 10.5px;
     font-weight: 800;
     color: #0369a1;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.3px;
   }
   .pf-team-subtotal-metrics {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     flex-wrap: wrap;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-size: 10.5px;
     font-weight: 800;
   }
 
-  /* --- VERSI TABEL & ACH BADGES --- */
+  /* --- ACH BADGES & TABEL MODAL SCROLL HORIZONTAL ANDROID --- */
   .pf-ach-badge {
     display: inline-block;
-    padding: 4px 9px;
-    border-radius: 8px;
+    padding: 2px 6px;
+    border-radius: 6px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11.5px;
+    font-size: 10px;
     font-weight: 800;
-    min-width: 58px;
+    min-width: 46px;
     text-align: center;
+    flex-shrink: 0;
   }
   .pf-ach-red { background: var(--danger-soft); color: var(--danger-dark); border: 1px solid #fecaca; }
   .pf-ach-yellow { background: var(--warning-soft); color: var(--warning-dark); border: 1px solid #fde68a; }
   .pf-ach-green { background: var(--success-soft); color: var(--success-dark); border: 1px solid #a7f3d0; }
+
+  .mclose {
+    width: 32px;
+    height: 32px;
+    min-height: 32px;
+    padding: 0;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid var(--line);
+    font-size: 14px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .mclose:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+    border-color: #fecaca;
+  }
+  .pf-scroll-hint {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #0369a1;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 7px;
+    padding: 5px 9px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+  }
+  #pfPaymentModal .mbody,
+  #pfPtpModal .mbody,
+  #pfRankModal .mbody {
+    padding: 12px 14px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .tbl-wrap {
+    width: 100%;
+    max-width: 100%;
+    max-height: 70vh;
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
+    overscroll-behavior: contain;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: #ffffff;
+    display: block;
+    flex: 1;
+    min-height: 0;
+  }
+  table.tbl {
+    border-collapse: collapse;
+    width: max-content;
+    min-width: 100%;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  table.tbl thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #0f172a;
+    color: #ffffff;
+    text-align: left;
+    padding: 9px 11px;
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 1px solid #334155;
+    white-space: nowrap;
+  }
+  table.tbl tbody td {
+    padding: 8px 11px;
+    border-bottom: 1px solid #f1f5f9;
+    color: var(--text);
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  table.tbl tbody tr:hover td {
+    background: #f8fafc;
+  }
+  table.tbl td.num {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
 
   tr.pf-group-row td {
     background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%) !important;
@@ -2774,8 +2946,8 @@
   /* --- PAYMENT BY ACCOUNT TYPE CARDS --- */
   .pf-acctype-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
   }
   .pf-acctype-card {
     background: #ffffff;
@@ -2787,8 +2959,8 @@
   .pf-acctype-head {
     background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
     color: #ffffff;
-    padding: 12px 15px;
-    font-size: 13.5px;
+    padding: 10px 13px;
+    font-size: 12.5px;
     font-weight: 800;
     display: flex;
     align-items: center;
@@ -2796,30 +2968,31 @@
   }
   .pf-acctype-meta {
     background: var(--surface-soft);
-    padding: 10px 14px;
+    padding: 8px 13px;
     border-bottom: 1px solid var(--line);
-    font-size: 12px;
+    font-size: 11.5px;
   }
   .pf-acctype-meta-row {
     display: flex;
     justify-content: space-between;
-    padding: 3px 0;
+    padding: 2.5px 0;
   }
   .pf-acctype-list {
-    padding: 10px 14px;
+    padding: 8px 13px;
   }
   .pf-acctype-item {
     display: flex;
     justify-content: space-between;
-    padding: 7px 0;
+    padding: 6px 0;
     border-bottom: 1px dashed var(--line);
-    font-size: 12.5px;
+    font-size: 12px;
   }
   .pf-acctype-item:last-child { border-bottom: none; }
   .pf-acctype-foot {
     background: #f0f9ff;
-    padding: 11px 14px;
+    padding: 9px 13px;
     border-top: 1px solid #bae6fd;
+    font-size: 12px;
   }
 
   @media (max-width: 860px) {
@@ -2829,22 +3002,32 @@
     .pf-kpi-grid > .pf-kpi-card:last-child {
       grid-column: 1 / -1;
     }
+    .pf-scroll-hint {
+      display: flex;
+    }
   }
   @media (max-width: 600px) {
-    .pf-hero { padding: 15px 14px; }
-    .pf-actions { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-    .pf-btn-act { width: 100%; }
-    .pf-cards-grid { grid-template-columns: minmax(0, 1fr); }
-    .pf-dc-metrics { grid-template-columns: minmax(0, 1fr); gap: 6px; }
-    .pf-dc-metric {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 9px 12px;
-    }
-    .pf-dc-m-lbl { margin-bottom: 0; font-size: 11px; }
-    .pf-dc-m-val { font-size: 13px; }
+    .pf-hero { padding: 10px 11px; margin-bottom: 8px; }
+    .pf-hero-title { font-size: 14px; }
+    .pf-actions { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
+    .pf-btn-act { width: 100%; min-height: 30px; padding: 4px 7px; font-size: 10.5px; }
+    .pf-kpi-grid { gap: 5px; margin-bottom: 8px; }
+    .pf-kpi-card { padding: 7px 8px; border-radius: 8px; }
+    .pf-kpi-val { font-size: 12px; }
+    .pf-kpi-card.c-ach .pf-kpi-val { font-size: 13.5px; }
+    .pf-team-block { padding: 6px; margin-bottom: 9px; border-radius: 10px; }
+    .pf-team-banner { padding: 5px 8px; font-size: 10px; margin-bottom: 5px; }
+    .pf-cards-grid { grid-template-columns: minmax(0, 1fr); gap: 5px; }
+    .pf-dc-card { padding: 5.5px 6.5px; border-radius: 8px; }
+    .pf-dc-head { padding-bottom: 3.5px; margin-bottom: 4px; }
+    .pf-dc-name { font-size: 10.8px; }
+    .pf-dc-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3.5px; }
+    .pf-dc-metric { padding: 3.5px 4.5px; border-radius: 6px; }
+    .pf-dc-m-lbl { font-size: 7.4px; letter-spacing: 0; margin-bottom: 1px; }
+    .pf-dc-m-val { font-size: 9.5px; }
+    .pf-team-subtotal-card { padding: 5px 7px; margin-top: 5px; }
+    .pf-team-subtotal-title { font-size: 9.5px; }
+    .pf-team-subtotal-metrics { font-size: 9.5px; gap: 5px; }
   }
 
 
@@ -3390,7 +3573,7 @@
   }
 
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -3622,8 +3805,9 @@
       </div>
     </div>
     <div class="mbody">
+      <div class="pf-scroll-hint"><span>↔ Geser tabel ke kiri / kanan untuk melihat detail kolom</span><span>8 Kolom</span></div>
       <div class="tbl-wrap">
-        <table class="tbl">
+        <table class="tbl" style="min-width:760px">
           <thead>
             <tr>
               <th>User ID</th>
@@ -3654,8 +3838,9 @@
       </div>
     </div>
     <div class="mbody">
+      <div class="pf-scroll-hint"><span>↔ Geser tabel ke kiri / kanan untuk melihat detail kolom</span><span>10 Kolom</span></div>
       <div class="tbl-wrap">
-        <table class="tbl">
+        <table class="tbl" style="min-width:880px">
           <thead>
             <tr>
               <th>User ID</th>
@@ -3688,13 +3873,14 @@
       </div>
     </div>
     <div class="mbody">
+      <div class="pf-scroll-hint"><span>↔ Geser tabel ke kiri / kanan untuk melihat detail kolom</span><span>7 Kolom</span></div>
       <div class="tbl-wrap">
-        <table class="tbl">
+        <table class="tbl" style="min-width:680px">
           <thead>
             <tr>
               <th style="text-align:center">Rank</th>
               <th>User Name</th>
-              <th>Jabatan</th>
+              <th>Area</th>
               <th>Total Payment</th>
               <th>Target</th>
               <th>Plan Closing</th>
@@ -3712,7 +3898,7 @@
 <div id="pfAccTypeModal" class="modal" onclick="if(event.target===this)tutupModalPerformance('pfAccTypeModal')">
   <div class="mbox" style="max-width:980px">
     <div class="mhead">
-      <h3>📊 Payment by Account Type (Per Team)</h3>
+      <h3>📊 Payment by Account Type (Per Area)</h3>
       <button type="button" class="mclose" onclick="tutupModalPerformance('pfAccTypeModal')">✕</button>
     </div>
     <div class="mbody" id="pfAccTypeBody"></div>
@@ -8252,19 +8438,34 @@
 
 
   // ============================================================================
-  // MENU PERFORMANCE (FOX PERFORMANCE - VERSI KARTU ANDROID & VERSI TABEL)
+  // MENU PERFORMANCE (FOX PERFORMANCE)
   // ============================================================================
   let PF_RAW_DATA = null;
   let PF_ACTIVE_CATEGORY = 'ALL';
-  let PF_VIEW_MODE = 'card'; // 'card' (Versi Kartu Android) | 'table' (Versi Tabel)
   let PF_CLOCK_TIMER = null;
 
   function pfFmtRp_(n) {
     return 'Rp ' + Math.floor(Number(n) || 0).toLocaleString('id-ID') + ',-';
   }
 
-  function pfIsLeader_(name) {
-    return /(^|[^A-Za-z0-9])TL([^A-Za-z0-9]|$)/i.test(String(name || ''));
+  function pfGetRole_(item) {
+    if (item && item.role) {
+      const r = String(item.role).trim().toUpperCase();
+      if (r === 'TL' || r === 'TEAM LEADER') return 'TL';
+      if (r === 'FC' || r === 'FIELD COLLECTOR') return 'FC';
+      if (r === 'DC' || r === 'DESKCOLL') return 'DC';
+    }
+    const nm = String((item && item.userName) || item || '');
+    if (/(^|[^A-Za-z0-9])TL([^A-Za-z0-9]|$)/i.test(nm)) return 'TL';
+    if (/(^|[^A-Za-z0-9])FC([^A-Za-z0-9]|$)/i.test(nm)) return 'FC';
+    return 'DC';
+  }
+
+  function pfIsLeader_(itemOrName) {
+    if (itemOrName && typeof itemOrName === 'object') {
+      return pfGetRole_(itemOrName) === 'TL';
+    }
+    return /(^|[^A-Za-z0-9])TL([^A-Za-z0-9]|$)/i.test(String(itemOrName || ''));
   }
 
   function pfAchClass_(val) {
@@ -8311,7 +8512,7 @@
       '<div class="pf-hero">' +
         '<div class="pf-hero-left">' +
           '<h2 class="pf-hero-title">📈 FOX PERFORMANCE</h2>' +
-          '<p class="pf-hero-sub">Monitoring Realtime Koleksi, PTP, Plan Closing & Produktivitas Tim</p>' +
+          '<p class="pf-hero-sub">Monitoring Realtime Koleksi, PTP, Plan Closing & Produktivitas Area</p>' +
           '<div class="pf-clock-badge" id="pfLiveClock"><i class="far fa-clock"></i> Memuat waktu...</div>' +
         '</div>' +
         '<div class="pf-actions">' +
@@ -8323,9 +8524,10 @@
       '</div>' +
 
       '<div class="pf-kpi-grid">' +
-        '<div class="pf-kpi-card">' +
+        '<div class="pf-kpi-card clickable" onclick="bukaModalPaymentPerformance()">' +
           '<div class="pf-kpi-top"><span class="pf-kpi-lbl" id="pfLblPayment">Total Payment</span><span class="pf-kpi-ic"><i class="fas fa-wallet"></i></span></div>' +
           '<div class="pf-kpi-val" id="pfValPayment">Rp 0,-</div>' +
+          '<div class="pf-kpi-hint" style="color:var(--primary)">Klik rincian Payment ➔</div>' +
         '</div>' +
         '<div class="pf-kpi-card c-target">' +
           '<div class="pf-kpi-top"><span class="pf-kpi-lbl" id="pfLblTarget">Target (1%)</span><span class="pf-kpi-ic"><i class="fas fa-bullseye"></i></span></div>' +
@@ -8346,20 +8548,9 @@
         '</div>' +
       '</div>' +
 
-      '<div class="panel">' +
+      '<div class="panel" style="padding:14px">' +
         '<div class="pf-toolbar-head">' +
-          '<div>' +
-            '<h3 class="pt" style="margin:0">Performance Deskcoll</h3>' +
-            '<div style="font-size:12px;color:var(--muted);margin-top:2px">Pilih tampilan Versi Kartu (efektif untuk layar Android) atau Versi Tabel lengkap</div>' +
-          '</div>' +
-          '<div class="pf-view-switch">' +
-            '<button type="button" id="pfBtnViewCard" class="pf-view-btn ' + (PF_VIEW_MODE === 'card' ? 'active' : '') + '" onclick="ubahModeTampilanPerformance(\'card\')">' +
-              '<i class="fas fa-th-large"></i> Versi Kartu' +
-            '</button>' +
-            '<button type="button" id="pfBtnViewTable" class="pf-view-btn ' + (PF_VIEW_MODE === 'table' ? 'active' : '') + '" onclick="ubahModeTampilanPerformance(\'table\')">' +
-              '<i class="fas fa-table"></i> Versi Tabel' +
-            '</button>' +
-          '</div>' +
+          '<h3 class="pt" style="margin:0;font-size:15px">Performance Deskcoll</h3>' +
         '</div>' +
         '<div id="pfCategoryButtons" class="pf-cat-bar"></div>' +
         '<div id="pfDeskcollContainer"><div class="placeholder">Memuat data performance...</div></div>' +
@@ -8388,17 +8579,6 @@
       const box = $('pfDeskcollContainer');
       if (box) box.innerHTML = '<div class="placeholder" style="color:var(--danger)">Gagal memuat data performance: ' + esc(err && err.message ? err.message : String(err)) + '</div>';
     });
-  }
-
-  function ubahModeTampilanPerformance(mode) {
-    PF_VIEW_MODE = mode === 'table' ? 'table' : 'card';
-    const bCard = $('pfBtnViewCard');
-    const bTbl = $('pfBtnViewTable');
-    if (bCard) bCard.classList.toggle('active', PF_VIEW_MODE === 'card');
-    if (bTbl) bTbl.classList.toggle('active', PF_VIEW_MODE === 'table');
-    if (PF_RAW_DATA) {
-      terapkanKategoriPerformance(PF_ACTIVE_CATEGORY);
-    }
   }
 
   function renderKategoriPerformance_(categories) {
@@ -8458,14 +8638,14 @@
       return;
     }
 
-    // Kelompokkan per Jabatan / Tim
+    // Kelompokkan per Area (Kolom F dari file user login)
+    const groupMap = {};
     const groups = [];
-    let curGrp = null;
     list.forEach(item => {
-      if (!curGrp || curGrp.jabatan !== item.jabatan) {
-        if (curGrp) groups.push(curGrp);
-        curGrp = {
-          jabatan: item.jabatan || 'No Jabatan',
+      const areaName = String(item.area || item.jabatan || 'TANPA AREA').trim() || 'TANPA AREA';
+      if (!groupMap[areaName]) {
+        groupMap[areaName] = {
+          jabatan: areaName,
           items: [],
           subPay: 0,
           subTarget: 0,
@@ -8473,135 +8653,89 @@
           subPlan: 0,
           subAcc: 0
         };
+        groups.push(groupMap[areaName]);
       }
-      curGrp.items.push(item);
-      curGrp.subPay += Number(item.payment) || 0;
-      curGrp.subTarget += parseFloat(item.target) || 0;
-      curGrp.subPtp += Number(item.ptp) || 0;
-      curGrp.subPlan += Number(item.plan) || 0;
-      curGrp.subAcc += Number(item.accountCount) || 0;
+      const g = groupMap[areaName];
+      g.items.push(item);
+      g.subPay += Number(item.payment) || 0;
+      g.subTarget += parseFloat(item.target) || 0;
+      g.subPtp += Number(item.ptp) || 0;
+      g.subPlan += Number(item.plan) || 0;
+      g.subAcc += Number(item.accountCount) || 0;
     });
-    if (curGrp) groups.push(curGrp);
 
-    // 1) VERSI KARTU (Menampilkan Nama, Jumlah Payment, PTP, dan Plan Closing agar efektif di Android)
-    if (PF_VIEW_MODE === 'card') {
-      let html = '';
-      groups.forEach(g => {
-        const subAch = g.subTarget > 0 ? ((g.subPay / g.subTarget) * 100).toFixed(1) : '0';
-        const safeJab = esc(g.jabatan).replace(/'/g, "\\'");
-        html +=
-          '<div class="pf-team-block">' +
-            '<div class="pf-team-banner">' +
-              '<span><i class="fas fa-users" style="margin-right:6px"></i> TIM / JABATAN: ' + esc(g.jabatan) + '</span>' +
-              '<span class="pf-ach-badge ' + pfAchClass_(subAch) + '">ACH TIM: ' + subAch + '%</span>' +
+    let html = '';
+    groups.forEach(g => {
+      const subAch = g.subTarget > 0 ? ((g.subPay / g.subTarget) * 100).toFixed(1) : '0.0';
+      const safeJab = esc(g.jabatan).replace(/'/g, "\\'");
+      const areaTitle = /^area\b/i.test(String(g.jabatan || '').trim())
+        ? esc(g.jabatan)
+        : 'AREA: ' + esc(g.jabatan);
+      html +=
+        '<div class="pf-team-block">' +
+          '<div class="pf-team-banner">' +
+            '<div class="pf-team-banner-left">' +
+              '<i class="fas fa-map-marker-alt" style="color:#38bdf8;font-size:11px"></i>' +
+              '<span class="pf-team-banner-title">' + areaTitle + '</span>' +
+              '<span class="pf-team-count">' + g.items.length + ' User</span>' +
             '</div>' +
-            '<div class="pf-cards-grid">';
+            '<span class="pf-ach-badge ' + pfAchClass_(subAch) + '">ACH: ' + subAch + '%</span>' +
+          '</div>' +
+          '<div class="pf-cards-grid">';
 
-        g.items.forEach(item => {
-          const leader = pfIsLeader_(item.userName);
-          const safeUser = esc(item.userName).replace(/'/g, "\\'");
-          html +=
-            '<div class="pf-dc-card ' + (leader ? 'is-tl' : '') + '">' +
-              '<div class="pf-dc-head">' +
-                '<div class="pf-dc-name">' +
-                  (leader ? '<span class="pf-tl-crown" title="Team Leader"><i class="fas fa-crown"></i></span>' : '') +
-                  '<span>' + esc(item.userName) + '</span>' +
-                  (leader ? '<span class="pf-tl-tag">TL</span>' : '') +
-                '</div>' +
+      g.items.forEach(item => {
+        const role = pfGetRole_(item);
+        const isTl = role === 'TL';
+        const isFc = role === 'FC';
+        const roleClass = isTl ? 'role-tl' : (isFc ? 'role-fc' : 'role-dc');
+        const cardClass = isTl ? 'is-tl' : (isFc ? 'is-fc' : '');
+        const safeUser = esc(item.userName).replace(/'/g, "\\'");
+        const accCnt = Number(item.accountCount || 0);
+
+        html +=
+          '<div class="pf-dc-card ' + cardClass + '">' +
+            '<div class="pf-dc-head">' +
+              '<div class="pf-dc-name" title="' + esc(item.userName) + ' (' + role + ')">' +
+                (isTl ? '<span class="pf-tl-crown" title="Team Leader"><i class="fas fa-crown"></i></span>' : '') +
+                '<span class="pf-role-tag ' + roleClass + '">' + esc(role) + '</span>' +
+                '<span class="pf-dc-name-txt">' + esc(item.userName) + '</span>' +
+              '</div>' +
+              '<div style="display:flex;align-items:center;gap:4px;flex-shrink:0">' +
+                (accCnt > 0 ? '<span class="pf-dc-acc">' + accCnt + ' Akun</span>' : '') +
                 '<span class="pf-ach-badge ' + pfAchClass_(item.ach) + '">' + esc(item.ach) + '%</span>' +
               '</div>' +
-              '<div class="pf-dc-metrics">' +
-                '<div class="pf-dc-metric m-pay clickable" onclick="bukaModalPaymentPerformance(\'' + safeUser + '\')" title="Klik untuk lihat rincian payment">' +
-                  '<div class="pf-dc-m-lbl"><span>Jumlah Payment</span><i class="fas fa-chevron-right" style="font-size:9px"></i></div>' +
-                  '<div class="pf-dc-m-val">' + pfFmtRp_(item.payment) + '</div>' +
-                '</div>' +
-                '<div class="pf-dc-metric m-ptp clickable" onclick="bukaModalPtpPerformance(\'' + safeUser + '\')" title="Klik untuk lihat rincian PTP">' +
-                  '<div class="pf-dc-m-lbl"><span>PTP</span><i class="fas fa-chevron-right" style="font-size:9px"></i></div>' +
-                  '<div class="pf-dc-m-val">' + pfFmtRp_(item.ptp) + '</div>' +
-                '</div>' +
-                '<div class="pf-dc-metric m-plan">' +
-                  '<div class="pf-dc-m-lbl"><span>Plan Closing</span></div>' +
-                  '<div class="pf-dc-m-val">' + pfFmtRp_(item.plan) + '</div>' +
-                '</div>' +
-              '</div>' +
-            '</div>';
-        });
-
-        html +=
             '</div>' +
-            '<div class="pf-team-subtotal-card">' +
-              '<div class="pf-team-subtotal-title">TOTAL ' + esc(g.jabatan) + '</div>' +
-              '<div class="pf-team-subtotal-metrics">' +
-                '<span>Payment: <b style="color:var(--primary)">' + pfFmtRp_(g.subPay) + '</b></span>' +
-                '<span style="cursor:pointer;text-decoration:underline" onclick="bukaModalPtpPerformance(null, \'' + safeJab + '\')">PTP: <b style="color:var(--warning-dark)">' + pfFmtRp_(g.subPtp) + '</b></span>' +
-                '<span>Plan Closing: <b style="color:var(--success-dark)">' + pfFmtRp_(g.subPlan) + '</b></span>' +
+            '<div class="pf-dc-metrics">' +
+              '<div class="pf-dc-metric m-pay clickable" onclick="bukaModalPaymentPerformance(\'' + safeUser + '\')" title="Klik untuk lihat rincian payment">' +
+                '<div class="pf-dc-m-lbl"><span>Jumlah Payment</span><i class="fas fa-chevron-right" style="font-size:8px"></i></div>' +
+                '<div class="pf-dc-m-val">' + pfFmtRp_(item.payment) + '</div>' +
+              '</div>' +
+              '<div class="pf-dc-metric m-ptp clickable" onclick="bukaModalPtpPerformance(\'' + safeUser + '\')" title="Klik untuk lihat rincian PTP">' +
+                '<div class="pf-dc-m-lbl"><span>PTP</span><i class="fas fa-chevron-right" style="font-size:8px"></i></div>' +
+                '<div class="pf-dc-m-val">' + pfFmtRp_(item.ptp) + '</div>' +
+              '</div>' +
+              '<div class="pf-dc-metric m-plan">' +
+                '<div class="pf-dc-m-lbl"><span>Plan Closing</span></div>' +
+                '<div class="pf-dc-m-val">' + pfFmtRp_(item.plan) + '</div>' +
               '</div>' +
             '</div>' +
           '</div>';
       });
 
-      container.innerHTML = html;
-      return;
-    }
-
-    // 2) VERSI TABEL (7 Kolom Lengkap seperti versi tabel asli)
-    let tblHtml =
-      '<div class="tbl-wrap">' +
-        '<table class="tbl">' +
-          '<thead>' +
-            '<tr>' +
-              '<th>User Name</th>' +
-              '<th style="text-align:center">Jlh Account</th>' +
-              '<th>Jumlah Payment</th>' +
-              '<th>Target Payment</th>' +
-              '<th>PTP</th>' +
-              '<th>Plan Closing</th>' +
-              '<th style="text-align:center">Ach %</th>' +
-            '</tr>' +
-          '</thead>' +
-          '<tbody>';
-
-    groups.forEach(g => {
-      const subAch = g.subTarget > 0 ? ((g.subPay / g.subTarget) * 100).toFixed(1) : '0';
-      const safeJab = esc(g.jabatan).replace(/'/g, "\\'");
-      tblHtml +=
-        '<tr class="pf-group-row">' +
-          '<td colspan="7"><i class="fas fa-users" style="margin-right:8px"></i> JABATAN / TIM : ' + esc(g.jabatan) + '</td>' +
-        '</tr>';
-
-      g.items.forEach(item => {
-        const leader = pfIsLeader_(item.userName);
-        const safeUser = esc(item.userName).replace(/'/g, "\\'");
-        const nameCell = leader
-          ? '<span class="pf-tl-crown" style="margin-right:6px"><i class="fas fa-crown"></i></span><b>' + esc(item.userName) + '</b> <span class="pf-tl-tag">LEADER</span>'
-          : '<b>' + esc(item.userName) + '</b>';
-
-        tblHtml +=
-          '<tr class="' + (leader ? 'pf-leader-row' : '') + '">' +
-            '<td>' + nameCell + '</td>' +
-            '<td class="num" style="text-align:center">' + Number(item.accountCount || 0).toLocaleString('id-ID') + '</td>' +
-            '<td class="num"><span class="pf-click-num" onclick="bukaModalPaymentPerformance(\'' + safeUser + '\')">' + pfFmtRp_(item.payment) + '</span></td>' +
-            '<td class="num" style="color:var(--muted)">' + pfFmtRp_(item.target) + '</td>' +
-            '<td class="num"><span class="pf-click-ptp" onclick="bukaModalPtpPerformance(\'' + safeUser + '\')">' + pfFmtRp_(item.ptp) + '</span></td>' +
-            '<td class="num" style="color:var(--primary);font-weight:800">' + pfFmtRp_(item.plan) + '</td>' +
-            '<td style="text-align:center"><span class="pf-ach-badge ' + pfAchClass_(item.ach) + '">' + esc(item.ach) + '%</span></td>' +
-          '</tr>';
-      });
-
-      tblHtml +=
-        '<tr class="pf-subtotal-row">' +
-          '<td>TOTAL ' + esc(g.jabatan) + '</td>' +
-          '<td class="num" style="text-align:center">' + g.subAcc.toLocaleString('id-ID') + '</td>' +
-          '<td class="num" style="color:var(--primary)">' + pfFmtRp_(g.subPay) + '</td>' +
-          '<td class="num">' + pfFmtRp_(g.subTarget) + '</td>' +
-          '<td class="num"><span class="pf-click-ptp" onclick="bukaModalPtpPerformance(null, \'' + safeJab + '\')">' + pfFmtRp_(g.subPtp) + '</span></td>' +
-          '<td class="num" style="color:var(--success-dark)">' + pfFmtRp_(g.subPlan) + '</td>' +
-          '<td style="text-align:center"><span class="pf-ach-badge ' + pfAchClass_(subAch) + '">' + subAch + '%</span></td>' +
-        '</tr>';
+      html +=
+          '</div>' +
+          '<div class="pf-team-subtotal-card">' +
+            '<div class="pf-team-subtotal-title">TOTAL ' + esc(g.jabatan) + '</div>' +
+            '<div class="pf-team-subtotal-metrics">' +
+              '<span>Payment: <b style="color:var(--primary)">' + pfFmtRp_(g.subPay) + '</b></span>' +
+              '<span style="cursor:pointer;text-decoration:underline" onclick="bukaModalPtpPerformance(null, \'' + safeJab + '\')">PTP: <b style="color:var(--warning-dark)">' + pfFmtRp_(g.subPtp) + '</b></span>' +
+              '<span>Plan: <b style="color:var(--success-dark)">' + pfFmtRp_(g.subPlan) + '</b></span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
     });
 
-    tblHtml += '</tbody></table></div>';
-    container.innerHTML = tblHtml;
+    container.innerHTML = html;
   }
 
   function bukaModalPaymentPerformance(userName) {
@@ -8609,12 +8743,16 @@
     let source = PF_RAW_DATA.listPayment || [];
     const titleEl = $('pfPaymentModalTitle');
     if (userName) {
-      source = source.filter(r => r.pic === userName && (PF_ACTIVE_CATEGORY === 'ALL' || r.kategori === PF_ACTIVE_CATEGORY));
+      const targetKey = String(userName).trim().toLowerCase();
+      source = source.filter(r => String(r.pic || '').trim().toLowerCase() === targetKey && (PF_ACTIVE_CATEGORY === 'ALL' || r.kategori === PF_ACTIVE_CATEGORY));
       if (titleEl) {
         titleEl.textContent = '💸 Payment: ' + userName + (PF_ACTIVE_CATEGORY === 'ALL' ? '' : ' (' + PF_ACTIVE_CATEGORY + ')');
       }
     } else {
-      if (titleEl) titleEl.textContent = '💸 List Payment (Sudah Bayar)';
+      if (PF_ACTIVE_CATEGORY !== 'ALL') {
+        source = source.filter(r => r.kategori === PF_ACTIVE_CATEGORY);
+      }
+      if (titleEl) titleEl.textContent = '💸 List Payment (Sudah Bayar)' + (PF_ACTIVE_CATEGORY === 'ALL' ? '' : ' · ' + PF_ACTIVE_CATEGORY);
     }
 
     if ($('pfPaymentRowCount')) $('pfPaymentRowCount').textContent = source.length + ' Data';
@@ -8638,7 +8776,11 @@
       }
     }
     const m = $('pfPaymentModal');
-    if (m) m.classList.add('show');
+    if (m) {
+      m.classList.add('show');
+      const wrap = m.querySelector('.tbl-wrap');
+      if (wrap) { wrap.scrollLeft = 0; wrap.scrollTop = 0; }
+    }
   }
 
   function bukaModalPtpPerformance(userName, jabatan) {
@@ -8651,11 +8793,13 @@
 
     const titleEl = $('pfPtpModalTitle');
     if (userName) {
-      source = source.filter(r => r.pic === userName);
+      const uKey = String(userName).trim().toLowerCase();
+      source = source.filter(r => String(r.pic || '').trim().toLowerCase() === uKey);
       if (titleEl) titleEl.textContent = '🤝 Detail PTP: ' + userName + catInfo;
     } else if (jabatan) {
-      source = source.filter(r => r.jabatan === jabatan);
-      if (titleEl) titleEl.textContent = '🤝 Detail PTP Tim: ' + jabatan + catInfo;
+      const jKey = String(jabatan).trim().toLowerCase();
+      source = source.filter(r => String(r.jabatan || '').trim().toLowerCase() === jKey);
+      if (titleEl) titleEl.textContent = '🤝 Detail PTP Area: ' + jabatan + catInfo;
     } else {
       if (titleEl) titleEl.textContent = '🤝 Detail Semua PTP' + catInfo;
     }
@@ -8708,7 +8852,11 @@
     if ($('pfPtpRowCount')) $('pfPtpRowCount').textContent = source.length + ' Data';
     if ($('pfPtpTableBody')) $('pfPtpTableBody').innerHTML = rowsHtml;
     const m = $('pfPtpModal');
-    if (m) m.classList.add('show');
+    if (m) {
+      m.classList.add('show');
+      const wrap = m.querySelector('.tbl-wrap');
+      if (wrap) { wrap.scrollLeft = 0; wrap.scrollTop = 0; }
+    }
   }
 
   function bukaModalRankPerformance() {
@@ -8723,12 +8871,14 @@
         if (rank === 1) rankDisp = '🥇 #1';
         else if (rank === 2) rankDisp = '🥈 #2';
         else if (rank === 3) rankDisp = '🥉 #3';
-        const leader = pfIsLeader_(item.userName);
+        const role = pfGetRole_(item);
+        const leader = role === 'TL';
+        const roleCls = leader ? 'role-tl' : (role === 'FC' ? 'role-fc' : 'role-dc');
         return (
           '<tr class="' + (leader ? 'pf-leader-row' : '') + '">' +
             '<td class="num" style="text-align:center">' + rankDisp + '</td>' +
-            '<td><b>' + esc(item.userName) + '</b> ' + (leader ? '<span class="pf-tl-tag">TL</span>' : '') + '</td>' +
-            '<td><span class="pic-badge">' + esc(item.jabatan) + '</span></td>' +
+            '<td><b>' + esc(item.userName) + '</b> <span class="pf-role-tag ' + roleCls + '">' + esc(role) + '</span></td>' +
+            '<td><span class="pic-badge">' + esc(item.area || item.jabatan) + '</span></td>' +
             '<td class="num" style="color:var(--success-dark);font-weight:800">' + pfFmtRp_(item.payment) + '</td>' +
             '<td class="num">' + pfFmtRp_(item.target) + '</td>' +
             '<td class="num" style="color:var(--primary);font-weight:800">' + pfFmtRp_(item.plan) + '</td>' +
@@ -8738,7 +8888,11 @@
       }).join('');
     }
     const m = $('pfRankModal');
-    if (m) m.classList.add('show');
+    if (m) {
+      m.classList.add('show');
+      const wrap = m.querySelector('.tbl-wrap');
+      if (wrap) { wrap.scrollLeft = 0; wrap.scrollTop = 0; }
+    }
   }
 
   function bukaModalAccTypePerformance() {
@@ -8773,9 +8927,9 @@
 
         html +=
           '<div class="pf-acctype-card">' +
-            '<div class="pf-acctype-head"><i class="fas fa-users"></i> TIM: ' + esc(team) + '</div>' +
+            '<div class="pf-acctype-head"><i class="fas fa-map-marker-alt"></i> AREA: ' + esc(team) + '</div>' +
             '<div class="pf-acctype-meta">' +
-              '<div class="pf-acctype-meta-row"><span>Total OS Tim</span><b class="num">' + pfFmtRp_(totalOs) + '</b></div>' +
+              '<div class="pf-acctype-meta-row"><span>Total OS Area</span><b class="num">' + pfFmtRp_(totalOs) + '</b></div>' +
               '<div class="pf-acctype-meta-row"><span>Target (1% OS)</span><b class="num" style="color:var(--warning-dark)">' + pfFmtRp_(targetOnePct) + '</b></div>' +
             '</div>' +
             '<div class="pf-acctype-list">' + itemsHtml + '</div>' +
