@@ -2848,7 +2848,7 @@
   }
 
 
-  /* ================= MENU GOOGLE EMAIL: EMAIL BLAST RESMI (ANDROID UI) ================= */
+  /* ================= MENU GOOGLE EMAIL: Inbox Inbox Email Blast Resmi (ANDROID UI) ================= */
   .eb-head-bar {
     display: flex;
     align-items: center;
@@ -3719,7 +3719,7 @@
   </div>
 </div>
 
-<!-- ================= MODAL DETAIL EMAIL BLAST RESMI ================= -->
+<!-- ================= MODAL DETAIL Inbox Inbox Email Blast Resmi ================= -->
 <div id="modalDetailEmailBlast" class="modal" onclick="if(event.target===this)tutupDetailEmailBlast()">
   <div class="mbox" style="max-width:560px">
     <div class="mhead">
@@ -4093,7 +4093,7 @@
     karyawan:    { judul:'Portal Karyawan',        ikon:'👥' },
     rotasi:      { judul:'Rotasi Akun',          ikon:'🔄' },
     absensi:     { judul:'Absensi',              ikon:'📍' },
-    emailblast:  { judul:'Email Blast Resmi',    ikon:'✉️' },
+    emailblast:  { judul:'Inbox Inbox Email Blast Resmi',    ikon:'✉️' },
     laporanharian: { judul:'Laporan Harian',     ikon:'📅' }
   };
 
@@ -4129,7 +4129,7 @@
     {
       judul: 'GOOGLE EMAIL',
       items: [
-        { key: 'emailblast', judul: 'Email Blast Resmi' }
+        { key: 'emailblast', judul: 'Inbox Inbox Email Blast Resmi' }
       ]
     }
   ];
@@ -4214,9 +4214,9 @@
         return ju.indexOf('EMAIL') >= 0 || ju.indexOf('GOOGLE') >= 0;
       });
       if (emCat) {
-        emCat.items.push({ key: 'emailblast', judul: 'Email Blast Resmi' });
+        emCat.items.push({ key: 'emailblast', judul: 'Inbox Inbox Email Blast Resmi' });
       } else {
-        cats.push({ judul: 'GOOGLE EMAIL', items: [{ key: 'emailblast', judul: 'Email Blast Resmi' }] });
+        cats.push({ judul: 'GOOGLE EMAIL', items: [{ key: 'emailblast', judul: 'Inbox Inbox Email Blast Resmi' }] });
       }
     }
 
@@ -8795,7 +8795,7 @@
 
 
   // ============================================================================
-  // MENU GOOGLE EMAIL -> SUB MENU: EMAIL BLAST RESMI
+  // MENU GOOGLE EMAIL -> SUB MENU: Inbox Inbox Email Blast Resmi
   // ============================================================================
   let EB_RAW_ROWS = [];
   let EB_FILTERED_ROWS = [];
@@ -8808,7 +8808,7 @@
       '<div class="panel">' +
         '<div class="eb-head-bar">' +
           '<div class="eb-title-wrap">' +
-            '<h3 class="pt" style="margin:0">✉️ Email Blast Resmi</h3>' +
+            '<h3 class="pt" style="margin:0">✉️ Inbox Inbox Email Blast Resmi</h3>' +
             '<span class="pic-badge" id="ebCountBadge">0 Email</span>' +
           '</div>' +
           '<div class="eb-actions">' +
