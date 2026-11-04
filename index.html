@@ -3096,6 +3096,299 @@
     .eb-actions { width: 100%; display: flex; justify-content: space-between; }
     .eb-btn-tarik { flex: 1; }
   }
+
+  /* ================= MENU AREA COLLECTION: LAPORAN HARIAN (ANDROID UI) ================= */
+  .lh-top-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 10px;
+    align-items: end;
+  }
+  .lh-dc-drop-wrap {
+    position: relative;
+    width: 100%;
+  }
+  .lh-dc-dropdown {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    background: #ffffff;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.2);
+    z-index: 55;
+    max-height: 300px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lh-dc-dropdown.show { display: block; }
+  .lh-dc-all-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #f1f5f9;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--dark);
+    cursor: pointer;
+    margin: 0;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .lh-tim-header {
+    background: #0f172a;
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 6px 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid #334155;
+  }
+  .lh-tim-check-row {
+    background: #f0f9ff;
+    border-bottom: 1px solid #bae6fd;
+  }
+  .lh-tim-check-row label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #0369a1;
+    font-weight: 800;
+    font-size: 11.5px;
+    padding: 8px 14px;
+    margin: 0;
+    cursor: pointer;
+  }
+  .lh-dc-item-lbl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px 8px 26px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+    cursor: pointer;
+    border-bottom: 1px solid #f8fafc;
+  }
+  .lh-dc-item-lbl:hover { background: var(--primary-soft); }
+  .lh-dc-dropdown input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    margin: 0;
+    accent-color: var(--primary);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .lh-section-box {
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 14px;
+  }
+  .lh-sec-head {
+    padding: 9px 14px;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .lh-sec-head.amber { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); }
+  .lh-sec-head.blue { background: linear-gradient(135deg, #0284c7 0%, #1d4ed8 100%); }
+  .lh-sec-head.indigo { background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); }
+  .lh-sec-head.rose { background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); }
+  .lh-sec-head.green { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+  .lh-sec-head.slate { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+
+  .lh-komposisi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    divide-color: var(--line);
+  }
+  .lh-komp-item {
+    padding: 12px 10px;
+    text-align: center;
+    border-right: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .lh-komp-item:hover { background: #f8fafc; }
+  .lh-komp-item:active { background: var(--primary-soft); }
+  .lh-komp-lbl { font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+  .lh-komp-sub { font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 3px; }
+  .lh-komp-val { font-size: 13px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+
+  .lh-cika-report-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .lh-cika-Report-inner-5 {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .lh-cika-Report-inner-6 {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .lh-stat-cell {
+    padding: 12px 6px;
+    text-align: center;
+    border-right: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .lh-stat-cell:last-child { border-right: 0; }
+  .lh-stat-lbl {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .lh-link-num {
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 8px;
+    transition: transform 0.15s ease, background 0.15s ease;
+    text-decoration: none;
+  }
+  .lh-link-num:hover {
+    background: rgba(2, 132, 199, 0.08);
+    transform: scale(1.06);
+    text-decoration: underline;
+  }
+
+  .lh-amount-target-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .lh-amount-inner-4 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .lh-target-inner-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lh-amt-val {
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    display: block;
+    word-break: break-word;
+    line-height: 1.3;
+    text-decoration: none;
+  }
+  .lh-amt-val:hover { text-decoration: underline; opacity: 0.85; }
+
+  .lh-act-table-wrap {
+    width: 100%;
+    max-width: 100%;
+    max-height: 440px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: #ffffff;
+  }
+  .lh-act-table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+    font-size: 12px;
+  }
+  .lh-act-table th, .lh-act-table td {
+    padding: 9px 8px;
+    border-right: 1px solid #e2e8f0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .lh-act-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 15;
+    background: #1e293b;
+    color: #ffffff;
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .lh-act-table .sticky-col-1 {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background: #ffffff;
+    font-weight: 800;
+    color: var(--dark);
+    box-shadow: 2px 0 5px -2px rgba(0,0,0,0.12);
+  }
+  .lh-act-table thead .sticky-col-1 {
+    z-index: 25;
+    background: #0f172a;
+    color: #ffffff;
+  }
+  .lh-sort-btn {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: inherit;
+    font-size: 11px;
+    padding: 2px 4px;
+    min-height: 0;
+    margin-left: 3px;
+    opacity: 0.65;
+    display: inline-flex;
+  }
+  .lh-sort-btn:hover { opacity: 1; box-shadow: none; background: rgba(0,0,0,0.05); }
+  .lh-sort-btn.active { opacity: 1; color: #d97706; font-weight: 800; }
+
+  @media (max-width: 860px) {
+    .lh-cika-report-grid,
+    .lh-amount-target-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+    }
+  }
+  @media (max-width: 600px) {
+    .lh-top-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .lh-cika-Report-inner-5 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .lh-cika-Report-inner-6 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .lh-amount-inner-4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
 </style>
 <script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
@@ -3437,6 +3730,109 @@
   </div>
 </div>
 
+
+<!-- ================= MODAL LAPORAN HARIAN: REPORT ALL PER DAY ================= -->
+<div id="lhReportModal" class="modal" onclick="if(event.target===this)closeLhReportAllModal()">
+  <div class="mbox" style="max-width:1180px">
+    <div class="mhead" style="background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;border:0">
+      <h3 style="color:#fff">📊 REPORT ACTIVITY PER DAY (ALL DESKCOLL)</h3>
+      <button type="button" class="outline" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.35)" onclick="closeLhReportAllModal()">Tutup ✕</button>
+    </div>
+    <div class="mbody" style="padding:0">
+      <div class="lh-act-table-wrap" style="max-height:78vh;border:0;border-radius:0">
+        <table class="lh-act-table">
+          <thead id="lh-head-activity-modal"></thead>
+          <tbody id="lh-body-activity-modal"></tbody>
+          <tfoot id="lh-foot-activity-modal"></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL LAPORAN HARIAN: DETAIL CIKA / REPORT ================= -->
+<div id="lhDetailModal" class="modal" onclick="if(event.target===this)closeLhDetailModal()">
+  <div class="mbox" style="max-width:1020px">
+    <div class="mhead" style="background:linear-gradient(135deg,#4f46e5,#3730a3);color:#fff;border:0">
+      <h3 id="lhDetailTitle" style="color:#fff">📋 DETAIL DATA</h3>
+      <button type="button" class="outline" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.35)" onclick="closeLhDetailModal()">Tutup ✕</button>
+    </div>
+    <div class="mbody">
+      <div class="twrap">
+        <table class="pc" style="min-width:760px">
+          <thead>
+            <tr>
+              <th>User Id</th>
+              <th>Nama</th>
+              <th>Jenis Akun</th>
+              <th>PIC</th>
+              <th>Status Cika</th>
+              <th>Status Result</th>
+              <th class="r">Jumlah PTP</th>
+              <th>Tanggal PTP</th>
+            </tr>
+          </thead>
+          <tbody id="lhDetailTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL LAPORAN HARIAN: DETAIL KOMPOSISI AKUN ================= -->
+<div id="lhKomposisiModal" class="modal" onclick="if(event.target===this)closeLhKomposisiModal()">
+  <div class="mbox" style="max-width:860px">
+    <div class="mhead" style="background:linear-gradient(135deg,#d97706,#b45309);color:#fff;border:0">
+      <h3 id="lhKomposisiTitle" style="color:#fff">📦 DETAIL KOMPOSISI AKUN</h3>
+      <button type="button" class="outline" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.35)" onclick="closeLhKomposisiModal()">Tutup ✕</button>
+    </div>
+    <div class="mbody">
+      <div class="twrap">
+        <table class="pc" style="min-width:600px">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Nama</th>
+              <th class="r">OS</th>
+              <th class="r">Jumlah Bayar</th>
+              <th class="r">Kekurangan PTP</th>
+            </tr>
+          </thead>
+          <tbody id="lhKomposisiTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL LAPORAN HARIAN: DETAIL AMOUNT ALL ================= -->
+<div id="lhAmountModal" class="modal" onclick="if(event.target===this)closeLhAmountModal()">
+  <div class="mbox" style="max-width:960px">
+    <div class="mhead" style="background:linear-gradient(135deg,#e11d48,#be123c);color:#fff;border:0">
+      <h3 id="lhAmountTitle" style="color:#fff">💰 DETAIL AMOUNT</h3>
+      <button type="button" class="outline" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.35)" onclick="closeLhAmountModal()">Tutup ✕</button>
+    </div>
+    <div class="mbody">
+      <div class="twrap">
+        <table class="pc" style="min-width:720px">
+          <thead>
+            <tr id="lhAmountTableHead">
+              <th>User ID</th>
+              <th>Nama</th>
+              <th class="r">OS <button type="button" class="lh-sort-btn" id="lhSortBtn-colM" onclick="sortLhAmountTable('colM','number')" title="Urutkan berdasarkan angka">⇅</button></th>
+              <th>Tanggal PTP <button type="button" class="lh-sort-btn" id="lhSortBtn-colBF" onclick="sortLhAmountTable('colBF','date')" title="Urutkan berdasarkan waktu">⇅</button></th>
+              <th class="r">Jumlah PTP <button type="button" class="lh-sort-btn" id="lhSortBtn-colBE" onclick="sortLhAmountTable('colBE','number')" title="Urutkan berdasarkan angka">⇅</button></th>
+              <th class="r">Jumlah Bayar <button type="button" class="lh-sort-btn" id="lhSortBtn-colAZ" onclick="sortLhAmountTable('colAZ','number')" title="Urutkan berdasarkan angka">⇅</button></th>
+              <th class="r">Kekurangan PTP</th>
+            </tr>
+          </thead>
+          <tbody id="lhAmountTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   // ============================================================================
   // KONFIGURASI BACKEND GOOGLE APPS SCRIPT (UNTUK HOSTING GITHUB PAGES & APK)
@@ -3697,7 +4093,8 @@
     karyawan:    { judul:'Portal Karyawan',        ikon:'👥' },
     rotasi:      { judul:'Rotasi Akun',          ikon:'🔄' },
     absensi:     { judul:'Absensi',              ikon:'📍' },
-    emailblast:  { judul:'Email Blast Resmi',    ikon:'✉️' }
+    emailblast:  { judul:'Email Blast Resmi',    ikon:'✉️' },
+    laporanharian: { judul:'Laporan Harian',     ikon:'📅' }
   };
 
   const DEFAULT_MENU_CATEGORIES = [
@@ -3709,7 +4106,8 @@
         { key: 'tagihan', judul: 'Data Tagihan' },
         { key: 'buktibayar', judul: 'Approval Bukti Bayar' },
         { key: 'uploadbukti', judul: 'Upload Bukti Bayar' },
-        { key: 'rotasi', judul: 'Rotasi Akun' }
+        { key: 'rotasi', judul: 'Rotasi Akun' },
+        { key: 'laporanharian', judul: 'Laporan Harian' }
       ]
     },
     {
@@ -3761,6 +4159,9 @@
     if (list.length > 0 && list.indexOf('emailblast') < 0) {
       list.push('emailblast');
     }
+    if (list.length > 0 && list.indexOf('laporanharian') < 0) {
+      list.push('laporanharian');
+    }
     const rawCats = (Array.isArray(customCategories) && customCategories.length > 0)
       ? customCategories
       : ((S && Array.isArray(S.menuCategories) && S.menuCategories.length > 0) ? S.menuCategories : DEFAULT_MENU_CATEGORIES);
@@ -3780,6 +4181,18 @@
         hrCat.items.push({ key: 'absensi', judul: 'Absensi' });
       } else {
         cats.push({ judul: 'HR & KARYAWAN', items: [{ key: 'absensi', judul: 'Absensi' }] });
+      }
+    }
+    const adaLapHarianDiCats = cats.some(c => c.items.some(it => it && it.key === 'laporanharian'));
+    if (!adaLapHarianDiCats) {
+      const colCatLH = cats.find(c => {
+        const ju = String(c.judul || '').toUpperCase();
+        return ju.indexOf('COLLECTION') >= 0 || ju.indexOf('AREA') >= 0;
+      });
+      if (colCatLH) {
+        colCatLH.items.push({ key: 'laporanharian', judul: 'Laporan Harian' });
+      } else if (cats.length > 0) {
+        cats[0].items.push({ key: 'laporanharian', judul: 'Laporan Harian' });
       }
     }
     const adaPerfDiCats = cats.some(c => c.items.some(it => it && it.key === 'performance'));
@@ -8648,6 +9061,621 @@
     }
   }
 
+
+  // ============================================================================
+  // MENU AREA COLLECTION -> SUB MENU: LAPORAN HARIAN (ANDROID UI)
+  // ============================================================================
+  let lhAllActivityMap = null;
+  let lhDetails        = null;
+  let lhKomposisi      = null;
+  let lhAmountAll      = null;
+  let lhListDCWithTim  = [];
+  let lhHariKerjaList  = [];
+
+  let lhCurrentAmountRows    = null;
+  let lhCurrentAmountSortCol = null;
+  let lhCurrentAmountSortDir = 1;
+
+  function muatHalamanLaporanHarian() {
+    $('content').innerHTML =
+      // TOP CONTROLS: PILIH DC + SEARCH + HARI KERJA TOGGLE
+      '<div class="panel" style="margin-bottom:14px">' +
+        '<div class="lh-top-grid">' +
+          '<div class="lh-dc-drop-wrap" id="lhDcDropWrap">' +
+            '<label style="margin-bottom:6px">Pilih Deskcoll (DC) / Tim</label>' +
+            '<button type="button" class="enum-btn" id="lhDcDropdownTrigger" onclick="toggleLhDcDropdown()" style="min-height:44px">' +
+              '<span class="txt" id="lh-dropdown-text">Memuat daftar DC...</span><span>▾</span>' +
+            '</button>' +
+            '<div id="lh-dc-dropdown" class="lh-dc-dropdown">' +
+              '<label class="lh-dc-all-row">' +
+                '<input type="checkbox" id="lh-chk-all" onchange="toggleLhAllDC(this)"> <span>PILIH ALL DESKCOLL</span>' +
+              '</label>' +
+              '<div id="lh-dc-list-container"></div>' +
+            '</div>' +
+          '</div>' +
+          '<button type="button" onclick="processSearchLaporanHarian()" style="min-height:44px;padding:10px 20px">' +
+            '<span>🔍</span><span>Search</span>' +
+          '</button>' +
+          '<button type="button" class="outline" onclick="toggleLhHariKerjaPanel()" style="min-height:44px;padding:10px 16px">' +
+            '<span>📅</span><span>Hari Kerja</span><span id="lhBadgeHariKerja" class="pic-badge" style="margin-left:4px">-</span>' +
+          '</button>' +
+        '</div>' +
+
+        // COLLAPSIBLE PANEL HARI KERJA (NYAMAN DI ANDROID)
+        '<div id="lhHariKerjaBox" class="hidden" style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px">' +
+            '<div style="font-size:12.5px;font-weight:800;color:var(--dark)">📅 Kalender Status Hari Kerja</div>' +
+            '<button type="button" class="ghost sm" onclick="toggleLhHariKerjaPanel()">Tutup ▴</button>' +
+          '</div>' +
+          '<div class="twrap" style="max-height:240px;overflow-y:auto">' +
+            '<table class="pc" style="min-width:260px">' +
+              '<thead><tr><th>Tanggal</th><th class="c">Status</th></tr></thead>' +
+              '<tbody id="lh-tb-hari-kerja"><tr><td colspan="2" class="c" style="color:var(--muted)">Memuat hari kerja...</td></tr></tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      // KOTAK KOMPOSISI AKUN
+      '<div class="lh-section-box">' +
+        '<div class="lh-sec-head amber"><span>📦 Komposisi Akun</span><span style="font-size:10px;opacity:0.9">Ketuk kartu untuk rincian</span></div>' +
+        '<div id="lh-komposisi-akun-container" class="lh-komposisi-grid">' +
+          '<div style="padding:16px;text-align:center;color:var(--muted);font-size:12px;grid-column:1/-1">Pilih DC lalu tekan Search untuk memuat komposisi akun...</div>' +
+        '</div>' +
+      '</div>' +
+
+      // KOTAK HASIL CIKA & HASIL REPORT
+      '<div class="lh-cika-report-grid">' +
+        // HASIL CIKA
+        '<div class="lh-section-box" style="margin-bottom:0">' +
+          '<div class="lh-sec-head blue"><span>🔎 Hasil Cika</span><span style="font-size:10px;opacity:0.9">Ketuk angka</span></div>' +
+          '<div class="lh-cika-Report-inner-5">' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">ACC</div><a id="lh-cika-acc" onclick="openLhDetailModal(\'cika_acc\', \'DETAIL CIKA - ACC\')" class="lh-link-num" style="color:#059669">-</a></div>' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Blm Cika</div><a id="lh-cika-belum" onclick="openLhDetailModal(\'cika_belum\', \'DETAIL CIKA - BELUM CIKA\')" class="lh-link-num" style="color:#ea580c">-</a></div>' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Sudah</div><a id="lh-cika-sudah" onclick="openLhDetailModal(\'cika_sudah\', \'DETAIL CIKA - SUDAH CIKA\')" class="lh-link-num" style="color:#2563eb">-</a></div>' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Tdk Kerja</div><a id="lh-cika-tb" onclick="openLhDetailModal(\'cika_tdkKerja\', \'DETAIL CIKA - TIDAK BEKERJA\')" class="lh-link-num" style="color:#dc2626">-</a></div>' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Swasta</div><a id="lh-cika-ks" onclick="openLhDetailModal(\'cika_swasta\', \'DETAIL CIKA - KARYAWAN SWASTA\')" class="lh-link-num" style="color:#334155">-</a></div>' +
+          '</div>' +
+        '</div>' +
+
+        // HASIL REPORT
+        '<div class="lh-section-box" style="margin-bottom:0">' +
+          '<div class="lh-sec-head indigo"><span>📝 Hasil Report</span><span style="font-size:10px;opacity:0.9">Ketuk angka</span></div>' +
+          '<div class="lh-cika-Report-inner-6">' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">ACC</div><a id="lh-rep-acc" onclick="openLhDetailModal(\'rep_acc\', \'DETAIL REPORT - ACC\')" class="lh-link-num" style="color:#059669">-</a></div>' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Blm FU</div><a id="lh-rep-belum" onclick="openLhDetailModal(\'rep_belum\', \'DETAIL REPORT - BELUM FU\')" class="lh-link-num" style="color:#ea580c">-</a></div>' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Valid</div><a id="lh-rep-valid" onclick="openLhDetailModal(\'rep_valid\', \'DETAIL REPORT - VALID\')" class="lh-link-num" style="color:#2563eb">-</a></div>' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">PTP</div><a id="lh-rep-ptp" onclick="openLhDetailModal(\'rep_ptp\', \'DETAIL REPORT - PTP\')" class="lh-link-num" style="color:#9333ea">-</a></div>' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">No Res</div><a id="lh-rep-no" onclick="openLhDetailModal(\'rep_no\', \'DETAIL REPORT - NO RESPON\')" class="lh-link-num" style="color:#dc2626">-</a></div>' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Skip</div><a id="lh-rep-skip" onclick="openLhDetailModal(\'rep_skip\', \'DETAIL REPORT - SKIP\')" class="lh-link-num" style="color:#334155">-</a></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      // KOTAK AMOUNT ALL & TARGET
+      '<div class="lh-amount-target-grid">' +
+        // AMOUNT ALL
+        '<div class="lh-section-box" style="margin-bottom:0">' +
+          '<div class="lh-sec-head rose"><span>💰 Amount All</span><span style="font-size:10px;opacity:0.9">Ketuk nominal</span></div>' +
+          '<div class="lh-amount-inner-4">' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Amount All (OS)</div><a id="lh-amount-os" onclick="openLhAmountModal(\'os\', \'DETAIL AMOUNT ALL - OS\')" class="lh-amt-val" style="color:#be123c">-</a></div>' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Total Payment</div><a id="lh-amount-payment" onclick="openLhAmountModal(\'payment\', \'DETAIL TOTAL PAYMENT\')" class="lh-amt-val" style="color:#059669">-</a></div>' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Jumlah PTP</div><a id="lh-amount-ptp" onclick="openLhAmountModal(\'ptp\', \'DETAIL JUMLAH PTP\')" class="lh-amt-val" style="color:#9333ea">-</a></div>' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Plan Closing</div><a id="lh-amount-plan" onclick="openLhAmountModal(\'planClosing\', \'DETAIL PLAN CLOSING\')" class="lh-amt-val" style="color:#1d4ed8">-</a></div>' +
+          '</div>' +
+        '</div>' +
+
+        // TARGET
+        '<div class="lh-section-box" style="margin-bottom:0">' +
+          '<div class="lh-sec-head green"><span>🎯 Target</span></div>' +
+          '<div class="lh-target-inner-2">' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Target 1 (0,30%)</div><div id="lh-target-1" class="lh-amt-val" style="color:#047857;cursor:default">-</div></div>' +
+            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Target 2 (0,60%)</div><div id="lh-target-2" class="lh-amt-val" style="color:#064e3b;cursor:default">-</div></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      // TABEL REPORT ACTIVITY
+      '<div class="panel">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap">' +
+          '<h3 class="pt" style="margin:0">📊 REPORT ACTIVITY (BULAN INI)</h3>' +
+          '<button type="button" class="sm" onclick="openLhReportAllModal()" style="background:linear-gradient(135deg,#4f46e5,#3730a3)">' +
+            '<span>📋</span><span>Report All</span>' +
+          '</button>' +
+        '</div>' +
+        '<div class="lh-act-table-wrap">' +
+          '<table class="lh-act-table">' +
+            '<thead id="lh-head-activity-main"></thead>' +
+            '<tbody id="lh-body-activity-main"><tr><td colspan="32" style="text-align:center;padding:24px;color:var(--muted)">Pilih DC lalu tekan Search untuk melihat Report Activity.</td></tr></tbody>' +
+          '</table>' +
+        '</div>' +
+      '</div>';
+
+    buildLhActivityHeader();
+
+    api('getLaporanHarianInitialData').then(res => {
+      renderLhInitialData(res);
+    }).catch(err => {
+      alert('Gagal memuat data awal Laporan Harian: ' + (err && err.message ? err.message : err));
+    });
+  }
+
+  function toggleLhHariKerjaPanel() {
+    const box = $('lhHariKerjaBox');
+    if (box) box.classList.toggle('hidden');
+  }
+
+  function renderLhInitialData(data) {
+    if (!data || data.error) {
+      alert('Kesalahan: ' + (data ? data.error : 'Data kosong'));
+      return;
+    }
+    lhHariKerjaList = data.hariKerja || [];
+    let htmlHariKerja = '';
+    let kerjaCount = 0;
+    lhHariKerjaList.forEach(item => {
+      let isLibur = String(item.status || '').indexOf('LIBUR') !== -1;
+      if (!isLibur) kerjaCount++;
+      htmlHariKerja += '<tr style="' + (isLibur ? 'background:#fef2f2;' : '') + '">' +
+        '<td style="font-size:12px;' + (isLibur ? 'color:#dc2626;font-weight:800;' : 'font-weight:600;') + '">' + esc(item.tanggal) + '</td>' +
+        '<td class="c" style="font-size:11.5px;' + (isLibur ? 'color:#dc2626;font-weight:800;' : 'color:#059669;font-weight:700;') + '">' + esc(item.status) + '</td>' +
+      '</tr>';
+    });
+    if ($('lh-tb-hari-kerja')) {
+      $('lh-tb-hari-kerja').innerHTML = htmlHariKerja || '<tr><td colspan="2" class="c">Tidak ada data hari kerja.</td></tr>';
+    }
+    if ($('lhBadgeHariKerja')) {
+      $('lhBadgeHariKerja').textContent = kerjaCount + ' HK';
+    }
+
+    lhListDCWithTim = data.listDCWithTim || [];
+    buildLhDCDropdown(lhListDCWithTim);
+  }
+
+  function buildLhDCDropdown(listDCWithTim) {
+    let timMap = {};
+    listDCWithTim.forEach(item => {
+      if (!timMap[item.tim]) timMap[item.tim] = [];
+      timMap[item.tim].push(item.nama);
+    });
+    let html = '';
+    for (const tim in timMap) {
+      html += '<div class="lh-tim-header">' + esc(tim) + '</div>';
+      html += '<div class="lh-tim-check-row"><label>' +
+        '<input type="checkbox" class="chk-lh-tim" data-tim="' + esc(tim) + '" onchange="toggleLhTim(this,\'' + esc(tim).replace(/'/g, "\\'") + '\')"> <span>Pilih Semua ' + esc(tim) + '</span>' +
+      '</label></div>';
+      timMap[tim].forEach(nama => {
+        html += '<label class="lh-dc-item-lbl">' +
+          '<input type="checkbox" class="chk-lh-dc" value="' + esc(nama) + '" data-tim="' + esc(tim) + '" onchange="updateLhDropdownText()"> <span>' + esc(nama) + '</span>' +
+        '</label>';
+      });
+    }
+    if ($('lh-dc-list-container')) $('lh-dc-list-container').innerHTML = html;
+    if ($('lh-dropdown-text')) $('lh-dropdown-text').innerText = 'Pilih List DC...';
+  }
+
+  function toggleLhDcDropdown() {
+    const el = $('lh-dc-dropdown');
+    if (el) el.classList.toggle('show');
+  }
+
+  function toggleLhAllDC(source) {
+    document.querySelectorAll('.chk-lh-dc').forEach(chk => chk.checked = source.checked);
+    document.querySelectorAll('.chk-lh-tim').forEach(chk => chk.checked = source.checked);
+    updateLhDropdownText();
+  }
+
+  function toggleLhTim(source, tim) {
+    document.querySelectorAll('.chk-lh-dc').forEach(chk => {
+      if (chk.dataset.tim === tim) chk.checked = source.checked;
+    });
+    updateLhDropdownText();
+  }
+
+  function updateLhDropdownText() {
+    let checkboxes = document.querySelectorAll('.chk-lh-dc');
+    let selected = Array.from(checkboxes).filter(c => c.checked);
+    document.querySelectorAll('.chk-lh-tim').forEach(timChk => {
+      let tim = timChk.dataset.tim;
+      let allInTim = Array.from(checkboxes).filter(c => c.dataset.tim === tim);
+      let checkedInTim = allInTim.filter(c => c.checked);
+      timChk.checked = checkedInTim.length === allInTim.length && allInTim.length > 0;
+      timChk.indeterminate = checkedInTim.length > 0 && checkedInTim.length < allInTim.length;
+    });
+    const allChk = $('lh-chk-all');
+    if (allChk) {
+      allChk.checked = selected.length === checkboxes.length && checkboxes.length > 0;
+      allChk.indeterminate = selected.length > 0 && selected.length < checkboxes.length;
+    }
+    const txtEl = $('lh-dropdown-text');
+    if (txtEl) {
+      txtEl.innerText = selected.length === 0
+        ? 'Pilih List DC...'
+        : (selected.length === checkboxes.length ? 'SEMUA DC TERPILIH (' + selected.length + ')' : selected.length + ' DC Terpilih');
+    }
+  }
+
+  function processSearchLaporanHarian() {
+    let selectedDCs = Array.from(document.querySelectorAll('.chk-lh-dc')).filter(c => c.checked).map(c => c.value);
+    if (selectedDCs.length === 0) {
+      alert('Pilih minimal satu DC!');
+      return;
+    }
+    const dd = $('lh-dc-dropdown');
+    if (dd) dd.classList.remove('show');
+
+    api('getLaporanHarianDashboardData', selectedDCs).then(res => {
+      renderLhDashboardData(res);
+    }).catch(err => {
+      alert('Gagal memuat data Laporan Harian: ' + (err && err.message ? err.message : err));
+    });
+  }
+
+  function lhFmtNum(val) {
+    if (val === null || val === undefined || val === '' || val === 0) return '0';
+    let n = typeof val === 'number' ? val : parseFloat(val.toString().replace(/[^0-9\-]/g, ''));
+    if (isNaN(n)) return '0';
+    return n.toLocaleString('id-ID');
+  }
+
+  function lhDispNumOS(val) {
+    if (val === null || val === undefined || val === '') return '0';
+    let s = val.toString().trim();
+    if (s === '' || s === '-' || s === '0') return s || '0';
+    let num;
+    if (s.indexOf(',') !== -1) {
+      num = parseFloat(s.replace(/\./g, '').replace(',', '.'));
+    } else {
+      num = parseFloat(s.replace(/\./g, ''));
+    }
+    if (isNaN(num)) return s;
+    return Math.round(num).toLocaleString('id-ID');
+  }
+
+  function lhDispVal(val) {
+    if (val === null || val === undefined) return '';
+    return val.toString();
+  }
+
+  function lhParseNumSort(val) {
+    if (val === null || val === undefined || val === '') return 0;
+    let s = val.toString().trim();
+    if (s === '' || s === '-') return 0;
+    let n;
+    if (s.indexOf(',') !== -1) {
+      n = parseFloat(s.replace(/\./g, '').replace(',', '.'));
+    } else {
+      n = parseFloat(s.replace(/\./g, ''));
+    }
+    return isNaN(n) ? 0 : n;
+  }
+
+  function lhParseDateSort(val) {
+    if (val === null || val === undefined) return 0;
+    let s = val.toString().trim();
+    if (s === '' || s === '-') return 0;
+    let m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+    if (m) {
+      let d = parseInt(m[1], 10), mo = parseInt(m[2], 10) - 1, y = parseInt(m[3], 10);
+      if (y < 100) y += 2000;
+      return new Date(y, mo, d).getTime();
+    }
+    m = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+    if (m) {
+      return new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10)).getTime();
+    }
+    let t = Date.parse(s);
+    return isNaN(t) ? 0 : t;
+  }
+
+  function renderLhDashboardData(data) {
+    if (!data || data.error) {
+      alert('Error: ' + (data ? data.error : 'Tidak ada data'));
+      return;
+    }
+    lhDetails        = data.details;
+    lhKomposisi      = data.komposisiAkun;
+    lhAmountAll      = data.amountAll;
+    lhAllActivityMap = data.activityAllMap;
+
+    // CIKA
+    if ($('lh-cika-acc'))   $('lh-cika-acc').innerText   = data.cika.acc;
+    if ($('lh-cika-belum')) $('lh-cika-belum').innerText = data.cika.belum;
+    if ($('lh-cika-sudah')) $('lh-cika-sudah').innerText = data.cika.sudah;
+    if ($('lh-cika-tb'))    $('lh-cika-tb').innerText    = data.cika.tdkKerja;
+    if ($('lh-cika-ks'))    $('lh-cika-ks').innerText    = data.cika.swasta;
+
+    // REPORT
+    if ($('lh-rep-acc'))   $('lh-rep-acc').innerText   = data.report.acc;
+    if ($('lh-rep-belum')) $('lh-rep-belum').innerText = data.report.belumFu;
+    if ($('lh-rep-valid')) $('lh-rep-valid').innerText = data.report.valid;
+    if ($('lh-rep-ptp'))   $('lh-rep-ptp').innerText   = data.report.ptp;
+    if ($('lh-rep-no'))    $('lh-rep-no').innerText    = data.report.noRespon;
+    if ($('lh-rep-skip'))  $('lh-rep-skip').innerText  = data.report.skip;
+
+    renderLhKomposisiAkun(data.komposisiAkun);
+
+    // AMOUNT ALL
+    if ($('lh-amount-os'))      $('lh-amount-os').innerText      = 'Rp ' + lhFmtNum(data.amountAll.totalOS);
+    if ($('lh-amount-payment')) $('lh-amount-payment').innerText = 'Rp ' + lhFmtNum(data.amountAll.totalPayment);
+    if ($('lh-amount-ptp'))     $('lh-amount-ptp').innerText     = 'Rp ' + lhFmtNum(data.amountAll.totalPTP);
+    if ($('lh-amount-plan'))    $('lh-amount-plan').innerText    = 'Rp ' + lhFmtNum(data.amountAll.planClosing);
+
+    let totalOS = data.amountAll.totalOS;
+    let target1 = Math.round(totalOS * 0.003);
+    let target2 = Math.round(totalOS * 0.006);
+    if ($('lh-target-1')) $('lh-target-1').innerText = 'Rp ' + lhFmtNum(target1);
+    if ($('lh-target-2')) $('lh-target-2').innerText = 'Rp ' + lhFmtNum(target2);
+
+    renderLhActivityTableMain('lh-body-activity-main', data.activitySelected);
+  }
+
+  function renderLhKomposisiAkun(komposisi) {
+    const urutan = ['EXTEND', 'HIPO'];
+    let keys = Object.keys(komposisi || {});
+    keys.sort((a, b) => {
+      let ia = urutan.indexOf(a), ib = urutan.indexOf(b);
+      if (ia === -1 && ib === -1) return a.localeCompare(b);
+      if (ia === -1) return 1;
+      if (ib === -1) return -1;
+      return ia - ib;
+    });
+    const warna = { 'EXTEND': '#1d4ed8', 'HIPO': '#d97706', 'OTHERS': '#475569' };
+    let html = '';
+    keys.forEach(jenis => {
+      let d = komposisi[jenis];
+      let w = warna[jenis] || '#334155';
+      let safeJenis = esc(jenis).replace(/'/g, "\\'");
+      html += '<div class="lh-komp-item" onclick="openLhKomposisiModal(\'' + safeJenis + '\')">' +
+        '<div class="lh-komp-lbl">' + esc(jenis) + '</div>' +
+        '<div class="lh-komp-sub">' + d.jumlahAkun + ' akun</div>' +
+        '<div class="lh-komp-val" style="color:' + w + '">Rp ' + lhFmtNum(d.totalOS) + '</div>' +
+      '</div>';
+    });
+    if (!html) {
+      html = '<div style="padding:16px;text-align:center;color:var(--muted);font-size:12px;grid-column:1/-1">Tidak ada data komposisi akun.</div>';
+    }
+    if ($('lh-komposisi-akun-container')) $('lh-komposisi-akun-container').innerHTML = html;
+  }
+
+  function openLhKomposisiModal(jenis) {
+    if (!lhKomposisi || !lhKomposisi[jenis]) return;
+    let rows = lhKomposisi[jenis].rows || [];
+    if ($('lhKomposisiTitle')) {
+      $('lhKomposisiTitle').innerText = '📦 DETAIL KOMPOSISI AKUN - ' + jenis + ' (' + rows.length + ' DATA)';
+    }
+    let html = '';
+    rows.forEach(r => {
+      html += '<tr>' +
+        '<td>' + esc(lhDispVal(r.colA)) + '</td>' +
+        '<td><b>' + esc(lhDispVal(r.colD)) + '</b></td>' +
+        '<td class="r"><b>' + esc(lhDispNumOS(r.colM)) + '</b></td>' +
+        '<td class="r">' + esc(lhDispVal(r.colAZ)) + '</td>' +
+        '<td class="r">' + esc(lhDispVal(r.colBG)) + '</td>' +
+      '</tr>';
+    });
+    if ($('lhKomposisiTableBody')) {
+      $('lhKomposisiTableBody').innerHTML = html || '<tr><td colspan="5" class="c" style="padding:20px;color:var(--muted)">Tidak ada data.</td></tr>';
+    }
+    if ($('lhKomposisiModal')) $('lhKomposisiModal').classList.add('show');
+  }
+
+  function closeLhKomposisiModal() {
+    if ($('lhKomposisiModal')) $('lhKomposisiModal').classList.remove('show');
+  }
+
+  function openLhAmountModal(type, title) {
+    if (!lhAmountAll) return;
+    let rows = [];
+    if (type === 'os')               rows = lhAmountAll.rows_os || [];
+    else if (type === 'payment')     rows = lhAmountAll.rows_payment || [];
+    else if (type === 'ptp')         rows = lhAmountAll.rows_ptp || [];
+    else if (type === 'planClosing') rows = lhAmountAll.rows_planClosing || [];
+
+    lhCurrentAmountRows    = rows.slice();
+    lhCurrentAmountSortCol = null;
+    lhCurrentAmountSortDir = 1;
+    document.querySelectorAll('#lhAmountTableHead .lh-sort-btn').forEach(b => {
+      b.classList.remove('active');
+      b.innerText = '⇅';
+    });
+
+    let titleText = '💰 ' + title + ' (' + rows.length + ' DATA';
+    if (type === 'ptp') {
+      let totalKekuranganPTP = 0;
+      rows.forEach(r => totalKekuranganPTP += lhParseNumSort(r.colBG));
+      titleText += ' / Rp ' + lhFmtNum(totalKekuranganPTP);
+    }
+    titleText += ')';
+    if ($('lhAmountTitle')) $('lhAmountTitle').innerText = titleText;
+
+    renderLhAmountTableBody(lhCurrentAmountRows);
+    if ($('lhAmountModal')) $('lhAmountModal').classList.add('show');
+  }
+
+  function renderLhAmountTableBody(rows) {
+    let html = '';
+    rows.forEach(r => {
+      html += '<tr>' +
+        '<td>' + esc(lhDispVal(r.colA)) + '</td>' +
+        '<td><b>' + esc(lhDispVal(r.colD)) + '</b></td>' +
+        '<td class="r"><b>' + esc(lhDispNumOS(r.colM)) + '</b></td>' +
+        '<td>' + esc(lhDispVal(r.colBF)) + '</td>' +
+        '<td class="r">' + esc(lhDispNumOS(r.colBE)) + '</td>' +
+        '<td class="r">' + esc(lhDispNumOS(r.colAZ)) + '</td>' +
+        '<td class="r">' + esc(lhDispNumOS(r.colBG)) + '</td>' +
+      '</tr>';
+    });
+    if ($('lhAmountTableBody')) {
+      $('lhAmountTableBody').innerHTML = html || '<tr><td colspan="7" class="c" style="padding:20px;color:var(--muted)">Tidak ada data.</td></tr>';
+    }
+  }
+
+  function sortLhAmountTable(col, type) {
+    if (!lhCurrentAmountRows) return;
+    if (lhCurrentAmountSortCol === col) {
+      lhCurrentAmountSortDir *= -1;
+    } else {
+      lhCurrentAmountSortCol = col;
+      lhCurrentAmountSortDir = 1;
+    }
+    lhCurrentAmountRows.sort((a, b) => {
+      let va, vb;
+      if (type === 'date') {
+        va = lhParseDateSort(a[col]); vb = lhParseDateSort(b[col]);
+      } else {
+        va = lhParseNumSort(a[col]); vb = lhParseNumSort(b[col]);
+      }
+      return (va - vb) * lhCurrentAmountSortDir;
+    });
+    document.querySelectorAll('#lhAmountTableHead .lh-sort-btn').forEach(b => {
+      b.classList.remove('active');
+      b.innerText = '⇅';
+    });
+    let btn = $('lhSortBtn-' + col);
+    if (btn) {
+      btn.classList.add('active');
+      btn.innerText = lhCurrentAmountSortDir === 1 ? '▲' : '▼';
+    }
+    renderLhAmountTableBody(lhCurrentAmountRows);
+  }
+
+  function closeLhAmountModal() {
+    if ($('lhAmountModal')) $('lhAmountModal').classList.remove('show');
+  }
+
+  function openLhDetailModal(type, title) {
+    if (!lhDetails || !lhDetails[type]) return;
+    const rows = lhDetails[type] || [];
+    if ($('lhDetailTitle')) {
+      $('lhDetailTitle').innerText = '📋 ' + title + ' (' + rows.length + ' DATA)';
+    }
+    let html = '';
+    rows.forEach(row => {
+      html += '<tr>' +
+        '<td>' + esc(row.colA) + '</td>' +
+        '<td><b>' + esc(row.colD) + '</b></td>' +
+        '<td>' + esc(row.colE) + '</td>' +
+        '<td><span class="pic-badge">' + esc(row.colAT) + '</span></td>' +
+        '<td>' + esc(row.colAX) + '</td>' +
+        '<td>' + esc(row.colBD) + '</td>' +
+        '<td class="r">' + esc(row.colBE) + '</td>' +
+        '<td>' + esc(row.colBF) + '</td>' +
+      '</tr>';
+    });
+    if ($('lhDetailTableBody')) {
+      $('lhDetailTableBody').innerHTML = html || '<tr><td colspan="8" class="c" style="padding:20px;color:var(--muted)">Tidak ada data.</td></tr>';
+    }
+    if ($('lhDetailModal')) $('lhDetailModal').classList.add('show');
+  }
+
+  function closeLhDetailModal() {
+    if ($('lhDetailModal')) $('lhDetailModal').classList.remove('show');
+  }
+
+  function buildLhActivityHeader() {
+    let theadMain = '<tr><th class="sticky-col-1" style="min-width:130px">NAMA DC</th>';
+    let theadModal = '<tr>' +
+      '<th style="min-width:110px;background:#0f172a;color:#fff">TIM / JABATAN</th>' +
+      '<th class="sticky-col-1" style="min-width:130px;background:#0f172a;color:#fff">NAMA DC</th>';
+
+    for (let i = 1; i <= 31; i++) {
+      theadMain += '<th style="text-align:center;min-width:36px">' + i + '</th>';
+      theadModal += '<th style="text-align:center;min-width:34px">' + i + '</th>';
+    }
+    if ($('lh-head-activity-main')) $('lh-head-activity-main').innerHTML = theadMain + '</tr>';
+    if ($('lh-head-activity-modal')) $('lh-head-activity-modal').innerHTML = theadModal + '</tr>';
+  }
+
+  function renderLhActivityTableMain(targetId, dataObj) {
+    let html = '';
+    const entries = Object.entries(dataObj || {});
+    entries.forEach(([nama, arrTanggal]) => {
+      html += '<tr><td class="sticky-col-1">' + esc(nama) + '</td>';
+      for (let i = 0; i < 31; i++) {
+        let val = arrTanggal[i] || 0;
+        html += '<td style="text-align:center;font-family:\'JetBrains Mono\',monospace;' + (val === 0 ? 'color:#cbd5e1;' : 'color:#0f172a;font-weight:800;') + '">' + val + '</td>';
+      }
+      html += '</tr>';
+    });
+    if ($(targetId)) {
+      $(targetId).innerHTML = html || '<tr><td colspan="32" style="text-align:center;padding:20px;color:var(--muted)">Tidak ada data activity.</td></tr>';
+    }
+  }
+
+  function renderLhActivityTableModal(activityMap) {
+    let html = '';
+    let totalColumns = Array(31).fill(0);
+
+    let timGroup = {};
+    for (const [nama, info] of Object.entries(activityMap || {})) {
+      let tim = info.tim || 'TANPA TIM';
+      if (!timGroup[tim]) timGroup[tim] = [];
+      timGroup[tim].push({ nama: nama, counts: info.counts || Array(31).fill(0) });
+    }
+
+    let sortedTims = Object.keys(timGroup).sort();
+
+    sortedTims.forEach(tim => {
+      let members = timGroup[tim];
+      members.sort((a, b) => a.nama.localeCompare(b.nama));
+      let timTotals = Array(31).fill(0);
+
+      members.forEach((m, idx) => {
+        html += '<tr>';
+        if (idx === 0) {
+          html += '<td rowspan="' + members.length + '" style="font-weight:800;color:#1e3a8a;background:#f1f5f9;vertical-align:top;font-size:10.5px;text-transform:uppercase">' + esc(tim) + '</td>';
+        }
+        html += '<td class="sticky-col-1">' + esc(m.nama) + '</td>';
+
+        for (let i = 0; i < 31; i++) {
+          let val = m.counts[i] || 0;
+          timTotals[i] += val;
+          totalColumns[i] += val;
+          html += '<td style="text-align:center;font-family:\'JetBrains Mono\',monospace;' + (val === 0 ? 'color:#cbd5e1;' : 'color:#0f172a;font-weight:800;') + '">' + val + '</td>';
+        }
+        html += '</tr>';
+      });
+
+      html += '<tr style="background:#e2e8f0;font-weight:800;color:#1e293b">' +
+        '<td colspan="2" class="sticky-col-1" style="background:#e2e8f0;text-align:right;font-size:10.5px;text-transform:uppercase">SUBTOTAL ' + esc(tim) + '</td>';
+      for (let i = 0; i < 31; i++) {
+        html += '<td style="text-align:center;font-family:\'JetBrains Mono\',monospace;font-size:11px;font-weight:800">' + timTotals[i] + '</td>';
+      }
+      html += '</tr>';
+    });
+
+    if ($('lh-body-activity-modal')) $('lh-body-activity-modal').innerHTML = html;
+
+    let footHtml = '<tr style="background:#e0e7ff;color:#1e1b4b;font-weight:800;border-top:2px solid #4f46e5">' +
+      '<td colspan="2" class="sticky-col-1" style="background:#c7d2fe;color:#1e1b4b;text-transform:uppercase;font-size:11px">TOTAL DESKCOLL</td>';
+    for (let i = 0; i < 31; i++) {
+      footHtml += '<td style="text-align:center;font-family:\'JetBrains Mono\',monospace;font-size:11.5px;font-weight:800">' + totalColumns[i] + '</td>';
+    }
+    if ($('lh-foot-activity-modal')) $('lh-foot-activity-modal').innerHTML = footHtml + '</tr>';
+  }
+
+  function openLhReportAllModal() {
+    if (!lhAllActivityMap) {
+      alert('Silakan pilih DC dan klik tombol Search terlebih dahulu untuk memuat Report All.');
+      return;
+    }
+    renderLhActivityTableModal(lhAllActivityMap);
+    if ($('lhReportModal')) $('lhReportModal').classList.add('show');
+  }
+
+  function closeLhReportAllModal() {
+    if ($('lhReportModal')) $('lhReportModal').classList.remove('show');
+  }
+
+  document.addEventListener('click', function(e) {
+    const wrap = $('lhDcDropWrap');
+    const dd = $('lh-dc-dropdown');
+    if (dd && wrap && !wrap.contains(e.target)) {
+      dd.classList.remove('show');
+    }
+  });
+
   // ---------- NAVIGASI ----------
   function nav(m) {
     if (typeof CUR !== 'undefined' && CUR === 'absensi' && m !== 'absensi') {
@@ -8696,6 +9724,8 @@
       muatHalamanPerformance();
     } else if (m === 'emailblast') {
       muatHalamanEmailBlast();
+    } else if (m === 'laporanharian') {
+      muatHalamanLaporanHarian();
     } else {
       $('content').innerHTML =
         '<div class="panel placeholder"><div class="big">' + MENU[m].ikon + '</div>' +
