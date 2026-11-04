@@ -1428,6 +1428,112 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* ---------- DIAGRAM BATANG PERIODE & PRODUK (BERANDA) ---------- */
+  .per-chart-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+  }
+  .per-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+  }
+  .per-leg-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--dark);
+    text-transform: uppercase;
+  }
+  .per-leg-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .per-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+  }
+  .per-plot {
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+    min-height: 250px;
+    padding: 28px 12px 0;
+    border-bottom: 2px solid var(--line-strong);
+    min-width: max-content;
+  }
+  .per-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 110px;
+    flex: 1;
+  }
+  .per-bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 8px;
+    height: 190px;
+    width: 100%;
+    padding: 0 6px;
+  }
+  .per-bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    min-width: 28px;
+    flex: 1;
+    max-width: 52px;
+  }
+  .per-bar-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--dark);
+    white-space: nowrap;
+    margin-bottom: 4px;
+    line-height: 1.1;
+  }
+  .per-bar {
+    width: 100%;
+    border-radius: 6px 6px 0 0;
+    min-height: 4px;
+    transition: height 0.3s ease, opacity 0.15s ease;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+  }
+  .per-bar:hover {
+    opacity: 0.88;
+  }
+  .per-xlab {
+    margin-top: 10px;
+    padding: 6px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--dark);
+    text-align: center;
+    white-space: nowrap;
+    background: #f1f5f9;
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+
   /* ---------- SLIP GAJI ---------- */
   .sg-grid { display: grid; grid-template-columns: minmax(0, 350px) minmax(0, 1fr); gap: 16px; align-items: start; }
   .sg-grid > * { min-width: 0; max-width: 100%; }
@@ -3415,16 +3521,6 @@
   .lh-komp-sub { font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 3px; }
   .lh-komp-val { font-size: 13px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
 
-  .lh-cika-report-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 14px;
-    margin-bottom: 14px;
-  }
-  .lh-cika-Report-inner-5 {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
   .lh-cika-Report-inner-6 {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -3551,7 +3647,6 @@
   .lh-sort-btn.active { opacity: 1; color: #d97706; font-weight: 800; }
 
   @media (max-width: 860px) {
-    .lh-cika-report-grid,
     .lh-amount-target-grid {
       grid-template-columns: minmax(0, 1fr);
       gap: 12px;
@@ -3560,9 +3655,6 @@
   @media (max-width: 600px) {
     .lh-top-grid {
       grid-template-columns: minmax(0, 1fr);
-    }
-    .lh-cika-Report-inner-5 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
     .lh-cika-Report-inner-6 {
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -4686,14 +4778,83 @@
 
   function muatDashboard() {
     api('getDataDashboard', S.token).then(r => {
-      const box = $('chartBox'), bar = $('barBox'); if (!box) return;
-      if (!r.sukses) { const t = r.pesan || 'Gagal memuat data.'; box.textContent = t; if (bar) bar.textContent = t; return; }
+      const box = $('chartBox'), bar = $('barBox'), perBox = $('periodeChartBox'); if (!box) return;
+      if (!r.sukses) {
+        const t = r.pesan || 'Gagal memuat data.';
+        box.textContent = t;
+        if (bar) bar.textContent = t;
+        if (perBox) perBox.textContent = t;
+        return;
+      }
       if (r.items.length) { box.className = ''; box.innerHTML = gambarDonut(r.items, r.total); } else box.textContent = 'Belum ada data pembayaran.';
       if ($('barTitle')) $('barTitle').textContent = 'Plan Closing : ' + rp(r.totalGab || 0);
       if (bar) {
         if (r.itemsGab.length) { bar.className = ''; bar.innerHTML = gambarBar(r.itemsGab); } else bar.textContent = 'Belum ada data plan closing.';
       }
-    }).catch(e => { ['chartBox','barBox'].forEach(i => { const b=$(i); if (b) b.textContent = 'Gagal memuat: ' + e.message; }); });
+      if (perBox) {
+        if (r.periodeChart && Array.isArray(r.periodeChart.series) && r.periodeChart.series.length > 0) {
+          perBox.className = '';
+          perBox.innerHTML = gambarDiagramPeriode(r.periodeChart);
+        } else {
+          perBox.textContent = 'Belum ada data periode pada file arsip.';
+        }
+      }
+    }).catch(e => { ['chartBox','barBox','periodeChartBox'].forEach(i => { const b=$(i); if (b) b.textContent = 'Gagal memuat: ' + e.message; }); });
+  }
+
+  function gambarDiagramPeriode(pc) {
+    const produkList = Array.isArray(pc.produkList) ? pc.produkList : [];
+    const series = Array.isArray(pc.series) ? pc.series : [];
+    if (!series.length || !produkList.length) {
+      return '<div class="tg-empty">Belum ada data diagram periode.</div>';
+    }
+
+    const warnaMap = {
+      'ALLO BANK': '#0284c7',
+      'KREDIVO': '#10b981',
+      'KREDIVO OR': '#f59e0b'
+    };
+    const getWarnaProduk = (prod, idx) => warnaMap[String(prod || '').toUpperCase()] || WARNA[idx % WARNA.length];
+
+    let maxVal = 0;
+    series.forEach(s => {
+      produkList.forEach(p => {
+        const v = Number(s.values && s.values[p]) || 0;
+        if (v > maxVal) maxVal = v;
+      });
+    });
+    if (maxVal <= 0) maxVal = 1;
+
+    const legendHtml = '<div class="per-legend">' +
+      produkList.map((prod, idx) =>
+        '<div class="per-leg-item">' +
+          '<span class="per-leg-dot" style="background:' + getWarnaProduk(prod, idx) + '"></span>' +
+          '<span>' + esc(prod) + '</span>' +
+        '</div>'
+      ).join('') +
+    '</div>';
+
+    const groupsHtml = series.map(s => {
+      const barsHtml = produkList.map((prod, idx) => {
+        const val = Number(s.values && s.values[prod]) || 0;
+        const pct = val > 0 ? Math.max(4, Math.round((val / maxVal) * 155)) : 4;
+        const w = getWarnaProduk(prod, idx);
+        return '<div class="per-bar-col" title="' + esc(s.periode + ' • ' + prod + ': ' + rp(val)) + '">' +
+          '<div class="per-bar-val">' + (val > 0 ? rp(val) : 'Rp 0') + '</div>' +
+          '<div class="per-bar" style="height:' + pct + 'px;background:' + w + '"></div>' +
+        '</div>';
+      }).join('');
+
+      return '<div class="per-group">' +
+        '<div class="per-bars">' + barsHtml + '</div>' +
+        '<div class="per-xlab">' + esc(s.periode) + '</div>' +
+      '</div>';
+    }).join('');
+
+    return '<div class="per-chart-wrap">' +
+      legendHtml +
+      '<div class="per-scroll"><div class="per-plot">' + groupsHtml + '</div></div>' +
+    '</div>';
   }
 
   function gambarBar(items) {
@@ -8147,8 +8308,8 @@
   // ============================================================================
   // MENU ABSENSI KARYAWAN (SUB MENU HR & KARYAWAN)
   // ============================================================================
-  const ABS_KANTOR_LAT = -6.566221;
-  const ABS_KANTOR_LNG = 106.759932;
+  const ABS_KANTOR_LAT = -6.566210;
+  const ABS_KANTOR_LNG = 106.759920;
   const ABS_RADIUS_KM  = 1.0;
 
   let ABS_CLOCK_TIMER = null;
@@ -8167,7 +8328,27 @@
     const y = dt.getFullYear();
     const m = String(dt.getMonth() + 1).padStart(2, '0');
     const day = String(dt.getDate()).padStart(2, '0');
-    return y + '-' + m + '-' + day;
+    return day + '-' + m + '-' + y;
+  }
+
+  function hitungJarakKmAbsensi_(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  function hitungStatusLokasiAbsensi_(lat, lng) {
+    const latNum = parseFloat(lat);
+    const lngNum = parseFloat(lng);
+    if (isNaN(latNum) || isNaN(lngNum)) return '';
+    const jarakKm = hitungJarakKmAbsensi_(latNum, lngNum, ABS_KANTOR_LAT, ABS_KANTOR_LNG);
+    return jarakKm <= ABS_RADIUS_KM ? 'KANTOR' : 'LUAR KANTOR';
   }
 
   function formatJamLokal_(d) {
@@ -8232,6 +8413,9 @@
 
           '<label for="absJam">Jam Absen</label>' +
           '<input type="text" id="absJam" class="ub-readonly" value="' + esc(initJam) + '" readonly>' +
+
+          '<label for="absLokasi">Lokasi</label>' +
+          '<input type="text" id="absLokasi" class="ub-readonly" value="Mendeteksi lokasi..." readonly>' +
 
           '<label>Foto</label>' +
           '<div class="abs-cam-box">' +
@@ -8365,6 +8549,7 @@
 
   function deteksiLokasiAbsensi_(cb) {
     if (!navigator.geolocation) {
+      if ($('absLokasi')) $('absLokasi').value = 'GPS tidak didukung';
       if (typeof cb === 'function') cb(false);
       return;
     }
@@ -8374,6 +8559,10 @@
         const lng = pos.coords.longitude;
         ABS_GPS_STATE.lat = lat;
         ABS_GPS_STATE.lng = lng;
+        const statusLokasi = hitungStatusLokasiAbsensi_(lat, lng);
+        if ($('absLokasi') && statusLokasi) {
+          $('absLokasi').value = statusLokasi;
+        }
 
         fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + encodeURIComponent(lat) + '&lon=' + encodeURIComponent(lng) + '&accept-language=id')
           .then(r => r.ok ? r.json() : null)
@@ -8388,6 +8577,9 @@
           });
       },
       () => {
+        if ($('absLokasi') && (!$('absLokasi').value || $('absLokasi').value.indexOf('Mendeteksi') >= 0)) {
+          $('absLokasi').value = 'Pastikan GPS Aktif';
+        }
         if (typeof cb === 'function') cb(false);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
@@ -9278,31 +9470,16 @@
         '</div>' +
       '</div>' +
 
-      // KOTAK HASIL CIKA & HASIL REPORT
-      '<div class="lh-cika-report-grid">' +
-        // HASIL CIKA
-        '<div class="lh-section-box" style="margin-bottom:0">' +
-          '<div class="lh-sec-head blue"><span>🔎 Hasil Cika</span><span style="font-size:10px;opacity:0.9">Ketuk angka</span></div>' +
-          '<div class="lh-cika-Report-inner-5">' +
-            '<div class="lh-stat-cell"><div class="lh-stat-lbl">ACC</div><a id="lh-cika-acc" onclick="openLhDetailModal(\'cika_acc\', \'DETAIL CIKA - ACC\')" class="lh-link-num" style="color:#059669">-</a></div>' +
-            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Blm Cika</div><a id="lh-cika-belum" onclick="openLhDetailModal(\'cika_belum\', \'DETAIL CIKA - BELUM CIKA\')" class="lh-link-num" style="color:#ea580c">-</a></div>' +
-            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Sudah</div><a id="lh-cika-sudah" onclick="openLhDetailModal(\'cika_sudah\', \'DETAIL CIKA - SUDAH CIKA\')" class="lh-link-num" style="color:#2563eb">-</a></div>' +
-            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Tdk Kerja</div><a id="lh-cika-tb" onclick="openLhDetailModal(\'cika_tdkKerja\', \'DETAIL CIKA - TIDAK BEKERJA\')" class="lh-link-num" style="color:#dc2626">-</a></div>' +
-            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Swasta</div><a id="lh-cika-ks" onclick="openLhDetailModal(\'cika_swasta\', \'DETAIL CIKA - KARYAWAN SWASTA\')" class="lh-link-num" style="color:#334155">-</a></div>' +
-          '</div>' +
-        '</div>' +
-
-        // HASIL REPORT
-        '<div class="lh-section-box" style="margin-bottom:0">' +
-          '<div class="lh-sec-head indigo"><span>📝 Hasil Report</span><span style="font-size:10px;opacity:0.9">Ketuk angka</span></div>' +
-          '<div class="lh-cika-Report-inner-6">' +
-            '<div class="lh-stat-cell"><div class="lh-stat-lbl">ACC</div><a id="lh-rep-acc" onclick="openLhDetailModal(\'rep_acc\', \'DETAIL REPORT - ACC\')" class="lh-link-num" style="color:#059669">-</a></div>' +
-            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Blm FU</div><a id="lh-rep-belum" onclick="openLhDetailModal(\'rep_belum\', \'DETAIL REPORT - BELUM FU\')" class="lh-link-num" style="color:#ea580c">-</a></div>' +
-            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Valid</div><a id="lh-rep-valid" onclick="openLhDetailModal(\'rep_valid\', \'DETAIL REPORT - VALID\')" class="lh-link-num" style="color:#2563eb">-</a></div>' +
-            '<div class="lh-stat-cell"><div class="lh-stat-lbl">PTP</div><a id="lh-rep-ptp" onclick="openLhDetailModal(\'rep_ptp\', \'DETAIL REPORT - PTP\')" class="lh-link-num" style="color:#9333ea">-</a></div>' +
-            '<div class="lh-stat-cell"><div class="lh-stat-lbl">No Res</div><a id="lh-rep-no" onclick="openLhDetailModal(\'rep_no\', \'DETAIL REPORT - NO RESPON\')" class="lh-link-num" style="color:#dc2626">-</a></div>' +
-            '<div class="lh-stat-cell"><div class="lh-stat-lbl">Skip</div><a id="lh-rep-skip" onclick="openLhDetailModal(\'rep_skip\', \'DETAIL REPORT - SKIP\')" class="lh-link-num" style="color:#334155">-</a></div>' +
-          '</div>' +
+      // KOTAK HASIL REPORT
+      '<div class="lh-section-box">' +
+        '<div class="lh-sec-head indigo"><span>📝 Hasil Report</span><span style="font-size:10px;opacity:0.9">Ketuk angka</span></div>' +
+        '<div class="lh-cika-Report-inner-6">' +
+          '<div class="lh-stat-cell"><div class="lh-stat-lbl">ACC</div><a id="lh-rep-acc" onclick="openLhDetailModal(\'rep_acc\', \'DETAIL REPORT - ACC\')" class="lh-link-num" style="color:#059669">-</a></div>' +
+          '<div class="lh-stat-cell"><div class="lh-stat-lbl">Blm FU</div><a id="lh-rep-belum" onclick="openLhDetailModal(\'rep_belum\', \'DETAIL REPORT - BELUM FU\')" class="lh-link-num" style="color:#ea580c">-</a></div>' +
+          '<div class="lh-stat-cell"><div class="lh-stat-lbl">Valid</div><a id="lh-rep-valid" onclick="openLhDetailModal(\'rep_valid\', \'DETAIL REPORT - VALID\')" class="lh-link-num" style="color:#2563eb">-</a></div>' +
+          '<div class="lh-stat-cell"><div class="lh-stat-lbl">PTP</div><a id="lh-rep-ptp" onclick="openLhDetailModal(\'rep_ptp\', \'DETAIL REPORT - PTP\')" class="lh-link-num" style="color:#9333ea">-</a></div>' +
+          '<div class="lh-stat-cell"><div class="lh-stat-lbl">No Res</div><a id="lh-rep-no" onclick="openLhDetailModal(\'rep_no\', \'DETAIL REPORT - NO RESPON\')" class="lh-link-num" style="color:#dc2626">-</a></div>' +
+          '<div class="lh-stat-cell"><div class="lh-stat-lbl">Skip</div><a id="lh-rep-skip" onclick="openLhDetailModal(\'rep_skip\', \'DETAIL REPORT - SKIP\')" class="lh-link-num" style="color:#334155">-</a></div>' +
         '</div>' +
       '</div>' +
 
@@ -9531,13 +9708,6 @@
     lhKomposisi      = data.komposisiAkun;
     lhAmountAll      = data.amountAll;
     lhAllActivityMap = data.activityAllMap;
-
-    // CIKA
-    if ($('lh-cika-acc'))   $('lh-cika-acc').innerText   = data.cika.acc;
-    if ($('lh-cika-belum')) $('lh-cika-belum').innerText = data.cika.belum;
-    if ($('lh-cika-sudah')) $('lh-cika-sudah').innerText = data.cika.sudah;
-    if ($('lh-cika-tb'))    $('lh-cika-tb').innerText    = data.cika.tdkKerja;
-    if ($('lh-cika-ks'))    $('lh-cika-ks').innerText    = data.cika.swasta;
 
     // REPORT
     if ($('lh-rep-acc'))   $('lh-rep-acc').innerText   = data.report.acc;
@@ -9850,7 +10020,8 @@
         '<div class="panel"><h3 class="pt">Pencapaian Pembayaran per Produk</h3><div id="chartBox" class="placeholder">Memuat grafik pembayaran...</div></div>' +
         '<div class="panel clickable" onclick="bukaPlan()"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px"><h3 class="pt" id="barTitle" style="margin:0">Plan Closing : Rp ...</h3><span class="pic-badge">Rincian Tim ➔</span></div><div id="barBox" class="placeholder">Memuat plan closing...</div></div>' +
         '<div class="panel clickable" onclick="bukaProd()"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px"><h3 class="pt" style="margin:0">Produktivitas Penanganan</h3><span class="pic-badge">Detail ➔</span></div>' +
-        '<div id="prodBox" class="placeholder">Memuat produktivitas...</div></div>';
+        '<div id="prodBox" class="placeholder">Memuat produktivitas...</div></div>' +
+        '<div class="panel"><h3 class="pt">Diagram Pencapaian per Periode &amp; Produk</h3><div id="periodeChartBox" class="placeholder">Memuat diagram periode...</div></div>';
       muatDashboard();
       muatProd().catch(e => { const b = $('prodBox'); if (b) b.textContent = e.message; });
     } else if (m === 'laporan') {
