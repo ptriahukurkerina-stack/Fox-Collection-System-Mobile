@@ -3664,6 +3664,126 @@
     }
   }
 
+
+  /* ---------- FITUR BARU ANDROID APK: IZIN AKSES, KAMERA KUNJUNGAN, GOOGLE MAPS & ABSENSI GPS ---------- */
+  .izin-bar-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+    color: #ffffff;
+    padding: 8px 14px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.14);
+  }
+  .izin-pills {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .izin-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.14);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .izin-pill.ok {
+    background: rgba(16, 185, 129, 0.22);
+    color: #a7f3d0;
+    border-color: rgba(52, 211, 153, 0.45);
+  }
+  .btn-izin-req {
+    background: #2563eb;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 800;
+    cursor: pointer;
+    min-height: 32px;
+    white-space: nowrap;
+  }
+  .btn-izin-req:hover {
+    background: #1d4ed8;
+  }
+  .btn-gmaps-ujung {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    color: #ffffff !important;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 11.5px;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: auto;
+    box-shadow: 0 3px 10px rgba(5, 150, 105, 0.25);
+    min-height: 34px;
+  }
+  .btn-gmaps-ujung:hover {
+    background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  }
+  .kunjungan-cam-wrap {
+    margin-top: 10px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #0f172a;
+    text-align: center;
+    padding: 10px;
+  }
+  .kunjungan-cam-Wrap video {
+    width: 100%;
+    max-height: 280px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #000;
+  }
+  .abs-kategori-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 6px 0 14px;
+  }
+  .abs-kat-card {
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    background: #f8fafc;
+    transition: all 0.2s ease;
+  }
+  .abs-kat-card .kat-ic { font-size: 20px; margin-bottom: 4px; }
+  .abs-kat-card .kat-lbl { font-size: 12px; font-weight: 800; color: #475569; }
+  .abs-kat-card .kat-sub { font-size: 10.5px; color: #64748b; margin-top: 2px; }
+  .abs-kat-card.active-kantor {
+    border-color: #10b981;
+    background: #ecfdf5;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.16);
+  }
+  .abs-kat-card.active-kantor .kat-lbl { color: #065f46; }
+  .abs-kat-card.active-luar {
+    border-color: #f59e0b;
+    background: #fffbeb;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.16);
+  }
+  .abs-kat-card.active-luar .kat-lbl { color: #92400e; }
 </style>
 <script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
@@ -3749,6 +3869,17 @@
         <div class="un" id="uNama"></div>
         <div class="uj" id="uJabatan"></div>
         <div class="ut" id="tgl"></div>
+      </div>
+    </div>
+    <div style="padding:10px 14px 0">
+      <div class="izin-bar-wrap" id="barIzinAplikasi">
+        <div class="izin-pills">
+          <span style="font-weight:800;margin-right:4px">🛡️ Status Izin Perangkat:</span>
+          <span class="izin-pill" id="pillIzinNotif">🔔 Notifikasi: Cek...</span>
+          <span class="izin-pill" id="pillIzinGps">📍 GPS: Cek...</span>
+          <span class="izin-pill" id="pillIzinKamera">📷 Kamera: Cek...</span>
+        </div>
+        <button type="button" class="btn-izin-req" onclick="mintaSemuaIzinAplikasi_(true)">✅ Aktifkan Semua Izin</button>
       </div>
     </div>
     <div class="content" id="content"></div>
@@ -4358,6 +4489,162 @@
     updateBadgeMenuKaryawan_(0);
   }
 
+  // ============================================================================
+  // MANAJEMEN IZIN PERANGKAT (NOTIFIKASI, GPS, KAMERA) & SINKRONISASI FCM ANDROID
+  // ============================================================================
+  let STATUS_IZIN_PERANGKAT = {
+    notifikasi: false,
+    gps: false,
+    kamera: false,
+    fcmToken: ''
+  };
+
+  function updateUiStatusIzin_() {
+    const pNotif = $('pillIzinNotif');
+    const pGps = $('pillIzinGps');
+    const pKam = $('pillIzinKamera');
+    if (pNotif) {
+      pNotif.textContent = '🔔 Notifikasi: ' + (STATUS_IZIN_PERANGKAT.notifikasi ? 'Aktif' : 'Belum Aktif');
+      pNotif.classList.toggle('ok', !!STATUS_IZIN_PERANGKAT.notifikasi);
+    }
+    if (pGps) {
+      pGps.textContent = '📍 GPS: ' + (STATUS_IZIN_PERANGKAT.gps ? 'Aktif' : 'Belum Aktif');
+      pGps.classList.toggle('ok', !!STATUS_IZIN_PERANGKAT.gps);
+    }
+    if (pKam) {
+      pKam.textContent = '📷 Kamera: ' + (STATUS_IZIN_PERANGKAT.kamera ? 'Aktif' : 'Belum Aktif');
+      pKam.classList.toggle('ok', !!STATUS_IZIN_PERANGKAT.kamera);
+    }
+  }
+
+  // Dipanggil otomatis oleh Android Native (MainActivity) ketika FCM Token berhasil dibuat/diperbarui
+  window.onReceiveFcmTokenFromAndroid = function(fcmToken) {
+    if (!fcmToken) return;
+    STATUS_IZIN_PERANGKAT.fcmToken = String(fcmToken).trim();
+    STATUS_IZIN_PERANGKAT.notifikasi = true;
+    updateUiStatusIzin_();
+    if (S && S.token) {
+      apiSilent_('simpanFcmToken', S.token, STATUS_IZIN_PERANGKAT.fcmToken).catch(() => {});
+    }
+  };
+
+  // Dipanggil oleh Android Native ketika status permission (Notifikasi/GPS/Kamera) berubah
+  window.onAndroidPermissionsResult = function(notifGranted, gpsGranted, camGranted) {
+    if (typeof notifGranted === 'boolean') STATUS_IZIN_PERANGKAT.notifikasi = notifGranted;
+    if (typeof gpsGranted === 'boolean') STATUS_IZIN_PERANGKAT.gps = gpsGranted;
+    if (typeof camGranted === 'boolean') STATUS_IZIN_PERANGKAT.kamera = camGranted;
+    updateUiStatusIzin_();
+  };
+
+  function sinkronkanSesiKeAndroidNative_() {
+    try {
+      if (window.AndroidApp) {
+        if (typeof window.AndroidApp.saveUserSession === 'function' && S && S.token) {
+          window.AndroidApp.saveUserSession(S.token, S.nama || '', S.jabatan || '');
+        }
+        if (typeof window.AndroidApp.getFcmToken === 'function') {
+          const tok = window.AndroidApp.getFcmToken();
+          if (tok) window.onReceiveFcmTokenFromAndroid(tok);
+        }
+      }
+    } catch (e) {}
+  }
+
+  function inisialisasiIzinDanFcmAndroid_() {
+    sinkronkanSesiKeAndroidNative_();
+    cekStatusIzinSaatIni_();
+    // Jika berjalan di dalam APK Android, minta izin runtime secara otomatis
+    try {
+      if (window.AndroidApp && typeof window.AndroidApp.requestAllPermissions === 'function') {
+        window.AndroidApp.requestAllPermissions();
+      }
+    } catch (e) {}
+  }
+
+  function cekStatusIzinSaatIni_() {
+    try {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        STATUS_IZIN_PERANGKAT.notifikasi = true;
+      }
+      if (window.AndroidApp && typeof window.AndroidApp.hasNotificationPermission === 'function') {
+        STATUS_IZIN_PERANGKAT.notifikasi = !!window.AndroidApp.hasNotificationPermission();
+      }
+    } catch (e) {}
+
+    if (navigator.permissions && typeof navigator.permissions.query === 'function') {
+      try {
+        navigator.permissions.query({ name: 'geolocation' }).then(res => {
+          if (res.state === 'granted') STATUS_IZIN_PERANGKAT.gps = true;
+          updateUiStatusIzin_();
+        }).catch(() => {});
+        navigator.permissions.query({ name: 'camera' }).then(res => {
+          if (res.state === 'granted') STATUS_IZIN_PERANGKAT.kamera = true;
+          updateUiStatusIzin_();
+        }).catch(() => {});
+      } catch (e) {}
+    }
+    updateUiStatusIzin_();
+  }
+
+  // Meminta izin Notifikasi, GPS, dan Kamera secara eksplisit
+  function mintaSemuaIzinAplikasi_(tampilAlert) {
+    try {
+      if (window.AndroidApp && typeof window.AndroidApp.requestAllPermissions === 'function') {
+        window.AndroidApp.requestAllPermissions();
+      }
+    } catch (e) {}
+
+    const janjiNotif = new Promise(resolve => {
+      try {
+        if ('Notification' in window) {
+          Notification.requestPermission().then(p => {
+            STATUS_IZIN_PERANGKAT.notifikasi = (p === 'granted');
+            resolve(STATUS_IZIN_PERANGKAT.notifikasi);
+          }).catch(() => resolve(false));
+        } else {
+          resolve(STATUS_IZIN_PERANGKAT.notifikasi);
+        }
+      } catch (e) { resolve(false); }
+    });
+
+    const janjiGps = new Promise(resolve => {
+      if (!navigator.geolocation) return resolve(false);
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          STATUS_IZIN_PERANGKAT.gps = true;
+          ABS_GPS_STATE.lat = pos.coords.latitude;
+          ABS_GPS_STATE.lng = pos.coords.longitude;
+          resolve(true);
+        },
+        () => resolve(false),
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    });
+
+    const janjiKamera = new Promise(resolve => {
+      if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function') {
+        return resolve(false);
+      }
+      navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then(stream => {
+        STATUS_IZIN_PERANGKAT.kamera = true;
+        stream.getTracks().forEach(t => t.stop());
+        resolve(true);
+      }).catch(() => resolve(false));
+    });
+
+    Promise.all([janjiNotif, janjiGps, janjiKamera]).then(() => {
+      sinkronkanSesiKeAndroidNative_();
+      updateUiStatusIzin_();
+      if (tampilAlert) {
+        const msg = 'Status Izin Perangkat:\n' +
+          '• Notifikasi Pesan: ' + (STATUS_IZIN_PERANGKAT.notifikasi ? 'AKTIF ✅' : 'BELUM AKTIF ⚠️') + '\n' +
+          '• Lokasi GPS: ' + (STATUS_IZIN_PERANGKAT.gps ? 'AKTIF ✅' : 'BELUM AKTIF ⚠️') + '\n' +
+          '• Kamera: ' + (STATUS_IZIN_PERANGKAT.kamera ? 'AKTIF ✅' : 'BELUM AKTIF ⚠️');
+        alert(msg);
+      }
+    });
+  }
+
   const MENU = {
     home:        { judul:'Beranda',              ikon:'🏠' },
     laporan:     { judul:'Laporan Keuangan',     ikon:'📁' },
@@ -4673,6 +4960,7 @@
     muatFoto();
     mulaiPantauPesanMasuk_();
     mulaiHeartbeatOnline_();
+    inisialisasiIzinDanFcmAndroid_();
   }
 
   function pulihkanSesiLogin_() {
@@ -6228,9 +6516,109 @@
     reader.readAsDataURL(f);
   }
 
+  let KUNJUNGAN_CAM_STREAM = null;
+
+  function hentikanKameraKunjungan_() {
+    if (KUNJUNGAN_CAM_STREAM) {
+      try {
+        KUNJUNGAN_CAM_STREAM.getTracks().forEach(t => t.stop());
+      } catch (e) {}
+      KUNJUNGAN_CAM_STREAM = null;
+    }
+    const vid = $('vidKameraKunjungan');
+    if (vid) {
+      try { vid.srcObject = null; } catch (e) {}
+    }
+    const wrap = $('wrapLiveKameraKunjungan');
+    if (wrap) wrap.classList.add('hidden');
+  }
+
+  // Ketika klik "Lampirkan Foto Kunjungan" langsung meminta izin kamera dan membuka kamera belakang
+  function bukaKameraKunjunganLangsung() {
+    try {
+      if (window.AndroidApp && typeof window.AndroidApp.requestCameraPermission === 'function') {
+        window.AndroidApp.requestCameraPermission();
+      }
+    } catch (e) {}
+
+    // Jika sedang membuka kamera live, langsung jepret
+    const wrap = $('wrapLiveKameraKunjungan');
+    const vid = $('vidKameraKunjungan');
+    if (KUNJUNGAN_CAM_STREAM && wrap && !wrap.classList.contains('hidden') && vid && vid.videoWidth > 0) {
+      jepretFotoKunjunganLive_();
+      return;
+    }
+
+    // Prioritaskan Live Kamera WebRTC (facingMode: environment / kamera belakang) agar langsung tampil tanpa pilih galeri
+    if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
+      navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 960 } },
+        audio: false
+      }).then(stream => {
+        STATUS_IZIN_PERANGKAT.kamera = true;
+        updateUiStatusIzin_();
+        KUNJUNGAN_CAM_STREAM = stream;
+        if ($('wrapLiveKameraKunjungan')) $('wrapLiveKameraKunjungan').classList.remove('hidden');
+        const v = $('vidKameraKunjungan');
+        if (v) {
+          v.srcObject = stream;
+          v.play().catch(() => {});
+        }
+      }).catch(() => {
+        // Fallback langsung ke input kamera hardware (capture="environment")
+        const inp = $('inpFotoKamera');
+        if (inp) {
+          inp.value = '';
+          inp.click();
+        }
+      });
+    } else {
+      const inp = $('inpFotoKamera');
+      if (inp) {
+        inp.value = '';
+        inp.click();
+      }
+    }
+  }
+
+  function jepretFotoKunjunganLive_() {
+    const vid = $('vidKameraKunjungan');
+    if (!vid || !vid.videoWidth) return;
+    const canvas = document.createElement('canvas');
+    const maxDim = 1280;
+    let w = vid.videoWidth;
+    let h = vid.videoHeight;
+    if (w > maxDim || h > maxDim) {
+      if (w >= h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+      else { w = Math.round((w * maxDim) / h); h = maxDim; }
+    }
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(vid, 0, 0, w, h);
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+    const tglKunjungan = batasTanggalPtp_().min;
+    const uid = (HIST_NASABAH_AKTIF && HIST_NASABAH_AKTIF.userId) ? HIST_NASABAH_AKTIF.userId : 'NASABAH';
+    const fileName = uid + '_' + tglKunjungan + '.JPG';
+
+    FILE_FOTO_KUNJUNGAN = {
+      data: dataUrl,
+      mimeType: 'image/jpeg',
+      name: fileName
+    };
+    if ($('lblFotoKunjungan')) {
+      $('lblFotoKunjungan').textContent = '✅ ' + fileName + ' (Siap diupload)';
+    }
+    const prev = $('prevFotoKunjungan');
+    if (prev) {
+      prev.src = dataUrl;
+      prev.style.display = 'block';
+    }
+    hentikanKameraKunjungan_();
+  }
+
   function toggleMenuKameraGaleri() {
-    const box = $('menuKameraGaleri');
-    if (box) box.classList.toggle('hidden');
+    bukaKameraKunjunganLangsung();
   }
 
   function bukaFormHistoris(idx) {
@@ -6300,12 +6688,15 @@
       '<textarea id="hpKronologi" style="min-height:120px" placeholder="Tuliskan kronologi kunjungan atau hasil komunikasi..."></textarea>' +
 
       '<div class="foto-kunjungan-box">' +
-        '<button type="button" class="outline full" onclick="toggleMenuKameraGaleri()">📷 Lampirkan Foto Kunjungan</button>' +
-        '<div id="menuKameraGaleri" class="foto-choice hidden">' +
-          '<input type="file" id="inpFotoKamera" accept="image/*" capture="environment" class="hidden" onchange="pilihFotoKunjungan_(this)">' +
-          '<input type="file" id="inpFotoGaleri" accept="image/*" class="hidden" onchange="pilihFotoKunjungan_(this)">' +
-          '<button type="button" class="sm" onclick="$(\'inpFotoKamera\').click()">📸 Ambil Foto</button>' +
-          '<button type="button" class="outline sm" onclick="$(\'inpFotoGaleri\').click()">🖼️ Pilih Galeri</button>' +
+        '<input type="file" id="inpFotoKamera" accept="image/*" capture="environment" class="hidden" onchange="pilihFotoKunjungan_(this)">' +
+        '<button type="button" class="outline full" id="btnLampirkanFotoKunjungan" onclick="bukaKameraKunjunganLangsung()">📷 Lampirkan Foto Kunjungan (Langsung Kamera)</button>' +
+        '<div id="wrapLiveKameraKunjungan" class="kunjungan-cam-wrap hidden">' +
+          '<video id="vidKameraKunjungan" autoplay playsinline muted></video>' +
+          '<div style="display:flex;gap:8px;margin-top:8px">' +
+            '<button type="button" class="full btn-ok" onclick="jepretFotoKunjunganLive_()">📸 Ambil Gambar Sekarang</button>' +
+            '<button type="button" class="outline" onclick="$(\'inpFotoKamera\').click()">🔄 Kamera HP</button>' +
+            '<button type="button" class="ghost" style="color:#fff" onclick="hentikanKameraKunjungan_()">Batal</button>' +
+          '</div>' +
         '</div>' +
         '<div class="lk-sm" id="lblFotoKunjungan" style="margin-top:8px">Belum ada foto dilampirkan</div>' +
         '<img id="prevFotoKunjungan" class="foto-prev" alt="Preview Foto Kunjungan">' +
@@ -6318,6 +6709,7 @@
   }
 
   function tutupModalHistoris() {
+    hentikanKameraKunjungan_();
     $('modalHistoris').classList.remove('show');
   }
 
@@ -6402,6 +6794,72 @@
     renderModalNasabah_();
   }
 
+  // Ambil titik koordinat GPS saat ini lalu arahkan ke aplikasi Google Maps dengan rute jalan menuju alamat nasabah
+  function bukaRuteGoogleMapsNasabah(customAlamat) {
+    const it = TG_NASABAH_AKTIF;
+    const rawAlamat = String(customAlamat || (it && it.alamat) || '').trim();
+    if (!rawAlamat || rawAlamat === '-') {
+      alert('Alamat nasabah belum tersedia.');
+      return;
+    }
+
+    const btn = $('btnBukaGmapsNasabah');
+    const oldText = btn ? btn.innerHTML : '🗺️ Tampilkan di Google Map';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '📍 Mengambil Titik GPS...';
+    }
+
+    try {
+      if (window.AndroidApp && typeof window.AndroidApp.requestLocationPermission === 'function') {
+        window.AndroidApp.requestLocationPermission();
+      }
+    } catch (e) {}
+
+    const bukaUrlMaps = (lat, lng) => {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = oldText;
+      }
+      const destEncoded = encodeURIComponent(rawAlamat);
+      let gmapsUrl = '';
+      if (typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng)) {
+        STATUS_IZIN_PERANGKAT.gps = true;
+        updateUiStatusIzin_();
+        const originStr = lat.toFixed(6) + ',' + lng.toFixed(6);
+        gmapsUrl = 'https://www.google.com/maps/dir/?api=1&origin=' + encodeURIComponent(originStr) + '&destination=' + destEncoded + '&travelmode=driving';
+        try {
+          if (window.AndroidApp && typeof window.AndroidApp.openGoogleMapsRoute === 'function') {
+            window.AndroidApp.openGoogleMapsRoute(String(lat), String(lng), rawAlamat);
+            return;
+          }
+        } catch (e) {}
+      } else {
+        gmapsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + destEncoded + '&travelmode=driving';
+      }
+      window.location.href = gmapsUrl;
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          bukaUrlMaps(pos.coords.latitude, pos.coords.longitude);
+        },
+        () => {
+          // Fallback ke koordinat terakhir yang tersimpan jika ada
+          if (ABS_GPS_STATE && ABS_GPS_STATE.lat !== null && ABS_GPS_STATE.lng !== null) {
+            bukaUrlMaps(ABS_GPS_STATE.lat, ABS_GPS_STATE.lng);
+          } else {
+            bukaUrlMaps(null, null);
+          }
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 15000 }
+      );
+    } else {
+      bukaUrlMaps(null, null);
+    }
+  }
+
   function renderModalNasabah_() {
     const it = TG_NASABAH_AKTIF;
     if (!it) return;
@@ -6420,7 +6878,13 @@
           '<div class="ns-row"><div class="ns-lbl">Nama Lengkap</div><div class="ns-val">' + esc(it.nama || '-') + '</div></div>' +
           '<div class="ns-row"><div class="ns-lbl">NIK</div><div class="ns-val">' + esc(it.nik || '-') + '</div></div>' +
           '<div class="ns-row"><div class="ns-lbl">Tanggal Lahir</div><div class="ns-val">' + esc(it.tglLahir || '-') + '</div></div>' +
-          '<div class="ns-row"><div class="ns-lbl">Alamat</div><div class="ns-val">' + esc(it.alamat || '-') + '</div></div>' +
+          '<div class="ns-row" style="align-items:center">' +
+            '<div class="ns-lbl">Alamat</div>' +
+            '<div class="ns-val" style="display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;flex-wrap:wrap">' +
+              '<span style="flex:1;min-width:160px;word-break:break-word">' + esc(it.alamat || '-') + '</span>' +
+              '<button type="button" class="btn-gmaps-ujung" id="btnBukaGmapsNasabah" onclick="bukaRuteGoogleMapsNasabah()">🗺️ Tampilkan di Google Map</button>' +
+            '</div>' +
+          '</div>' +
           '<div class="ns-row"><div class="ns-lbl">Email</div><div class="ns-val">' + esc(it.email || '-') + '</div></div>' +
         '</div>';
     } else if (TG_TAB_NASABAH === 'tagihan') {
@@ -8308,8 +8772,8 @@
   // ============================================================================
   // MENU ABSENSI KARYAWAN (SUB MENU HR & KARYAWAN)
   // ============================================================================
-  const ABS_KANTOR_LAT = -6.566210;
-  const ABS_KANTOR_LNG = 106.759920;
+  const ABS_KANTOR_LAT = -6.566221;
+  const ABS_KANTOR_LNG = 106.759932;
   const ABS_RADIUS_KM  = 1.0;
 
   let ABS_CLOCK_TIMER = null;
@@ -8319,6 +8783,8 @@
   let ABS_GPS_STATE = {
     lat: null,
     lng: null,
+    jarakKm: null,
+    statusRadius: '',
     namaJalan: ''
   };
   let ABS_TODAY_STR = '';
@@ -8348,7 +8814,7 @@
     const lngNum = parseFloat(lng);
     if (isNaN(latNum) || isNaN(lngNum)) return '';
     const jarakKm = hitungJarakKmAbsensi_(latNum, lngNum, ABS_KANTOR_LAT, ABS_KANTOR_LNG);
-    return jarakKm <= ABS_RADIUS_KM ? 'KANTOR' : 'LUAR KANTOR';
+    return jarakKm <= ABS_RADIUS_KM ? 'KANTOR' : 'DILUAR KANTOR';
   }
 
   function formatJamLokal_(d) {
@@ -8397,14 +8863,26 @@
   function muatHalamanAbsensi() {
     ABS_PHOTO_BASE64 = '';
     ABS_PHOTO_MIME = 'image/jpeg';
-    ABS_GPS_STATE = { lat: null, lng: null, namaJalan: '' };
+    ABS_GPS_STATE = { lat: null, lng: null, jarakKm: null, statusRadius: '', namaJalan: '' };
     const now = new Date();
     ABS_TODAY_STR = formatTanggalIsoLokal_(now);
     const initJam = formatJamLokal_(now);
 
+    try {
+      if (window.AndroidApp) {
+        if (typeof window.AndroidApp.requestCameraPermission === 'function') window.AndroidApp.requestCameraPermission();
+        if (typeof window.AndroidApp.requestLocationPermission === 'function') window.AndroidApp.requestLocationPermission();
+      }
+    } catch (e) {}
+
     $('content').innerHTML =
       '<div class="abs-wrap">' +
         '<div class="panel">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px">' +
+            '<h3 class="pt" style="margin:0">📍 Form Absensi &amp; Verifikasi GPS</h3>' +
+            '<button type="button" class="outline sm" onclick="deteksiLokasiAbsensi_();bukaKameraAbsensi_()">🔄 Cek Ulang GPS &amp; Kamera</button>' +
+          '</div>' +
+
           '<label for="absTanggal">Tanggal Absen</label>' +
           '<input type="text" id="absTanggal" class="ub-readonly" value="' + esc(ABS_TODAY_STR) + '" readonly>' +
 
@@ -8414,10 +8892,26 @@
           '<label for="absJam">Jam Absen</label>' +
           '<input type="text" id="absJam" class="ub-readonly" value="' + esc(initJam) + '" readonly>' +
 
-          '<label for="absLokasi">Lokasi</label>' +
-          '<input type="text" id="absLokasi" class="ub-readonly" value="Mendeteksi lokasi..." readonly>' +
+          '<label for="absLokasi">Kolom Kategori Lokasi Absen (Otomatis Cek Radius GPS ≤ 1 KM)</label>' +
+          '<input type="text" id="absLokasi" class="ub-readonly" style="font-weight:800" value="Mendeteksi titik koordinat GPS..." readonly>' +
 
-          '<label>Foto</label>' +
+          '<div class="abs-kategori-grid">' +
+            '<div class="abs-kat-card" id="cardAbsenKantor">' +
+              '<div class="kat-ic">🏢</div>' +
+              '<div class="kat-lbl">ABSEN DI KANTOR</div>' +
+              '<div class="kat-sub">Radius ≤ 1.0 KM dari Kantor</div>' +
+            '</div>' +
+            '<div class="abs-kat-card" id="cardAbsenLuar">' +
+              '<div class="kat-ic">🚗</div>' +
+              '<div class="kat-lbl">DILUAR KANTOR</div>' +
+              '<div class="kat-sub">Radius &gt; 1.0 KM (Kunjungan/Lapangan)</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<label for="absKoordinatDetail">Detail Titik Koordinat GPS &amp; Jarak Kantor</label>' +
+          '<input type="text" id="absKoordinatDetail" class="ub-readonly" value="Menunggu sinyal GPS..." readonly>' +
+
+          '<label>Foto Selfie Absensi (Wajib Kamera)</label>' +
           '<div class="abs-cam-box">' +
             '<div class="abs-cam-viewport">' +
               '<video id="absVideo" class="mirror hidden" autoplay playsinline muted></video>' +
@@ -8547,7 +9041,43 @@
     });
   }
 
+  function terapkanHasilGpsAbsensi_(lat, lng) {
+    const latNum = parseFloat(lat);
+    const lngNum = parseFloat(lng);
+    if (isNaN(latNum) || isNaN(lngNum)) return;
+    STATUS_IZIN_PERANGKAT.gps = true;
+    updateUiStatusIzin_();
+
+    const jarakKm = hitungJarakKmAbsensi_(latNum, lngNum, ABS_KANTOR_LAT, ABS_KANTOR_LNG);
+    const statusLokasi = jarakKm <= ABS_RADIUS_KM ? 'KANTOR' : 'DILUAR KANTOR';
+    ABS_GPS_STATE.lat = latNum;
+    ABS_GPS_STATE.lng = lngNum;
+    ABS_GPS_STATE.jarakKm = jarakKm;
+    ABS_GPS_STATE.statusRadius = statusLokasi;
+
+    if ($('absLokasi')) {
+      $('absLokasi').value = statusLokasi + ' (Jarak: ' + jarakKm.toFixed(2) + ' KM dari Kantor)';
+      $('absLokasi').style.color = (statusLokasi === 'KANTOR') ? '#065f46' : '#92400e';
+      $('absLokasi').style.background = (statusLokasi === 'KANTOR') ? '#ecfdf5' : '#fffbeb';
+    }
+    if ($('cardAbsenKantor')) {
+      $('cardAbsenKantor').classList.toggle('active-kantor', statusLokasi === 'KANTOR');
+    }
+    if ($('cardAbsenLuar')) {
+      $('cardAbsenLuar').classList.toggle('active-luar', statusLokasi === 'DILUAR KANTOR');
+    }
+    if ($('absKoordinatDetail')) {
+      $('absKoordinatDetail').value = latNum.toFixed(6) + ', ' + lngNum.toFixed(6) + (ABS_GPS_STATE.namaJalan ? ' — ' + ABS_GPS_STATE.namaJalan : '');
+    }
+  }
+
   function deteksiLokasiAbsensi_(cb) {
+    try {
+      if (window.AndroidApp && typeof window.AndroidApp.requestLocationPermission === 'function') {
+        window.AndroidApp.requestLocationPermission();
+      }
+    } catch (e) {}
+
     if (!navigator.geolocation) {
       if ($('absLokasi')) $('absLokasi').value = 'GPS tidak didukung';
       if (typeof cb === 'function') cb(false);
@@ -8557,18 +9087,16 @@
       pos => {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
-        ABS_GPS_STATE.lat = lat;
-        ABS_GPS_STATE.lng = lng;
-        const statusLokasi = hitungStatusLokasiAbsensi_(lat, lng);
-        if ($('absLokasi') && statusLokasi) {
-          $('absLokasi').value = statusLokasi;
-        }
+        terapkanHasilGpsAbsensi_(lat, lng);
 
         fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + encodeURIComponent(lat) + '&lon=' + encodeURIComponent(lng) + '&accept-language=id')
           .then(r => r.ok ? r.json() : null)
           .then(data => {
             if (data && data.display_name) {
               ABS_GPS_STATE.namaJalan = String(data.display_name).trim();
+              if ($('absKoordinatDetail')) {
+                $('absKoordinatDetail').value = lat.toFixed(6) + ', ' + lng.toFixed(6) + ' — ' + ABS_GPS_STATE.namaJalan;
+              }
             }
             if (typeof cb === 'function') cb(true);
           })
@@ -8578,7 +9106,7 @@
       },
       () => {
         if ($('absLokasi') && (!$('absLokasi').value || $('absLokasi').value.indexOf('Mendeteksi') >= 0)) {
-          $('absLokasi').value = 'Pastikan GPS Aktif';
+          $('absLokasi').value = 'Pastikan Izin GPS Aktif (Klik Cek Ulang GPS)';
         }
         if (typeof cb === 'function') cb(false);
       },
