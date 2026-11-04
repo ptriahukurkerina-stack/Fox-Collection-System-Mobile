@@ -10280,6 +10280,7 @@
 
     // Inisialisasi data email user aktif & daftar akun pengirim
     selectedAccount = '';
+    var bkToken = (typeof S !== 'undefined' && S && S.token) ? S.token : '';
     google.script.run
       .withSuccessHandler(function (e) {
         activeUserEmail = e || '';
@@ -10294,20 +10295,21 @@
         }
         loadAccounts();
       })
-      .getUserEmail();
+      .getUserEmail(bkToken);
   }
 
   // ── LOAD AKUN ─────────────────────────────
   function loadAccounts() {
     if ($('loadingAccounts')) $('loadingAccounts').style.display = 'block';
     if ($('notRegisteredAlert')) $('notRegisteredAlert').style.display = 'none';
+    var bkToken = (typeof S !== 'undefined' && S && S.token) ? S.token : '';
     google.script.run
       .withSuccessHandler(renderAccounts)
       .withFailureHandler(function (e) {
         if ($('loadingAccounts')) $('loadingAccounts').style.display = 'none';
         alert('Gagal load akun: ' + (e && e.message ? e.message : e));
       })
-      .getAllAccounts();
+      .getAllAccounts(bkToken);
   }
 
   function renderAccounts(accounts) {
@@ -10639,13 +10641,14 @@
     if (!email) { alert('Email tidak boleh kosong!'); return; }
     if ($('loadingAccounts')) $('loadingAccounts').style.display = 'block';
     if ($('addAccountForm')) $('addAccountForm').style.display = 'none';
+    var bkToken = (typeof S !== 'undefined' && S && S.token) ? S.token : '';
     google.script.run
       .withSuccessHandler(renderAccounts)
       .withFailureHandler(function (e) {
         if ($('loadingAccounts')) $('loadingAccounts').style.display = 'none';
         alert(e && e.message ? e.message : e);
       })
-      .saveSenderAccount(email, url);
+      .saveSenderAccount(email, url, bkToken);
   }
 
   // ── MODAL EDIT ────────────────────────────
@@ -10666,6 +10669,7 @@
     if (!newEmail) { alert('Email tidak boleh kosong!'); return; }
     closeEditModal();
     if ($('loadingAccounts')) $('loadingAccounts').style.display = 'block';
+    var bkToken = (typeof S !== 'undefined' && S && S.token) ? S.token : '';
     google.script.run
       .withSuccessHandler(function (accounts) {
         renderAccounts(accounts);
@@ -10680,13 +10684,14 @@
         if ($('loadingAccounts')) $('loadingAccounts').style.display = 'none';
         alert('Gagal edit: ' + (e && e.message ? e.message : e));
       })
-      .updateSenderAccount(oldEmail, newEmail, newUrl);
+      .updateSenderAccount(oldEmail, newEmail, newUrl, bkToken);
   }
 
   // ── HAPUS AKUN ────────────────────────────
   function deleteAccount(email) {
     if (!confirm('Hapus akun ' + email + '?')) return;
     if ($('loadingAccounts')) $('loadingAccounts').style.display = 'block';
+    var bkToken = (typeof S !== 'undefined' && S && S.token) ? S.token : '';
     google.script.run
       .withSuccessHandler(function (accounts) {
         renderAccounts(accounts);
@@ -10704,7 +10709,7 @@
         if ($('loadingAccounts')) $('loadingAccounts').style.display = 'none';
         alert('Gagal hapus: ' + (e && e.message ? e.message : e));
       })
-      .deleteSenderAccount(email);
+      .deleteSenderAccount(email, bkToken);
   }
 
   // ---------- NAVIGASI ----------
