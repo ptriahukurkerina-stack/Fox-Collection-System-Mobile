@@ -3666,58 +3666,6 @@
 
 
   /* ---------- FITUR BARU ANDROID APK: IZIN AKSES, KAMERA KUNJUNGAN, GOOGLE MAPS & ABSENSI GPS ---------- */
-  .izin-bar-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    flex-wrap: wrap;
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
-    color: #ffffff;
-    padding: 8px 14px;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    font-size: 12px;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.14);
-  }
-  .izin-pills {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .izin-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 9px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 700;
-    background: rgba(255, 255, 255, 0.14);
-    color: #e2e8f0;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-  .izin-pill.ok {
-    background: rgba(16, 185, 129, 0.22);
-    color: #a7f3d0;
-    border-color: rgba(52, 211, 153, 0.45);
-  }
-  .btn-izin-req {
-    background: #2563eb;
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 11.5px;
-    font-weight: 800;
-    cursor: pointer;
-    min-height: 32px;
-    white-space: nowrap;
-  }
-  .btn-izin-req:hover {
-    background: #1d4ed8;
-  }
   .btn-gmaps-ujung {
     display: inline-flex;
     align-items: center;
@@ -3785,7 +3733,7 @@
   }
   .abs-kat-card.active-luar .kat-lbl { color: #92400e; }
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+</head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -3869,17 +3817,6 @@
         <div class="un" id="uNama"></div>
         <div class="uj" id="uJabatan"></div>
         <div class="ut" id="tgl"></div>
-      </div>
-    </div>
-    <div style="padding:10px 14px 0">
-      <div class="izin-bar-wrap" id="barIzinAplikasi">
-        <div class="izin-pills">
-          <span style="font-weight:800;margin-right:4px">🛡️ Status Izin Perangkat:</span>
-          <span class="izin-pill" id="pillIzinNotif">🔔 Notifikasi: Cek...</span>
-          <span class="izin-pill" id="pillIzinGps">📍 GPS: Cek...</span>
-          <span class="izin-pill" id="pillIzinKamera">📷 Kamera: Cek...</span>
-        </div>
-        <button type="button" class="btn-izin-req" onclick="mintaSemuaIzinAplikasi_(true)">✅ Aktifkan Semua Izin</button>
       </div>
     </div>
     <div class="content" id="content"></div>
@@ -4500,21 +4437,7 @@
   };
 
   function updateUiStatusIzin_() {
-    const pNotif = $('pillIzinNotif');
-    const pGps = $('pillIzinGps');
-    const pKam = $('pillIzinKamera');
-    if (pNotif) {
-      pNotif.textContent = '🔔 Notifikasi: ' + (STATUS_IZIN_PERANGKAT.notifikasi ? 'Aktif' : 'Belum Aktif');
-      pNotif.classList.toggle('ok', !!STATUS_IZIN_PERANGKAT.notifikasi);
-    }
-    if (pGps) {
-      pGps.textContent = '📍 GPS: ' + (STATUS_IZIN_PERANGKAT.gps ? 'Aktif' : 'Belum Aktif');
-      pGps.classList.toggle('ok', !!STATUS_IZIN_PERANGKAT.gps);
-    }
-    if (pKam) {
-      pKam.textContent = '📷 Kamera: ' + (STATUS_IZIN_PERANGKAT.kamera ? 'Aktif' : 'Belum Aktif');
-      pKam.classList.toggle('ok', !!STATUS_IZIN_PERANGKAT.kamera);
-    }
+    // Bar status izin perangkat telah dihilangkan dari setiap halaman menu
   }
 
   // Dipanggil otomatis oleh Android Native (MainActivity) ketika FCM Token berhasil dibuat/diperbarui
