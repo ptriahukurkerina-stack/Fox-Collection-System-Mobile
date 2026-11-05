@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
   :root {
     --box: #f0f7ff;
@@ -2490,6 +2491,29 @@
   .pf-btn-act.listpay:hover {
     background: rgba(255, 255, 255, 0.22);
   }
+  .pf-btn-download {
+    width: auto;
+    min-height: 30px;
+    padding: 5px 11px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    border: none;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .pf-btn-download:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translateY(-1px);
+  }
 
   .pf-kpi-grid {
     display: grid;
@@ -3733,7 +3757,7 @@
   }
   .abs-kat-card.active-luar .kat-lbl { color: #92400e; }
 </style>
-</head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -3960,6 +3984,7 @@
     <div class="mhead">
       <h3 id="pfPaymentModalTitle">💸 List Payment (Sudah Bayar)</h3>
       <div style="display:flex;align-items:center;gap:8px">
+        <button type="button" class="pf-btn-download" onclick="downloadExcelPaymentPerformance()" title="Download Excel"><i class="fas fa-file-excel"></i> Download</button>
         <span id="pfPaymentRowCount" class="pic-badge">0 Data</span>
         <button type="button" class="mclose" onclick="tutupModalPerformance('pfPaymentModal')">✕</button>
       </div>
@@ -3993,6 +4018,7 @@
     <div class="mhead">
       <h3 id="pfPtpModalTitle">🤝 Detail PTP</h3>
       <div style="display:flex;align-items:center;gap:8px">
+        <button type="button" class="pf-btn-download" onclick="downloadExcelPtpPerformance()" title="Download Excel"><i class="fas fa-file-excel"></i> Download</button>
         <span id="pfPtpRowCount" class="pic-badge">0 Data</span>
         <button type="button" class="mclose" onclick="tutupModalPerformance('pfPtpModal')">✕</button>
       </div>
@@ -9086,6 +9112,8 @@
   let PF_RAW_DATA = null;
   let PF_ACTIVE_CATEGORY = 'ALL';
   let PF_CLOCK_TIMER = null;
+  let PF_CURRENT_PAYMENT_LIST = [];
+  let PF_CURRENT_PTP_LIST = [];
 
   function pfFmtRp_(n) {
     return 'Rp ' + Math.floor(Number(n) || 0).toLocaleString('id-ID') + ',-';
@@ -9398,6 +9426,8 @@
       if (titleEl) titleEl.textContent = '💸 List Payment (Sudah Bayar)' + (PF_ACTIVE_CATEGORY === 'ALL' ? '' : ' · ' + PF_ACTIVE_CATEGORY);
     }
 
+    PF_CURRENT_PAYMENT_LIST = source;
+
     if ($('pfPaymentRowCount')) $('pfPaymentRowCount').textContent = source.length + ' Data';
     const tbody = $('pfPaymentTableBody');
     if (tbody) {
@@ -9446,6 +9476,8 @@
     } else {
       if (titleEl) titleEl.textContent = '🤝 Detail Semua PTP' + catInfo;
     }
+
+    PF_CURRENT_PTP_LIST = source;
 
     let totOs = 0, totBayar = 0, totPtp = 0, totKurang = 0;
     let rowsHtml = '';
@@ -9499,6 +9531,150 @@
       m.classList.add('show');
       const wrap = m.querySelector('.tbl-wrap');
       if (wrap) { wrap.scrollLeft = 0; wrap.scrollTop = 0; }
+    }
+  }
+
+  function pfSanitizeFileName_(rawTitle, prefix) {
+    const clean = String(rawTitle || prefix || 'Export')
+      .replace(/[^\w\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '_');
+    const d = new Date();
+    const tgl = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    return (clean || prefix || 'Data') + '_' + tgl;
+  }
+
+  function pfDownloadFallbackXls_(headers, rows, sheetName, fileBaseName) {
+    let tableHtml = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>' + esc(sheetName) + '</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table border="1"><thead><tr style="background:#0284c7;color:#ffffff;font-weight:bold">';
+    headers.forEach(h => { tableHtml += '<th>' + esc(h) + '</th>'; });
+    tableHtml += '</tr></thead><tbody>';
+    rows.forEach(r => {
+      tableHtml += '<tr>';
+      r.forEach(cell => { tableHtml += '<td>' + esc(cell == null ? '' : String(cell)) + '</td>'; });
+      tableHtml += '</tr>';
+    });
+    tableHtml += '</tbody></table></body></html>';
+    const blob = new Blob(['\ufeff', tableHtml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileBaseName + '.xls';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function downloadExcelPaymentPerformance() {
+    if (!PF_CURRENT_PAYMENT_LIST || PF_CURRENT_PAYMENT_LIST.length === 0) {
+      alert('Belum ada data pembayaran untuk diunduh.');
+      return;
+    }
+    const titleText = $('pfPaymentModalTitle') ? $('pfPaymentModalTitle').textContent : 'Detail_Payment';
+    const fileBase = pfSanitizeFileName_(titleText, 'Detail_Payment');
+    const headers = ['User ID', 'Account Type', 'Nama Nasabah', 'Payment', 'OS', 'Dragon', 'PIC', 'Tgl Bayar'];
+    let totalPayment = 0;
+    const aoa = [headers];
+
+    PF_CURRENT_PAYMENT_LIST.forEach(row => {
+      const payNum = Number(row.payment) || 0;
+      totalPayment += payNum;
+      aoa.push([
+        String(row.user_id || '-'),
+        String(row.label || '-'),
+        String(row.nasabah || '-'),
+        pfFmtRp_(payNum),
+        'Rp ' + String(row.outstanding || '0') + ',-',
+        String(row.dragon || '-'),
+        String(row.pic || '-'),
+        String(row.tgl_bayar || '-')
+      ]);
+    });
+
+    aoa.push([
+      'TOTAL (' + PF_CURRENT_PAYMENT_LIST.length + ' Data)',
+      '',
+      '',
+      pfFmtRp_(totalPayment),
+      '',
+      '',
+      '',
+      ''
+    ]);
+
+    if (typeof XLSX !== 'undefined' && XLSX && XLSX.utils) {
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      ws['!cols'] = [
+        { wch: 18 }, { wch: 18 }, { wch: 28 }, { wch: 18 },
+        { wch: 18 }, { wch: 18 }, { wch: 20 }, { wch: 15 }
+      ];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'List Payment');
+      XLSX.writeFile(wb, fileBase + '.xlsx');
+    } else {
+      pfDownloadFallbackXls_(headers, aoa.slice(1), 'List Payment', fileBase);
+    }
+  }
+
+  function downloadExcelPtpPerformance() {
+    if (!PF_CURRENT_PTP_LIST || PF_CURRENT_PTP_LIST.length === 0) {
+      alert('Tidak ada data PTP untuk diunduh.');
+      return;
+    }
+    const titleText = $('pfPtpModalTitle') ? $('pfPtpModalTitle').textContent : 'Detail_PTP';
+    const fileBase = pfSanitizeFileName_(titleText, 'Detail_PTP');
+    const headers = ['User ID', 'Nama', 'Total OS', 'SDP', 'Jumlah Bayar', 'Status Bayar', 'Jumlah PTP', 'Tgl PTP', 'Kurang PTP', 'PIC'];
+    let totOs = 0, totBayar = 0, totPtp = 0, totKurang = 0;
+    const aoa = [headers];
+
+    PF_CURRENT_PTP_LIST.forEach(r => {
+      const osNum = Number(r.total_os) || 0;
+      const bayarNum = Number(r.jumlah_bayar) || 0;
+      const ptpNum = Number(r.jumlah_ptp) || 0;
+      const kurangNum = Number(r.kurang_ptp) || 0;
+      totOs += osNum;
+      totBayar += bayarNum;
+      totPtp += ptpNum;
+      totKurang += kurangNum;
+
+      aoa.push([
+        String(r.user_id || '-'),
+        String(r.nama || '-'),
+        pfFmtRp_(osNum),
+        String(r.sdp || '-'),
+        pfFmtRp_(bayarNum),
+        String(r.status_bayar || '-'),
+        pfFmtRp_(ptpNum),
+        String(r.tgl_ptp || '-'),
+        pfFmtRp_(kurangNum),
+        String(r.pic || '-')
+      ]);
+    });
+
+    aoa.push([
+      'TOTAL (' + PF_CURRENT_PTP_LIST.length + ' Akun)',
+      '',
+      pfFmtRp_(totOs),
+      '-',
+      pfFmtRp_(totBayar),
+      '-',
+      pfFmtRp_(totPtp),
+      '-',
+      pfFmtRp_(totKurang),
+      '-'
+    ]);
+
+    if (typeof XLSX !== 'undefined' && XLSX && XLSX.utils) {
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      ws['!cols'] = [
+        { wch: 18 }, { wch: 28 }, { wch: 18 }, { wch: 14 }, { wch: 18 },
+        { wch: 16 }, { wch: 18 }, { wch: 15 }, { wch: 18 }, { wch: 20 }
+      ];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Detail PTP');
+      XLSX.writeFile(wb, fileBase + '.xlsx');
+    } else {
+      pfDownloadFallbackXls_(headers, aoa.slice(1), 'Detail PTP', fileBase);
     }
   }
 
