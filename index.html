@@ -1468,29 +1468,46 @@
     padding-bottom: 6px;
   }
   .per-plot {
+    position: relative;
     display: flex;
     align-items: flex-end;
-    gap: 18px;
-    min-height: 250px;
-    padding: 28px 12px 0;
+    gap: 28px;
+    min-height: 265px;
+    padding: 34px 18px 0;
     border-bottom: 2px solid var(--line-strong);
     min-width: max-content;
   }
+  .per-trend-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 4;
+    overflow: visible;
+  }
   .per-group {
+    position: relative;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 110px;
+    min-width: 150px;
     flex: 1;
+  }
+  .per-group.is-berjalan .per-bars {
+    background: linear-gradient(180deg, rgba(2, 132, 199, 0.06) 0%, rgba(16, 185, 129, 0.08) 100%);
+    border-radius: 12px 12px 0 0;
+    box-shadow: inset 0 0 0 1px rgba(2, 132, 199, 0.18);
   }
   .per-bars {
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    gap: 8px;
-    height: 190px;
+    gap: 12px;
+    height: 195px;
     width: 100%;
-    padding: 0 6px;
+    padding: 0 12px;
   }
   .per-bar-col {
     display: flex;
@@ -1498,9 +1515,9 @@
     align-items: center;
     justify-content: flex-end;
     height: 100%;
-    min-width: 28px;
+    min-width: 36px;
     flex: 1;
-    max-width: 52px;
+    max-width: 56px;
   }
   .per-bar-val {
     font-family: 'JetBrains Mono', monospace;
@@ -1508,8 +1525,13 @@
     font-weight: 800;
     color: var(--dark);
     white-space: nowrap;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     line-height: 1.1;
+    background: rgba(255, 255, 255, 0.88);
+    padding: 1px 4px;
+    border-radius: 4px;
+    position: relative;
+    z-index: 5;
   }
   .per-bar {
     width: 100%;
@@ -1517,6 +1539,7 @@
     min-height: 4px;
     transition: height 0.3s ease, opacity 0.15s ease;
     box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    position: relative;
   }
   .per-bar:hover {
     opacity: 0.88;
@@ -1533,6 +1556,25 @@
     background: #f1f5f9;
     border-radius: 6px;
     margin-bottom: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .per-xlab.berjalan {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #7dd3fc;
+  }
+  .per-badge-berjalan {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 1.5px 6px;
+    border-radius: 999px;
+    background: #0284c7;
+    color: #ffffff;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
   }
 
   /* ---------- SLIP GAJI ---------- */
@@ -3757,7 +3799,7 @@
   }
   .abs-kat-card.active-luar .kat-lbl { color: #92400e; }
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+</head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -3984,7 +4026,7 @@
     <div class="mhead">
       <h3 id="pfPaymentModalTitle">💸 List Payment (Sudah Bayar)</h3>
       <div style="display:flex;align-items:center;gap:8px">
-        <button type="button" class="pf-btn-download" onclick="downloadExcelPaymentPerformance()" title="Download Excel"><i class="fas fa-file-excel"></i> Download</button>
+        <button type="button" id="btnDownloadPaymentPerf" class="pf-btn-download" onclick="downloadExcelPaymentPerformance()" title="Download Excel"><i class="fas fa-file-excel"></i> Download</button>
         <span id="pfPaymentRowCount" class="pic-badge">0 Data</span>
         <button type="button" class="mclose" onclick="tutupModalPerformance('pfPaymentModal')">✕</button>
       </div>
@@ -4018,7 +4060,7 @@
     <div class="mhead">
       <h3 id="pfPtpModalTitle">🤝 Detail PTP</h3>
       <div style="display:flex;align-items:center;gap:8px">
-        <button type="button" class="pf-btn-download" onclick="downloadExcelPtpPerformance()" title="Download Excel"><i class="fas fa-file-excel"></i> Download</button>
+        <button type="button" id="btnDownloadPtpPerf" class="pf-btn-download" onclick="downloadExcelPtpPerformance()" title="Download Excel"><i class="fas fa-file-excel"></i> Download</button>
         <span id="pfPtpRowCount" class="pic-badge">0 Data</span>
         <button type="button" class="mclose" onclick="tutupModalPerformance('pfPtpModal')">✕</button>
       </div>
@@ -4889,6 +4931,7 @@
     $('uNama').textContent = S.nama;
     $('uJabatan').textContent = S.jabatan;
     $('tgl').textContent = new Date().toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+    if (typeof sinkronTombolDownloadPerformance_ === 'function') sinkronTombolDownloadPerformance_();
     resetFoto();
     const menuPertama = terapkanMenuAkses(S.menus, S.menuCategories);
     if (menuPertama) {
@@ -4937,6 +4980,7 @@
         simpanSesiLokal_(S);
         $('uNama').textContent = S.nama;
         $('uJabatan').textContent = S.jabatan;
+        if (typeof sinkronTombolDownloadPerformance_ === 'function') sinkronTombolDownloadPerformance_();
         if (menuBerubah) {
           const mPertama = terapkanMenuAkses(S.menus, S.menuCategories);
           if (S.menus.indexOf(CUR) < 0 && mPertama) nav(mPertama);
@@ -5032,8 +5076,9 @@
         if (r.periodeChart && Array.isArray(r.periodeChart.series) && r.periodeChart.series.length > 0) {
           perBox.className = '';
           perBox.innerHTML = gambarDiagramPeriode(r.periodeChart);
+          setTimeout(sinkronGarisTrenPeriode_, 30);
         } else {
-          perBox.textContent = 'Belum ada data periode pada file arsip.';
+          perBox.textContent = 'Belum ada data periode pada file arsip maupun berjalan.';
         }
       }
     }).catch(e => { ['chartBox','barBox','periodeChartBox'].forEach(i => { const b=$(i); if (b) b.textContent = 'Gagal memuat: ' + e.message; }); });
@@ -5063,36 +5108,135 @@
     if (maxVal <= 0) maxVal = 1;
 
     const legendHtml = '<div class="per-legend">' +
-      produkList.map((prod, idx) =>
-        '<div class="per-leg-item">' +
-          '<span class="per-leg-dot" style="background:' + getWarnaProduk(prod, idx) + '"></span>' +
+      produkList.map((prod, idx) => {
+        const w = getWarnaProduk(prod, idx);
+        let trendBadge = '';
+        if (series.length >= 2) {
+          const prevVal = Number(series[series.length - 2].values && series[series.length - 2].values[prod]) || 0;
+          const currVal = Number(series[series.length - 1].values && series[series.length - 1].values[prod]) || 0;
+          const diff = currVal - prevVal;
+          const naik = diff > 0;
+          const turun = diff < 0;
+          const arahTxt = naik ? '▲ Naik' : (turun ? '▼ Turun' : '• Tetap');
+          const arahBg = naik ? '#dcfce7' : (turun ? '#fee2e2' : '#f1f5f9');
+          const arahCol = naik ? '#15803d' : (turun ? '#b91c1c' : '#475569');
+          trendBadge = '<span style="font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;background:' + arahBg + ';color:' + arahCol + ';margin-left:3px">' + arahTxt + '</span>';
+        }
+        return '<div class="per-leg-item">' +
+          '<span class="per-leg-dot" style="background:' + w + '"></span>' +
           '<span>' + esc(prod) + '</span>' +
-        '</div>'
-      ).join('') +
+          trendBadge +
+        '</div>';
+      }).join('') +
+      '<div style="margin-left:auto;font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:6px">' +
+        '<span>⎯⎯ Garis Penghubung Tren Produk</span>' +
+      '</div>' +
     '</div>';
 
-    const groupsHtml = series.map(s => {
-      const barsHtml = produkList.map((prod, idx) => {
+    const groupsHtml = series.map((s, gIdx) => {
+      const isRun = Boolean(s.isBerjalan) || (series.length > 1 && gIdx === series.length - 1);
+      const barsHtml = produkList.map((prod, pIdx) => {
         const val = Number(s.values && s.values[prod]) || 0;
-        const pct = val > 0 ? Math.max(4, Math.round((val / maxVal) * 155)) : 4;
-        const w = getWarnaProduk(prod, idx);
-        return '<div class="per-bar-col" title="' + esc(s.periode + ' • ' + prod + ': ' + rp(val)) + '">' +
-          '<div class="per-bar-val">' + (val > 0 ? rp(val) : 'Rp 0') + '</div>' +
-          '<div class="per-bar" style="height:' + pct + 'px;background:' + w + '"></div>' +
+        const pct = val > 0 ? Math.max(6, Math.round((val / maxVal) * 150)) : 4;
+        const w = getWarnaProduk(prod, pIdx);
+        let deltaArrow = '';
+        if (gIdx > 0) {
+          const prevV = Number(series[gIdx - 1].values && series[gIdx - 1].values[prod]) || 0;
+          if (val > prevV) {
+            deltaArrow = ' <span style="color:#16a34a;font-weight:900" title="Naik dibanding periode sebelumnya">▲</span>';
+          } else if (val < prevV) {
+            deltaArrow = ' <span style="color:#dc2626;font-weight:900" title="Turun dibanding periode sebelumnya">▼</span>';
+          }
+        }
+        return '<div class="per-bar-col" data-gidx="' + gIdx + '" data-pidx="' + pIdx + '" title="' + esc(s.periode + (isRun ? ' (Periode Berjalan)' : '') + ' • ' + prod + ': ' + rp(val)) + '">' +
+          '<div class="per-bar-val">' + (val > 0 ? rp(val) : 'Rp 0') + deltaArrow + '</div>' +
+          '<div class="per-bar" data-prod="' + esc(prod) + '" data-color="' + w + '" data-val="' + val + '" style="height:' + pct + 'px;background:' + w + '"></div>' +
         '</div>';
       }).join('');
 
-      return '<div class="per-group">' +
+      const xLabClass = isRun ? 'per-xlab berjalan' : 'per-xlab';
+      const runBadge = isRun ? '<span class="per-badge-berjalan">Berjalan</span>' : '';
+
+      return '<div class="per-group' + (isRun ? ' is-berjalan' : '') + '" data-periode="' + esc(s.periode) + '">' +
         '<div class="per-bars">' + barsHtml + '</div>' +
-        '<div class="per-xlab">' + esc(s.periode) + '</div>' +
+        '<div class="' + xLabClass + '"><span>' + esc(s.periode) + '</span>' + runBadge + '</div>' +
       '</div>';
     }).join('');
 
     return '<div class="per-chart-wrap">' +
       legendHtml +
-      '<div class="per-scroll"><div class="per-plot">' + groupsHtml + '</div></div>' +
+      '<div class="per-scroll"><div class="per-plot" id="perPlotArea">' +
+        '<svg class="per-trend-svg" id="perTrendSvg"></svg>' +
+        groupsHtml +
+      '</div></div>' +
     '</div>';
   }
+
+  function sinkronGarisTrenPeriode_() {
+    const plot = $('perPlotArea');
+    const svg = $('perTrendSvg');
+    if (!plot || !svg) return;
+    const groups = plot.querySelectorAll('.per-group');
+    if (!groups || groups.length === 0) {
+      svg.innerHTML = '';
+      return;
+    }
+
+    const plotRect = plot.getBoundingClientRect();
+    if (!plotRect.width || !plotRect.height) return;
+    svg.setAttribute('viewBox', '0 0 ' + Math.round(plotRect.width) + ' ' + Math.round(plotRect.height));
+
+    // Kumpulkan titik tengah atas setiap batang per produk lintas periode
+    const prodPoints = {};
+    const prodColors = {};
+    groups.forEach((grp, gIdx) => {
+      const bars = grp.querySelectorAll('.per-bar');
+      bars.forEach((barEl) => {
+        const prod = barEl.getAttribute('data-prod') || '';
+        const color = barEl.getAttribute('data-color') || '#0284c7';
+        const val = Number(barEl.getAttribute('data-val')) || 0;
+        const r = barEl.getBoundingClientRect();
+        const cx = Math.round((r.left - plotRect.left) + (r.width / 2));
+        const cy = Math.round(r.top - plotRect.top);
+        if (!prodPoints[prod]) prodPoints[prod] = [];
+        prodColors[prod] = color;
+        prodPoints[prod].push({ x: cx, y: cy, val: val, gIdx: gIdx });
+      });
+    });
+
+    let svgMarkup = '';
+    Object.keys(prodPoints).forEach(prod => {
+      const pts = prodPoints[prod];
+      const color = prodColors[prod] || '#0284c7';
+      if (pts.length >= 2) {
+        for (let i = 1; i < pts.length; i++) {
+          const p1 = pts[i - 1];
+          const p2 = pts[i];
+          const naik = p2.val > p1.val;
+          const turun = p2.val < p1.val;
+          const midX = Math.round((p1.x + p2.x) / 2);
+          const midY = Math.round((p1.y + p2.y) / 2) - 8;
+          const arrowSym = naik ? '▲' : (turun ? '▼' : '•');
+          const arrowCol = naik ? '#16a34a' : (turun ? '#dc2626' : color);
+
+          svgMarkup +=
+            '<line x1="' + p1.x + '" y1="' + p1.y + '" x2="' + p2.x + '" y2="' + p2.y + '" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" opacity="0.9"/>' +
+            '<line x1="' + p1.x + '" y1="' + p1.y + '" x2="' + p2.x + '" y2="' + p2.y + '" stroke="' + color + '" stroke-width="2.5" stroke-dasharray="5,3" stroke-linecap="round"/>' +
+            '<circle cx="' + midX + '" cy="' + midY + '" r="8" fill="#ffffff" stroke="' + arrowCol + '" stroke-width="1.5"/>' +
+            '<text x="' + midX + '" y="' + (midY + 3.5) + '" text-anchor="middle" font-size="9" font-weight="900" fill="' + arrowCol + '">' + arrowSym + '</text>';
+        }
+      }
+      pts.forEach(pt => {
+        svgMarkup +=
+          '<circle cx="' + pt.x + '" cy="' + pt.y + '" r="4.5" fill="' + color + '" stroke="#ffffff" stroke-width="2"/>';
+      });
+    });
+
+    svg.innerHTML = svgMarkup;
+  }
+  window.addEventListener('resize', () => {
+    if ($('perPlotArea')) sinkronGarisTrenPeriode_();
+  });
 
   function gambarBar(items) {
     const max = Math.max.apply(null, items.map(i => i.nilai)) || 1;
@@ -9228,12 +9372,26 @@
       '</div>';
 
     mulaiJamPerformance_();
+    sinkronTombolDownloadPerformance_();
     if (PF_RAW_DATA) {
       renderKategoriPerformance_(PF_RAW_DATA.categories || []);
       terapkanKategoriPerformance(PF_ACTIVE_CATEGORY);
     } else {
       muatDataPerformance(false);
     }
+  }
+
+  function bolehDownloadPerformance_() {
+    const jab = String((S && S.jabatan) || '').trim().toUpperCase();
+    return jab === 'DIREKTUR' || jab === 'TL' || jab === 'TEAM LEADER' || jab === 'ADMIN';
+  }
+
+  function sinkronTombolDownloadPerformance_() {
+    const boleh = bolehDownloadPerformance_();
+    const btnPay = $('btnDownloadPaymentPerf');
+    const btnPtp = $('btnDownloadPtpPerf');
+    if (btnPay) btnPay.style.display = boleh ? 'inline-flex' : 'none';
+    if (btnPtp) btnPtp.style.display = boleh ? 'inline-flex' : 'none';
   }
 
   function muatDataPerformance(doRefresh) {
@@ -9449,6 +9607,7 @@
       }
     }
     const m = $('pfPaymentModal');
+    sinkronTombolDownloadPerformance_();
     if (m) {
       m.classList.add('show');
       const wrap = m.querySelector('.tbl-wrap');
@@ -9527,6 +9686,7 @@
     if ($('pfPtpRowCount')) $('pfPtpRowCount').textContent = source.length + ' Data';
     if ($('pfPtpTableBody')) $('pfPtpTableBody').innerHTML = rowsHtml;
     const m = $('pfPtpModal');
+    sinkronTombolDownloadPerformance_();
     if (m) {
       m.classList.add('show');
       const wrap = m.querySelector('.tbl-wrap');
@@ -9566,6 +9726,10 @@
   }
 
   function downloadExcelPaymentPerformance() {
+    if (!bolehDownloadPerformance_()) {
+      alert('Akses ditolak. Tombol download hanya untuk jabatan Direktur, TL, dan Admin.');
+      return;
+    }
     if (!PF_CURRENT_PAYMENT_LIST || PF_CURRENT_PAYMENT_LIST.length === 0) {
       alert('Belum ada data pembayaran untuk diunduh.');
       return;
@@ -9617,6 +9781,10 @@
   }
 
   function downloadExcelPtpPerformance() {
+    if (!bolehDownloadPerformance_()) {
+      alert('Akses ditolak. Tombol download hanya untuk jabatan Direktur, TL, dan Admin.');
+      return;
+    }
     if (!PF_CURRENT_PTP_LIST || PF_CURRENT_PTP_LIST.length === 0) {
       alert('Tidak ada data PTP untuk diunduh.');
       return;
@@ -10193,18 +10361,26 @@
   function buildLhDCDropdown(listDCWithTim) {
     let timMap = {};
     listDCWithTim.forEach(item => {
-      if (!timMap[item.tim]) timMap[item.tim] = [];
-      timMap[item.tim].push(item.nama);
+      const areaKey = item.area || item.tim || 'TANPA AREA';
+      if (!timMap[areaKey]) timMap[areaKey] = [];
+      timMap[areaKey].push({
+        nama: item.nama,
+        jabatan: String(item.jabatan || '').trim().toUpperCase()
+      });
     });
     let html = '';
     for (const tim in timMap) {
-      html += '<div class="lh-tim-header">' + esc(tim) + '</div>';
+      html += '<div class="lh-tim-header">AREA: ' + esc(tim) + '</div>';
       html += '<div class="lh-tim-check-row"><label>' +
         '<input type="checkbox" class="chk-lh-tim" data-tim="' + esc(tim) + '" onchange="toggleLhTim(this,\'' + esc(tim).replace(/'/g, "\\'") + '\')"> <span>Pilih Semua ' + esc(tim) + '</span>' +
       '</label></div>';
-      timMap[tim].forEach(nama => {
+      timMap[tim].forEach(u => {
+        const nama = u.nama;
+        const jab = u.jabatan;
+        const roleCls = jab === 'TL' ? 'role-tl' : (jab === 'FC' ? 'role-fc' : 'role-dc');
+        const roleBadge = jab ? ' <span class="pf-role-tag ' + roleCls + '" style="margin-left:auto">' + esc(jab) + '</span>' : '';
         html += '<label class="lh-dc-item-lbl">' +
-          '<input type="checkbox" class="chk-lh-dc" value="' + esc(nama) + '" data-tim="' + esc(tim) + '" onchange="updateLhDropdownText()"> <span>' + esc(nama) + '</span>' +
+          '<input type="checkbox" class="chk-lh-dc" value="' + esc(nama) + '" data-tim="' + esc(tim) + '" onchange="updateLhDropdownText()"> <span>' + esc(nama) + '</span>' + roleBadge +
         '</label>';
       });
     }
@@ -10527,7 +10703,7 @@
   function buildLhActivityHeader() {
     let theadMain = '<tr><th class="sticky-col-1" style="min-width:130px">NAMA DC</th>';
     let theadModal = '<tr>' +
-      '<th style="min-width:110px;background:#0f172a;color:#fff">TIM / JABATAN</th>' +
+      '<th style="min-width:110px;background:#0f172a;color:#fff">AREA</th>' +
       '<th class="sticky-col-1" style="min-width:130px;background:#0f172a;color:#fff">NAMA DC</th>';
 
     for (let i = 1; i <= 31; i++) {
