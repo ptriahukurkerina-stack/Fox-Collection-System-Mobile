@@ -3798,6 +3798,260 @@
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.16);
   }
   .abs-kat-card.active-luar .kat-lbl { color: #92400e; }
+
+  /* ---------- MENU PUSAT KOMUNIKASI: DAFTAR HADIR (ANDROID COMPACT 2 KOLOM FOTO) ---------- */
+  .dh-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+  }
+  .dh-filter-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 8px;
+    align-items: end;
+    margin-top: 8px;
+  }
+  @media (max-width: 480px) {
+    .dh-filter-bar {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .dh-filter-box {
+    background: var(--surface-soft);
+    border: 1.5px solid #bae6fd;
+    border-radius: var(--radius-md);
+    padding: 9px 11px;
+  }
+  .dh-filter-lbl {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    color: var(--primary-hover);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .dh-filter-box select,
+  .dh-filter-box input {
+    margin-bottom: 0;
+    padding: 8px 10px;
+    min-height: 38px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    background: #ffffff;
+  }
+  .dh-stat-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .dh-stat-pill {
+    border-radius: 12px;
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    background: var(--surface-soft);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .dh-stat-pill .num {
+    font-size: 16px;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.2;
+  }
+  .dh-stat-pill .txt {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .dh-stat-pill.hadir {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+  }
+  .dh-stat-pill.hadir .num { color: #059669; }
+  .dh-stat-pill.hadir .txt { color: #065f46; }
+  .dh-stat-pill.belum {
+    background: #fffbeb;
+    border-color: #fde68a;
+  }
+  .dh-stat-pill.belum .num { color: #d97706; }
+  .dh-stat-pill.belum .txt { color: #92400e; }
+  .dh-stat-pill.total {
+    background: #f0f9ff;
+    border-color: #bae6fd;
+  }
+  .dh-stat-pill.total .num { color: var(--primary); }
+  .dh-stat-pill.total .txt { color: var(--primary-hover); }
+
+  .dh-belum-panel {
+    background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%);
+    border: 1.5px solid #fde68a;
+    border-radius: var(--radius-md);
+    padding: 12px;
+    margin-top: 10px;
+  }
+  .dh-belum-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .dh-belum-title {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #92400e;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dh-belum-chips {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: 10px;
+    max-height: 190px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+  .dh-belum-item {
+    background: #ffffff;
+    border: 1px solid #fde68a;
+    border-radius: 9px;
+    padding: 6px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    min-width: 0;
+  }
+  .dh-belum-name {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--dark);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+  }
+  .dh-belum-role {
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: #fef3c7;
+    color: #b45309;
+    flex-shrink: 0;
+  }
+
+  /* Grid 2 Foto Sebaris untuk Hemat Ruang Layar Android */
+  .dh-photo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .dh-card {
+    background: #ffffff;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 9px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+    transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+  }
+  .dh-card:hover {
+    border-color: #7dd3fc;
+    box-shadow: var(--shadow-md);
+  }
+  /* Urutan 1: Nama dari Kolom B */
+  .dh-card-nama {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: var(--dark);
+    text-align: center;
+    line-height: 1.25;
+    padding: 5px 6px;
+    background: var(--primary-soft);
+    border-radius: 8px;
+    border: 1px solid #bae6fd;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* Urutan 2: Foto dari Kolom D */
+  .dh-card-foto-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #0f172a;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dh-card-foto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.2s ease;
+  }
+  .dh-card-foto-wrap:active .dh-card-foto {
+    transform: scale(1.03);
+  }
+  .dh-card-foto-empty {
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    padding: 10px;
+  }
+  /* Urutan 3: Jam Masuk dari Kolom C */
+  .dh-card-jam {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 5px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dh-card-jam b {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--primary-hover);
+  }
 </style>
 <script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
@@ -4650,7 +4904,8 @@
     rotasi:      { judul:'Rotasi Akun',          ikon:'🔄' },
     absensi:     { judul:'Absensi',              ikon:'📍' },
     emailblast:  { judul:'Inbox Inbox Email Blast Resmi',    ikon:'✉️' },
-    laporanharian: { judul:'Laporan Harian',     ikon:'📅' }
+    laporanharian: { judul:'Laporan Harian',     ikon:'📅' },
+    daftarhadir: { judul:'Daftar Hadir',         ikon:'📋' }
   };
 
   const DEFAULT_MENU_CATEGORIES = [
@@ -4687,6 +4942,12 @@
       items: [
         { key: 'emailblast', judul: 'Inbox Inbox Email Blast Resmi' }
       ]
+    },
+    {
+      judul: 'PUSAT KOMUNIKASI',
+      items: [
+        { key: 'daftarhadir', judul: 'Daftar Hadir' }
+      ]
     }
   ];
 
@@ -4717,6 +4978,9 @@
     }
     if (list.length > 0 && list.indexOf('laporanharian') < 0) {
       list.push('laporanharian');
+    }
+    if (list.length > 0 && list.indexOf('daftarhadir') < 0) {
+      list.push('daftarhadir');
     }
     const rawCats = (Array.isArray(customCategories) && customCategories.length > 0)
       ? customCategories
@@ -4773,6 +5037,18 @@
         emCat.items.push({ key: 'emailblast', judul: 'Inbox Inbox Email Blast Resmi' });
       } else {
         cats.push({ judul: 'GOOGLE EMAIL', items: [{ key: 'emailblast', judul: 'Inbox Inbox Email Blast Resmi' }] });
+      }
+    }
+    const adaDaftarHadirDiCats = cats.some(c => c.items.some(it => it && it.key === 'daftarhadir'));
+    if (!adaDaftarHadirDiCats) {
+      const komCat = cats.find(c => {
+        const ju = String(c.judul || '').toUpperCase();
+        return ju.indexOf('PUSAT KOMUNIKASI') >= 0 || ju.indexOf('KOMUNIKASI') >= 0;
+      });
+      if (komCat) {
+        komCat.items.push({ key: 'daftarhadir', judul: 'Daftar Hadir' });
+      } else {
+        cats.push({ judul: 'PUSAT KOMUNIKASI', items: [{ key: 'daftarhadir', judul: 'Daftar Hadir' }] });
       }
     }
 
@@ -11054,6 +11330,372 @@
     }
   });
 
+  // ============================================================================
+  // MENU PUSAT KOMUNIKASI -> SUB MENU: DAFTAR HADIR
+  // Sumber File: 1JGkYTqyFDnGkVTqZrUE-W8x0t_lUy2TM39Hmr4BLE-4
+  // Filter: Kolom A (Tanggal) otomatis default ke tanggal hari ini saat dibuka
+  // Urutan Kartu: 1) Nama (Kolom B), 2) Foto (Kolom D), 3) Jam Masuk (Kolom C)
+  // Tampilan: 2 Foto dalam satu baris (Grid 2 Kolom)
+  // ============================================================================
+  let DH_STATE = {
+    today: '',
+    selectedDate: '',
+    searchQuery: '',
+    showBelumAbsen: true,
+    tanggalList: [],
+    items: [],
+    semuaKaryawan: [],
+    filteredHadir: []
+  };
+
+  function formatLabelTanggalIndo_(isoStr, todayIso) {
+    const s = String(isoStr || '').trim();
+    if (!s) return '-';
+    const isToday = todayIso && s === todayIso;
+    const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (m) {
+      const dt = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+      if (!isNaN(dt.getTime())) {
+        const lbl = dt.toLocaleDateString('id-ID', {
+          weekday: 'short',
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        });
+        return (isToday ? '📍 Hari Ini — ' : '') + lbl + ' (' + s + ')';
+      }
+    }
+    return (isToday ? '📍 Hari Ini — ' : '') + s;
+  }
+
+  function muatHalamanDaftarHadir() {
+    const nowIso = (typeof formatTanggalIsoLokal_ === 'function')
+      ? formatTanggalIsoLokal_(new Date())
+      : new Date().toISOString().slice(0, 10);
+
+    DH_STATE.today = nowIso;
+    DH_STATE.selectedDate = nowIso;
+    DH_STATE.searchQuery = '';
+
+    $('content').innerHTML =
+      '<div class="dh-wrap">' +
+        '<div class="panel">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">' +
+            '<div>' +
+              '<h3 class="pt" style="margin:0">📋 Daftar Hadir Karyawan</h3>' +
+              '<div class="lk-sm" style="margin-top:2px">Pusat Komunikasi • Rekap Kehadiran &amp; Foto Masuk Harian</div>' +
+            '</div>' +
+            '<div style="display:flex;gap:6px">' +
+              '<button type="button" class="outline sm" onclick="pilihHariIniDaftarHadir()">📅 Hari Ini</button>' +
+              '<button type="button" class="outline sm" onclick="segarkanDaftarHadir()">⟳ Segarkan</button>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="dh-filter-bar">' +
+            '<div class="dh-filter-box">' +
+              '<div class="dh-filter-lbl">' +
+                '<span>📅 Filter Tanggal (Kolom A)</span>' +
+                '<span id="dhBadgeDefaultToday" style="color:#059669">Otomatis Hari Ini</span>' +
+              '</div>' +
+              '<select id="dhSelectTanggal" onchange="ubahFilterTanggalDaftarHadir(this.value)">' +
+                '<option value="' + esc(nowIso) + '">' + esc(formatLabelTanggalIndo_(nowIso, nowIso)) + '</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="dh-filter-box">' +
+              '<div class="dh-filter-lbl"><span>🔍 Cari Nama (Kolom B)</span></div>' +
+              '<input type="text" id="dhInputCari" placeholder="Ketik nama karyawan..." oninput="ubahCariNamaDaftarHadir(this.value)">' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="dh-stat-strip">' +
+            '<div class="dh-stat-pill hadir" onclick="scrollKeGridHadir_()">' +
+              '<span class="num" id="dhCountHadir">0</span>' +
+              '<span class="txt">✅ Sudah Absen</span>' +
+            '</div>' +
+            '<div class="dh-stat-pill belum" onclick="togglePanelBelumAbsenDaftarHadir()">' +
+              '<span class="num" id="dhCountBelum">0</span>' +
+              '<span class="txt">⏳ Belum Absen</span>' +
+            '</div>' +
+            '<div class="dh-stat-pill total">' +
+              '<span class="num" id="dhCountTotal">0</span>' +
+              '<span class="txt">👥 Total Tim</span>' +
+            '</div>' +
+          '</div>' +
+
+          '<div id="dhBelumAbsenContainer"></div>' +
+        '</div>' +
+
+        '<div class="panel" id="dhPanelGridHadir">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:4px">' +
+            '<h3 class="pt" style="margin:0" id="dhGridTitle">📸 Foto Kehadiran Masuk</h3>' +
+            '<span class="pic-badge" id="dhGridSubtitle">2 Foto / Baris</span>' +
+          '</div>' +
+          '<div id="dhGridBody" class="placeholder">Memuat daftar hadir tanggal hari ini...</div>' +
+        '</div>' +
+      '</div>';
+
+    segarkanDaftarHadir();
+  }
+
+  function segarkanDaftarHadir() {
+    api('getDataDaftarHadir', S.token).then(res => {
+      if (!res || !res.sukses) {
+        const msg = (res && res.pesan) ? res.pesan : 'Gagal memuat daftar hadir.';
+        if ($('dhGridBody')) $('dhGridBody').innerHTML = '<div class="tg-empty">' + esc(msg) + '</div>';
+        return;
+      }
+
+      const serverToday = String(res.today || DH_STATE.today || '').trim();
+      DH_STATE.today = serverToday;
+      DH_STATE.items = Array.isArray(res.items) ? res.items : [];
+      DH_STATE.semuaKaryawan = Array.isArray(res.semuaKaryawan) ? res.semuaKaryawan : [];
+
+      const rawDates = Array.isArray(res.tanggalList) ? res.tanggalList.slice() : [];
+      if (serverToday && rawDates.indexOf(serverToday) < 0) {
+        rawDates.unshift(serverToday);
+      }
+      DH_STATE.tanggalList = rawDates;
+
+      // Sebelum dipilih manual, otomatis tampilkan filter pada tanggal saat ini (hari ini)
+      if (!DH_STATE.selectedDate || rawDates.indexOf(DH_STATE.selectedDate) < 0) {
+        DH_STATE.selectedDate = serverToday || (rawDates[0] || '');
+      }
+
+      renderDropdownTanggalDaftarHadir_();
+      renderIsiDaftarHadir_();
+    }).catch(err => {
+      if ($('dhGridBody')) {
+        $('dhGridBody').innerHTML = '<div class="tg-empty">Gagal memuat daftar hadir: ' + esc(err.message || String(err)) + '</div>';
+      }
+    });
+  }
+
+  function renderDropdownTanggalDaftarHadir_() {
+    const sel = $('dhSelectTanggal');
+    if (!sel) return;
+    const list = DH_STATE.tanggalList || [];
+    sel.innerHTML = list.map(tgl => {
+      const selected = (tgl === DH_STATE.selectedDate) ? ' selected' : '';
+      return '<option value="' + esc(tgl) + '"' + selected + '>' + esc(formatLabelTanggalIndo_(tgl, DH_STATE.today)) + '</option>';
+    }).join('');
+    sel.value = DH_STATE.selectedDate;
+
+    const badge = $('dhBadgeDefaultToday');
+    if (badge) {
+      const isToday = (DH_STATE.selectedDate === DH_STATE.today);
+      badge.textContent = isToday ? 'Otomatis Hari Ini' : 'Filter Tanggal';
+      badge.style.color = isToday ? '#059669' : '#0284c7';
+    }
+  }
+
+  function ubahFilterTanggalDaftarHadir(tglBaru) {
+    DH_STATE.selectedDate = String(tglBaru || '').trim();
+    renderDropdownTanggalDaftarHadir_();
+    renderIsiDaftarHadir_();
+  }
+
+  function pilihHariIniDaftarHadir() {
+    if (!DH_STATE.today) return;
+    DH_STATE.selectedDate = DH_STATE.today;
+    renderDropdownTanggalDaftarHadir_();
+    renderIsiDaftarHadir_();
+  }
+
+  function ubahCariNamaDaftarHadir(q) {
+    DH_STATE.searchQuery = String(q || '').trim();
+    renderIsiDaftarHadir_();
+  }
+
+  function togglePanelBelumAbsenDaftarHadir() {
+    DH_STATE.showBelumAbsen = !DH_STATE.showBelumAbsen;
+    renderIsiDaftarHadir_();
+  }
+
+  function scrollKeGridHadir_() {
+    const el = $('dhPanelGridHadir');
+    if (el && typeof el.scrollIntoView === 'function') {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function renderIsiDaftarHadir_() {
+    const tglPilih = DH_STATE.selectedDate;
+    const qLower = String(DH_STATE.searchQuery || '').toLowerCase();
+
+    // Filter baris berdasarkan Kolom A (tanggal)
+    const hadirTanggalIni = (DH_STATE.items || []).filter(it => String(it.tanggal || '').trim() === tglPilih);
+
+    // Urutkan berdasarkan Jam Masuk (Kolom C) paling pagi ke terbaru
+    hadirTanggalIni.sort((a, b) => String(a.jamMasuk || '').localeCompare(String(b.jamMasuk || '')));
+
+    // Catat nama-nama yang sudah absen pada tanggal terpilih
+    const sudahAbsenMap = {};
+    hadirTanggalIni.forEach(it => {
+      const nmKey = String(it.nama || '').trim().toLowerCase();
+      if (nmKey) sudahAbsenMap[nmKey] = true;
+    });
+
+    // Hitung daftar karyawan yang BELUM melakukan absensi pada tanggal terpilih
+    const belumAbsenAll = (DH_STATE.semuaKaryawan || []).filter(u => {
+      const k = String(u.nama || '').trim().toLowerCase();
+      return k && !sudahAbsenMap[k];
+    });
+
+    const belumAbsenFiltered = qLower
+      ? belumAbsenAll.filter(u => (u.nama + ' ' + u.jabatan + ' ' + u.area).toLowerCase().indexOf(qLower) >= 0)
+      : belumAbsenAll;
+
+    const hadirFiltered = qLower
+      ? hadirTanggalIni.filter(it => String(it.nama || '').toLowerCase().indexOf(qLower) >= 0)
+      : hadirTanggalIni;
+
+    DH_STATE.filteredHadir = hadirFiltered;
+
+    const totalUnikHadir = Object.keys(sudahAbsenMap).length;
+    const totalTim = (DH_STATE.semuaKaryawan && DH_STATE.semuaKaryawan.length > 0)
+      ? DH_STATE.semuaKaryawan.length
+      : (totalUnikHadir + belumAbsenAll.length);
+
+    if ($('dhCountHadir')) $('dhCountHadir').textContent = hadirTanggalIni.length;
+    if ($('dhCountBelum')) $('dhCountBelum').textContent = belumAbsenAll.length;
+    if ($('dhCountTotal')) $('dhCountTotal').textContent = totalTim;
+
+    // Render Box Siapa Saja yang Belum Melakukan Absensi
+    const belumBox = $('dhBelumAbsenContainer');
+    if (belumBox) {
+      if (belumAbsenFiltered.length > 0) {
+        belumBox.innerHTML =
+          '<div class="dh-belum-panel">' +
+            '<div class="dh-belum-head" onclick="togglePanelBelumAbsenDaftarHadir()">' +
+              '<div class="dh-belum-title">' +
+                '<span>⚠️ Belum Melakukan Absensi (' + belumAbsenFiltered.length + ' Orang)</span>' +
+              '</div>' +
+              '<span style="font-size:11px;font-weight:800;color:#b45309">' + (DH_STATE.showBelumAbsen ? 'Sembunyikan ▴' : 'Lihat Daftar ▾') + '</span>' +
+            '</div>' +
+            (DH_STATE.showBelumAbsen
+              ? '<div class="dh-belum-chips">' +
+                  belumAbsenFiltered.map(u =>
+                    '<div class="dh-belum-item">' +
+                      '<span class="dh-belum-name" title="' + esc(u.nama) + '">' + esc(u.nama) + '</span>' +
+                      '<span class="dh-belum-role">' + esc(u.jabatan || '-') + '</span>' +
+                    '</div>'
+                  ).join('') +
+                '</div>'
+              : '') +
+          '</div>';
+      } else if (DH_STATE.semuaKaryawan && DH_STATE.semuaKaryawan.length > 0 && !qLower) {
+        belumBox.innerHTML =
+          '<div class="dh-belum-panel" style="background:#ecfdf5;border-color:#a7f3d0">' +
+            '<div class="dh-belum-title" style="color:#065f46">✅ Seluruh anggota tim sudah melakukan absensi pada tanggal ini.</div>' +
+          '</div>';
+      } else {
+        belumBox.innerHTML = '';
+      }
+    }
+
+    // Render Grid 2 Foto Sebaris (Urutan: 1. Nama [Kolom B], 2. Foto [Kolom D], 3. Jam Masuk [Kolom C])
+    if ($('dhGridTitle')) {
+      $('dhGridTitle').textContent = '📸 Daftar Hadir (' + hadirFiltered.length + ' Masuk)';
+    }
+    if ($('dhGridSubtitle')) {
+      $('dhGridSubtitle').textContent = (tglPilih === DH_STATE.today ? 'Hari Ini • ' : '') + tglPilih;
+    }
+
+    const gridBody = $('dhGridBody');
+    if (!gridBody) return;
+
+    if (hadirFiltered.length === 0) {
+      gridBody.className = '';
+      gridBody.innerHTML =
+        '<div class="tg-empty" style="padding:28px 14px">' +
+          '<div style="font-size:32px;margin-bottom:6px">📋</div>' +
+          '<div style="font-weight:800;color:var(--dark);margin-bottom:4px">Belum Ada Data Kehadiran Masuk</div>' +
+          '<div>Belum ada foto absensi tercatat pada tanggal <b>' + esc(tglPilih) + '</b>' + (qLower ? ' untuk pencarian "' + esc(DH_STATE.searchQuery) + '"' : '') + '.</div>' +
+        '</div>';
+      return;
+    }
+
+    gridBody.className = 'dh-photo-grid';
+    gridBody.innerHTML = hadirFiltered.map((it, idx) => {
+      const srcFoto = it.fotoThumb || it.fotoUrl || '';
+      const fotoHtml = srcFoto
+        ? '<img id="dhFoto_' + it.row + '" class="dh-card-foto" src="' + esc(srcFoto) + '" data-raw="' + esc(it.fotoUrl || '') + '" alt="' + esc(it.nama) + '" loading="lazy" onerror="fallbackFotoDaftarHadir_(this)">'
+        : '<div class="dh-card-foto-empty">📷<br>Tanpa Foto</div>';
+
+      return '<div class="dh-card">' +
+        // 1. Nama dari Kolom B
+        '<div class="dh-card-nama" title="' + esc(it.nama) + '">' + esc(it.nama) + '</div>' +
+        // 2. Tampilkan Foto dari Kolom D
+        '<div class="dh-card-foto-wrap" onclick="bukaPreviewFotoDaftarHadir(' + idx + ')">' +
+          fotoHtml +
+        '</div>' +
+        // 3. Jam Masuk dari Kolom C
+        '<div class="dh-card-jam">' +
+          '<span>🕒 Jam Masuk:</span>' +
+          '<b>' + esc(it.jamMasuk || '-') + '</b>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function fallbackFotoDaftarHadir_(imgEl) {
+    if (!imgEl || imgEl.dataset.retried === '1') {
+      if (imgEl && imgEl.parentElement) {
+        imgEl.outerHTML = '<div class="dh-card-foto-empty">📷<br>Foto Tidak Tersedia</div>';
+      }
+      return;
+    }
+    imgEl.dataset.retried = '1';
+    const rawUrl = imgEl.getAttribute('data-raw') || '';
+    if (!rawUrl) {
+      imgEl.outerHTML = '<div class="dh-card-foto-empty">📷<br>Foto Tidak Tersedia</div>';
+      return;
+    }
+    google.script.run.withSuccessHandler(res => {
+      if (res && res.success && res.dataUrl) {
+        imgEl.src = res.dataUrl;
+      } else {
+        imgEl.outerHTML = '<div class="dh-card-foto-empty">📷<br>Foto Tidak Tersedia</div>';
+      }
+    }).withFailureHandler(() => {
+      imgEl.outerHTML = '<div class="dh-card-foto-empty">📷<br>Foto Tidak Tersedia</div>';
+    }).getImageData(rawUrl);
+  }
+
+  function bukaPreviewFotoDaftarHadir(idx) {
+    const it = DH_STATE.filteredHadir && DH_STATE.filteredHadir[idx];
+    if (!it) return;
+    const modal = $('modalFile');
+    const title = $('mfTitle');
+    const body = $('mfBody');
+    if (!modal || !body) return;
+
+    if (title) title.textContent = '📸 ' + (it.nama || '-') + ' • Jam Masuk ' + (it.jamMasuk || '-');
+    const imgEl = $('dhFoto_' + it.row);
+    const currentSrc = (imgEl && imgEl.src) ? imgEl.src : (it.fotoThumb || it.fotoUrl || '');
+
+    body.innerHTML =
+      '<div style="margin-bottom:10px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap">' +
+        '<span class="pic-badge">👤 ' + esc(it.nama) + '</span>' +
+        '<span class="pic-badge">📅 ' + esc(it.tanggal) + '</span>' +
+        '<span class="pic-badge">🕒 Jam Masuk: ' + esc(it.jamMasuk) + '</span>' +
+      '</div>' +
+      (currentSrc
+        ? '<img id="dhModalPreviewImg" src="' + esc(currentSrc) + '" style="max-width:100%;max-height:70vh;border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow-md)" alt="' + esc(it.nama) + '">'
+        : '<div class="tg-empty">Tidak ada lampiran foto.</div>');
+
+    modal.classList.add('show');
+
+    if (it.fotoUrl && (!currentSrc || currentSrc.indexOf('data:image') !== 0)) {
+      google.script.run.withSuccessHandler(res => {
+        const mImg = $('dhModalPreviewImg');
+        if (mImg && res && res.success && res.dataUrl) {
+          mImg.src = res.dataUrl;
+        }
+      }).getImageData(it.fotoUrl);
+    }
+  }
+
   // ---------- NAVIGASI ----------
   function nav(m) {
     if (typeof CUR !== 'undefined' && CUR === 'absensi' && m !== 'absensi') {
@@ -11105,6 +11747,8 @@
       muatHalamanEmailBlast();
     } else if (m === 'laporanharian') {
       muatHalamanLaporanHarian();
+    } else if (m === 'daftarhadir') {
+      muatHalamanDaftarHadir();
     } else {
       $('content').innerHTML =
         '<div class="panel placeholder"><div class="big">' + MENU[m].ikon + '</div>' +
