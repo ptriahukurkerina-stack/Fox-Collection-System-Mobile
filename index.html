@@ -3762,7 +3762,7 @@
     text-align: center;
     padding: 10px;
   }
-  .kunjungan-cam-Wrap video {
+  .kunjungan-cam-wrap video, .kunjungan-cam-Wrap video {
     width: 100%;
     max-height: 280px;
     border-radius: 8px;
@@ -3799,7 +3799,7 @@
   }
   .abs-kat-card.active-luar .kat-lbl { color: #92400e; }
 </style>
-</head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -5789,6 +5789,124 @@
   let FILE_ADMIN = null, FILE_KB_ADMIN = null, FILE_DIR = null, FILE_KOM = null;
   let MODAL_TIPE = 'biaya';
 
+  // Helper Kompresi Gambar Otomatis (Mencegah gagal preview & gagal simpan akibat foto kamera 5-12MB)
+  function kompresGambarKeBase64_(file, maxDim, quality) {
+    maxDim = maxDim || 1080;
+    quality = quality || 0.82;
+    return new Promise((resolve, reject) => {
+      if (!file) return reject(new Error('File foto tidak ditemukan.'));
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Gagal membaca file dari penyimpanan perangkat.'));
+      reader.onload = e => {
+        const rawDataUrl = e.target.result;
+        // Jika bukan gambar (misal PDF), langsung kembalikan tanpa kompresi canvas
+        if (file.type && file.type.indexOf('image/') !== 0) {
+          return resolve({
+            dataUrl: rawDataUrl,
+            mimeType: file.type || 'application/octet-stream',
+            name: file.name || 'dokumen'
+          });
+        }
+        const img = new Image();
+        img.onload = () => {
+          try {
+            let w = img.naturalWidth || img.width || 800;
+            let h = img.naturalHeight || img.height || 600;
+            if (w > maxDim || h > maxDim) {
+              if (w >= h) {
+                h = Math.round((h * maxDim) / w);
+                w = maxDim;
+              } else {
+                w = Math.round((w * maxDim) / h);
+                h = maxDim;
+              }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            // Latar putih untuk berjaga-jaga jika gambar transparan disimpan ke JPEG
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, w, h);
+            ctx.drawImage(img, 0, 0, w, h);
+            const compressedUrl = canvas.toDataURL('image/jpeg', quality);
+            resolve({
+              dataUrl: compressedUrl,
+              mimeType: 'image/jpeg',
+              name: (file.name ? file.name.replace(/\.[^.]+$/, '') : 'foto') + '.jpg',
+              width: w,
+              height: h
+            });
+          } catch (canvasErr) {
+            // Fallback ke rawDataUrl jika canvas gagal
+            resolve({
+              dataUrl: rawDataUrl,
+              mimeType: file.type || 'image/jpeg',
+              name: file.name || 'foto.jpg'
+            });
+          }
+        };
+        img.onerror = () => {
+          // Fallback jika format gambar dari kamera HP tidak bisa didecode Image() tapi valid DataURL
+          resolve({
+            dataUrl: rawDataUrl,
+            mimeType: file.type || 'image/jpeg',
+            name: file.name || 'foto.jpg'
+          });
+        };
+        img.src = rawDataUrl;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Callback Global jika Android Native mengirim hasil foto langsung lewat JavascriptInterface / evaluateJavascript
+  window.onReceiveCameraPhotoFromAndroid = function(targetMode, dataUrl, customFileName) {
+    if (!dataUrl) return;
+    const normalizedUrl = String(dataUrl).indexOf('data:') === 0
+      ? String(dataUrl)
+      : ('data:image/jpeg;base64,' + String(dataUrl));
+    if (targetMode === 'absensi' || CUR === 'absensi') {
+      ABS_PHOTO_BASE64 = normalizedUrl;
+      ABS_PHOTO_MIME = 'image/jpeg';
+      hentikanKameraAbsensi_();
+      if ($('absVideo')) $('absVideo').classList.add('hidden');
+      if ($('absCamPlaceholder')) $('absCamPlaceholder').classList.add('hidden');
+      const img = $('absPhotoPreview');
+      if (img) {
+        img.src = normalizedUrl;
+        img.classList.remove('hidden');
+        img.style.display = 'block';
+      }
+      if ($('btnAbsCapture')) $('btnAbsCapture').textContent = '🔄 Foto Ulang';
+      if ($('absFotoStatus')) {
+        $('absFotoStatus').textContent = '✅ Foto selfie absensi siap disimpan';
+        $('absFotoStatus').style.color = '#059669';
+      }
+    } else {
+      const tglKunjungan = batasTanggalPtp_().min;
+      const uid = (HIST_NASABAH_AKTIF && HIST_NASABAH_AKTIF.userId) ? HIST_NASABAH_AKTIF.userId : 'NASABAH';
+      const fileName = customFileName || (uid + '_' + tglKunjungan + '.JPG');
+      FILE_FOTO_KUNJUNGAN = {
+        data: normalizedUrl,
+        mimeType: 'image/jpeg',
+        name: fileName
+      };
+      if ($('lblFotoKunjungan')) {
+        $('lblFotoKunjungan').textContent = '✅ ' + fileName + ' (Siap disimpan)';
+        $('lblFotoKunjungan').style.color = '#059669';
+        $('lblFotoKunjungan').style.fontWeight = '700';
+      }
+      const prev = $('prevFotoKunjungan');
+      if (prev) {
+        prev.src = normalizedUrl;
+        prev.classList.remove('hidden');
+        prev.style.display = 'block';
+      }
+      hentikanKameraKunjungan_();
+    }
+  };
+
   function bacaFileInput_(inputEl, labelId, cb) {
     const f = inputEl.files && inputEl.files[0];
     const lbl = $(labelId);
@@ -5797,10 +5915,27 @@
       cb(null);
       return;
     }
-    if (lbl) lbl.textContent = f.name;
-    const reader = new FileReader();
-    reader.onload = e => cb({ data: e.target.result, mimeType: f.type || 'image/jpeg', name: f.name });
-    reader.readAsDataURL(f);
+    if (lbl) lbl.textContent = 'Memproses ' + f.name + '...';
+    if (f.type && f.type.indexOf('image/') === 0) {
+      kompresGambarKeBase64_(f, 1200, 0.82).then(res => {
+        if (lbl) lbl.textContent = '✅ ' + f.name;
+        cb({ data: res.dataUrl, mimeType: res.mimeType || 'image/jpeg', name: f.name });
+      }).catch(() => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          if (lbl) lbl.textContent = f.name;
+          cb({ data: e.target.result, mimeType: f.type || 'image/jpeg', name: f.name });
+        };
+        reader.readAsDataURL(f);
+      });
+    } else {
+      const reader = new FileReader();
+      reader.onload = e => {
+        if (lbl) lbl.textContent = f.name;
+        cb({ data: e.target.result, mimeType: f.type || 'application/pdf', name: f.name });
+      };
+      reader.readAsDataURL(f);
+    }
   }
 
   function statusApprovalBadge_(it) {
@@ -6586,27 +6721,43 @@
   }
 
   function pilihFotoKunjungan_(inputEl) {
-    const f = inputEl.files && inputEl.files[0];
+    const f = inputEl && inputEl.files ? inputEl.files[0] : null;
     if (!f) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      FILE_FOTO_KUNJUNGAN = {
-        data: e.target.result,
-        mimeType: f.type || 'image/jpeg',
-        name: f.name
-      };
+    const lbl = $('lblFotoKunjungan');
+    if (lbl) {
+      lbl.textContent = '⏳ Memproses & mengompres foto...';
+      lbl.style.color = '#0284c7';
+    }
+    kompresGambarKeBase64_(f, 1080, 0.82).then(res => {
       const tglKunjungan = batasTanggalPtp_().min;
       const uid = (HIST_NASABAH_AKTIF && HIST_NASABAH_AKTIF.userId) ? HIST_NASABAH_AKTIF.userId : 'NASABAH';
-      if ($('lblFotoKunjungan')) {
-        $('lblFotoKunjungan').textContent = uid + '_' + tglKunjungan + '.JPG';
+      const fileName = uid + '_' + tglKunjungan + '.JPG';
+      FILE_FOTO_KUNJUNGAN = {
+        data: res.dataUrl,
+        mimeType: res.mimeType || 'image/jpeg',
+        name: fileName
+      };
+      if (lbl) {
+        lbl.textContent = '✅ ' + fileName + ' (Siap disimpan)';
+        lbl.style.color = '#059669';
+        lbl.style.fontWeight = '700';
       }
       const prev = $('prevFotoKunjungan');
       if (prev) {
-        prev.src = e.target.result;
+        prev.src = res.dataUrl;
+        prev.classList.remove('hidden');
         prev.style.display = 'block';
       }
-    };
-    reader.readAsDataURL(f);
+      if ($('btnLampirkanFotoKunjungan')) {
+        $('btnLampirkanFotoKunjungan').textContent = '🔄 Ganti / Ambil Ulang Foto Kunjungan';
+      }
+      hentikanKameraKunjungan_();
+    }).catch(err => {
+      if (lbl) {
+        lbl.textContent = '❌ Gagal membaca foto: ' + (err && err.message ? err.message : 'Coba lagi');
+        lbl.style.color = '#dc2626';
+      }
+    });
   }
 
   let KUNJUNGAN_CAM_STREAM = null;
@@ -6626,6 +6777,19 @@
     if (wrap) wrap.classList.add('hidden');
   }
 
+  function bukaInputKameraHpKunjungan_(pakaiCapture) {
+    // PENTING: Matikan stream WebRTC dulu agar hardware kamera Android tidak terkunci (camera in use)
+    hentikanKameraKunjungan_();
+    setTimeout(() => {
+      const targetId = pakaiCapture ? 'inpFotoKamera' : 'inpFotoGaleri';
+      const inp = $(targetId) || $('inpFotoKamera');
+      if (inp) {
+        inp.value = '';
+        inp.click();
+      }
+    }, 150);
+  }
+
   // Ketika klik "Lampirkan Foto Kunjungan" langsung meminta izin kamera dan membuka kamera belakang
   function bukaKameraKunjunganLangsung() {
     try {
@@ -6634,7 +6798,7 @@
       }
     } catch (e) {}
 
-    // Jika sedang membuka kamera live, langsung jepret
+    // Jika sedang membuka kamera live dan frame sudah siap, langsung jepret
     const wrap = $('wrapLiveKameraKunjungan');
     const vid = $('vidKameraKunjungan');
     if (KUNJUNGAN_CAM_STREAM && wrap && !wrap.classList.contains('hidden') && vid && vid.videoWidth > 0) {
@@ -6642,8 +6806,9 @@
       return;
     }
 
-    // Prioritaskan Live Kamera WebRTC (facingMode: environment / kamera belakang) agar langsung tampil tanpa pilih galeri
+    // Prioritaskan Live Kamera WebRTC (facingMode: environment / kamera belakang)
     if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
+      hentikanKameraKunjungan_();
       navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 960 } },
         audio: false
@@ -6655,30 +6820,32 @@
         const v = $('vidKameraKunjungan');
         if (v) {
           v.srcObject = stream;
-          v.play().catch(() => {});
+          v.setAttribute('playsinline', 'true');
+          v.muted = true;
+          const playPromise = v.play();
+          if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => {});
+          }
         }
       }).catch(() => {
-        // Fallback langsung ke input kamera hardware (capture="environment")
-        const inp = $('inpFotoKamera');
-        if (inp) {
-          inp.value = '';
-          inp.click();
-        }
+        // Fallback ke input kamera / file chooser
+        bukaInputKameraHpKunjungan_(true);
       });
     } else {
-      const inp = $('inpFotoKamera');
-      if (inp) {
-        inp.value = '';
-        inp.click();
-      }
+      bukaInputKameraHpKunjungan_(true);
     }
   }
 
   function jepretFotoKunjunganLive_() {
     const vid = $('vidKameraKunjungan');
-    if (!vid || !vid.videoWidth) return;
+    if (!vid) return;
+    if (!vid.videoWidth || !vid.videoHeight) {
+      // Jika stream video belum mengeluarkan dimensi frame, arahkan ke kamera HP native
+      bukaInputKameraHpKunjungan_(true);
+      return;
+    }
     const canvas = document.createElement('canvas');
-    const maxDim = 1280;
+    const maxDim = 1080;
     let w = vid.videoWidth;
     let h = vid.videoHeight;
     if (w > maxDim || h > maxDim) {
@@ -6688,8 +6855,10 @@
     canvas.width = w;
     canvas.height = h;
     const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, w, h);
     ctx.drawImage(vid, 0, 0, w, h);
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
     const tglKunjungan = batasTanggalPtp_().min;
     const uid = (HIST_NASABAH_AKTIF && HIST_NASABAH_AKTIF.userId) ? HIST_NASABAH_AKTIF.userId : 'NASABAH';
     const fileName = uid + '_' + tglKunjungan + '.JPG';
@@ -6700,12 +6869,18 @@
       name: fileName
     };
     if ($('lblFotoKunjungan')) {
-      $('lblFotoKunjungan').textContent = '✅ ' + fileName + ' (Siap diupload)';
+      $('lblFotoKunjungan').textContent = '✅ ' + fileName + ' (Siap disimpan)';
+      $('lblFotoKunjungan').style.color = '#059669';
+      $('lblFotoKunjungan').style.fontWeight = '700';
     }
     const prev = $('prevFotoKunjungan');
     if (prev) {
       prev.src = dataUrl;
+      prev.classList.remove('hidden');
       prev.style.display = 'block';
+    }
+    if ($('btnLampirkanFotoKunjungan')) {
+      $('btnLampirkanFotoKunjungan').textContent = '🔄 Ganti / Ambil Ulang Foto Kunjungan';
     }
     hentikanKameraKunjungan_();
   }
@@ -6782,17 +6957,21 @@
 
       '<div class="foto-kunjungan-box">' +
         '<input type="file" id="inpFotoKamera" accept="image/*" capture="environment" class="hidden" onchange="pilihFotoKunjungan_(this)">' +
-        '<button type="button" class="outline full" id="btnLampirkanFotoKunjungan" onclick="bukaKameraKunjunganLangsung()">📷 Lampirkan Foto Kunjungan (Langsung Kamera)</button>' +
+        '<input type="file" id="inpFotoGaleri" accept="image/*" class="hidden" onchange="pilihFotoKunjungan_(this)">' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+          '<button type="button" class="outline full" style="flex:2;min-width:180px" id="btnLampirkanFotoKunjungan" onclick="bukaKameraKunjunganLangsung()">📷 Buka Kamera Langsung</button>' +
+          '<button type="button" class="outline" style="flex:1;min-width:130px" onclick="bukaInputKameraHpKunjungan_(false)">📁 Pilih / Kamera HP</button>' +
+        '</div>' +
         '<div id="wrapLiveKameraKunjungan" class="kunjungan-cam-wrap hidden">' +
           '<video id="vidKameraKunjungan" autoplay playsinline muted></video>' +
-          '<div style="display:flex;gap:8px;margin-top:8px">' +
-            '<button type="button" class="full btn-ok" onclick="jepretFotoKunjunganLive_()">📸 Ambil Gambar Sekarang</button>' +
-            '<button type="button" class="outline" onclick="$(\'inpFotoKamera\').click()">🔄 Kamera HP</button>' +
+          '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">' +
+            '<button type="button" class="full btn-ok" style="flex:2;min-width:160px" onclick="jepretFotoKunjunganLive_()">📸 Ambil Gambar Sekarang</button>' +
+            '<button type="button" class="outline" style="background:#1e293b;color:#fff;border-color:#475569" onclick="bukaInputKameraHpKunjungan_(true)">🔄 Kamera HP</button>' +
             '<button type="button" class="ghost" style="color:#fff" onclick="hentikanKameraKunjungan_()">Batal</button>' +
           '</div>' +
         '</div>' +
         '<div class="lk-sm" id="lblFotoKunjungan" style="margin-top:8px">Belum ada foto dilampirkan</div>' +
-        '<img id="prevFotoKunjungan" class="foto-prev" alt="Preview Foto Kunjungan">' +
+        '<img id="prevFotoKunjungan" class="foto-prev" style="display:none;max-width:100%;max-height:260px;border-radius:10px;margin-top:8px;object-fit:contain;border:1.5px solid #10b981" alt="Preview Foto Kunjungan">' +
       '</div>' +
 
       '<button type="button" class="full btn-ok" id="btnSimpanHistoris" onclick="simpanFormHistoris()">💾 Simpan Laporan</button>' +
@@ -7741,9 +7920,8 @@
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const base64Data = e.target.result.split(',')[1];
+    kompresGambarKeBase64_(file, 1200, 0.82).then(function(res) {
+      const base64Data = String(res.dataUrl || '').split(',')[1] || '';
       const formData = {
         row: row,
         userId: userId,
@@ -7754,8 +7932,8 @@
         statusBayar: $('statusBayar').value,
         file: {
           bytes: base64Data,
-          name: file.name,
-          type: file.type
+          name: res.name || file.name,
+          type: res.mimeType || file.type || 'image/jpeg'
         }
       };
 
@@ -7784,8 +7962,13 @@
           }
         })
         .saveData(formData);
-    };
-    reader.readAsDataURL(file);
+    }).catch(function(err) {
+      alert('Gagal memproses foto bukti: ' + err.message);
+      if ($('submitBtn')) {
+        $('submitBtn').disabled = false;
+        $('submitBtn').innerText = 'Simpan & Unggah';
+      }
+    });
   }
 
   function loadUploadedList() {
@@ -9008,12 +9191,18 @@
           '<div class="abs-cam-box">' +
             '<div class="abs-cam-viewport">' +
               '<video id="absVideo" class="mirror hidden" autoplay playsinline muted></video>' +
-              '<img id="absPhotoPreview" class="hidden" alt="Foto Absen">' +
-              '<div id="absCamPlaceholder" class="abs-cam-placeholder">📷</div>' +
+              '<img id="absPhotoPreview" class="hidden" style="width:100%;height:100%;object-fit:cover" alt="Foto Absen">' +
+              '<div id="absCamPlaceholder" class="abs-cam-placeholder">📷<div style="font-size:12px;margin-top:6px;color:#94a3b8">Kamera Siap</div></div>' +
             '</div>' +
+            '<div id="absFotoStatus" class="lk-sm" style="margin-top:8px;text-align:center;font-weight:700;color:#64748b">Belum ada foto diambil</div>' +
             '<canvas id="absCanvas" class="hidden"></canvas>' +
             '<input type="file" id="absFileFallback" accept="image/*" capture="user" class="hidden" onchange="handleAbsFileFallback_(event)">' +
+            '<input type="file" id="absFileGaleri" accept="image/*" class="hidden" onchange="handleAbsFileFallback_(event)">' +
             '<button type="button" class="btn-abs-cam" id="btnAbsCapture" onclick="aksiTombolKameraAbsensi()">📸 Ambil Foto</button>' +
+            '<div style="display:flex;gap:8px;margin-top:8px">' +
+              '<button type="button" class="outline full" style="font-size:12px;min-height:38px" onclick="bukaFallbackFileAbsensi_(true)">🔄 Kamera HP Native</button>' +
+              '<button type="button" class="outline full" style="font-size:12px;min-height:38px" onclick="bukaFallbackFileAbsensi_(false)">📁 Pilih File Foto</button>' +
+            '</div>' +
           '</div>' +
 
           '<button type="button" class="btn-abs-submit" id="btnSubmitAbsensi" onclick="kirimAbsensiSekarang()">Simpan Absen</button>' +
@@ -9026,6 +9215,18 @@
     deteksiLokasiAbsensi_();
   }
 
+  function bukaFallbackFileAbsensi_(pakaiCapture) {
+    // Matikan stream WebRTC terlebih dahulu agar hardware kamera tidak terkunci oleh WebView
+    hentikanKameraAbsensi_();
+    setTimeout(() => {
+      const inp = $(pakaiCapture ? 'absFileFallback' : 'absFileGaleri') || $('absFileFallback');
+      if (inp) {
+        inp.value = '';
+        inp.click();
+      }
+    }, 150);
+  }
+
   function bukaKameraAbsensi_() {
     hentikanKameraAbsensi_();
     const vid = $('absVideo');
@@ -9033,26 +9234,38 @@
     const ph = $('absCamPlaceholder');
     if (!vid) return;
 
-    if (img) img.classList.add('hidden');
+    if (img) {
+      img.classList.add('hidden');
+      img.style.display = 'none';
+    }
     if (ph) ph.classList.remove('hidden');
+    if ($('btnAbsCapture')) $('btnAbsCapture').textContent = '📸 Ambil Foto';
 
     if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function') {
       return;
     }
 
     navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 960 } },
+      video: { facingMode: { ideal: 'user' }, width: { ideal: 1280 }, height: { ideal: 960 } },
       audio: false
     }).then(stream => {
       if (CUR !== 'absensi' || !$('absVideo')) {
         stream.getTracks().forEach(t => t.stop());
         return;
       }
+      STATUS_IZIN_PERANGKAT.kamera = true;
+      updateUiStatusIzin_();
       ABS_STREAM = stream;
       const v = $('absVideo');
       v.srcObject = stream;
+      v.setAttribute('playsinline', 'true');
+      v.muted = true;
       v.classList.remove('hidden');
       if ($('absCamPlaceholder')) $('absCamPlaceholder').classList.add('hidden');
+      const playPromise = v.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {});
+      }
     }).catch(() => {});
   }
 
@@ -9060,19 +9273,28 @@
     const vid = $('absVideo');
     if (ABS_PHOTO_BASE64) {
       ABS_PHOTO_BASE64 = '';
+      if ($('absFotoStatus')) {
+        $('absFotoStatus').textContent = 'Silakan ambil foto ulang...';
+        $('absFotoStatus').style.color = '#64748b';
+      }
       bukaKameraAbsensi_();
       return;
     }
-    if (ABS_STREAM && vid && !vid.classList.contains('hidden') && vid.videoWidth > 0) {
-      tangkapFrameKameraAbsensi_();
-    } else {
-      const fb = $('absFileFallback');
-      if (fb) {
-        fb.value = '';
-        fb.click();
+    if (ABS_STREAM && vid && !vid.classList.contains('hidden')) {
+      if (vid.videoWidth > 0 && vid.videoHeight > 0) {
+        tangkapFrameKameraAbsensi_();
       } else {
-        bukaKameraAbsensi_();
+        // Tunggu 250ms jika metadata frame video baru saja dimuat
+        setTimeout(() => {
+          if (vid.videoWidth > 0 && vid.videoHeight > 0) {
+            tangkapFrameKameraAbsensi_();
+          } else {
+            bukaFallbackFileAbsensi_(true);
+          }
+        }, 250);
       }
+    } else {
+      bukaFallbackFileAbsensi_(true);
     }
   }
 
@@ -9080,7 +9302,10 @@
     const vid = $('absVideo');
     const canvas = $('absCanvas');
     const img = $('absPhotoPreview');
-    if (!vid || !canvas || !vid.videoWidth) return;
+    if (!vid || !canvas || !vid.videoWidth) {
+      bukaFallbackFileAbsensi_(true);
+      return;
+    }
 
     const maxDim = 1080;
     let w = vid.videoWidth;
@@ -9098,11 +9323,15 @@
     canvas.width = w;
     canvas.height = h;
     const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+    ctx.save();
     ctx.translate(w, 0);
     ctx.scale(-1, 1);
     ctx.drawImage(vid, 0, 0, w, h);
+    ctx.restore();
 
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.84);
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
     ABS_PHOTO_BASE64 = dataUrl;
     ABS_PHOTO_MIME = 'image/jpeg';
 
@@ -9112,13 +9341,26 @@
     if (img) {
       img.src = dataUrl;
       img.classList.remove('hidden');
+      img.style.display = 'block';
     }
+    if ($('btnAbsCapture')) {
+      $('btnAbsCapture').textContent = '🔄 Foto Ulang';
+    }
+    if ($('absFotoStatus')) {
+      $('absFotoStatus').textContent = '✅ Foto selfie berhasil diambil & siap disimpan';
+      $('absFotoStatus').style.color = '#059669';
+    }
+    pesan('msgAbsensi', '', '');
   }
 
   function handleAbsFileFallback_(ev) {
     const file = ev && ev.target && ev.target.files ? ev.target.files[0] : null;
     if (!file) return;
-    kompresGambarKeBase64_(file, 1080, 0.84).then(res => {
+    if ($('absFotoStatus')) {
+      $('absFotoStatus').textContent = '⏳ Memproses & mengompres foto...';
+      $('absFotoStatus').style.color = '#0284c7';
+    }
+    kompresGambarKeBase64_(file, 1080, 0.82).then(res => {
       ABS_PHOTO_BASE64 = res.dataUrl;
       ABS_PHOTO_MIME = res.mimeType || 'image/jpeg';
       hentikanKameraAbsensi_();
@@ -9128,9 +9370,18 @@
       if (img) {
         img.src = res.dataUrl;
         img.classList.remove('hidden');
+        img.style.display = 'block';
       }
+      if ($('btnAbsCapture')) {
+        $('btnAbsCapture').textContent = '🔄 Foto Ulang';
+      }
+      if ($('absFotoStatus')) {
+        $('absFotoStatus').textContent = '✅ Foto berhasil dilampirkan & siap disimpan';
+        $('absFotoStatus').style.color = '#059669';
+      }
+      pesan('msgAbsensi', '', '');
     }).catch(err => {
-      pesan('msgAbsensi', 'Gagal memproses foto: ' + err.message, 'err');
+      pesan('msgAbsensi', 'Gagal memproses foto: ' + (err && err.message ? err.message : 'Coba lagi'), 'err');
     });
   }
 
