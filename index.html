@@ -2543,6 +2543,181 @@
     border-radius: var(--radius-md);
   }
 
+  /* ---------- VIRTUAL ASSISTIVE TOUCH (IPHONE STYLE) ---------- */
+  .assistive-wrap {
+    position: fixed;
+     inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+  }
+  .assistive-touch-btn {
+    position: fixed;
+    right: 16px;
+    bottom: calc(84px + env(safe-area-inset-bottom));
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.46);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1.5px solid rgba(255, 255, 255, 0.28);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    opacity: 0.72;
+    transition: opacity 0.22s ease, transform 0.18s ease, box-shadow 0.22s ease, background 0.22s ease;
+    padding: 0;
+    min-height: 0;
+  }
+  .assistive-touch-btn:hover,
+  .assistive-touch-btn.active,
+  .assistive-touch-btn.dragging {
+    opacity: 0.96;
+    background: rgba(15, 23, 42, 0.68);
+    box-shadow: 0 12px 30px rgba(2, 132, 199, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+  }
+  .assistive-ring-outer {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1.5px solid rgba(255, 255, 255, 0.36);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .assistive-ring-mid {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.28);
+    border: 1.5px solid rgba(255, 255, 255, 0.58);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .assistive-ring-inner {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.75);
+    pointer-events: none;
+  }
+  .assistive-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.22);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 9998;
+  }
+  .assistive-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .assistive-menu {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.86);
+    width: min(326px, 92vw);
+    background: rgba(15, 23, 42, 0.78);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1.5px solid rgba(255, 255, 255, 0.22);
+    border-radius: 30px;
+    padding: 18px 16px 16px;
+    box-shadow: 0 24px 54px rgba(15, 23, 42, 0.48), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 9999;
+  }
+  .assistive-menu.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .assistive-menu-head {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(226, 232, 240, 0.85);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .assistive-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .assistive-item {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    padding: 12px 6px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #f8fafc;
+    cursor: pointer;
+    min-height: 78px;
+    width: 100%;
+    box-shadow: none;
+    transition: all 0.16s ease;
+  }
+  .assistive-item:hover {
+    background: rgba(56, 189, 248, 0.22);
+    border-color: rgba(56, 189, 248, 0.45);
+    transform: translateY(-1px);
+  }
+  .assistive-item.on {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.42) 0%, rgba(2, 132, 199, 0.55) 100%);
+    border-color: #38bdf8;
+    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.32);
+  }
+  .assistive-item-ic {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    line-height: 1;
+  }
+  .assistive-item.on .assistive-item-ic {
+    background: rgba(255, 255, 255, 0.26);
+  }
+  .assistive-item-lbl {
+    font-size: 10.5px;
+    font-weight: 700;
+    line-height: 1.22;
+    text-align: center;
+    color: #f1f5f9;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
   /* ---------- MENU PERFORMANCE (FOX PERFORMANCE) ---------- */
   .pf-hero {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0369a1 100%);
@@ -4155,7 +4330,7 @@
     color: var(--primary-hover);
   }
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -4601,6 +4776,47 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- ================= VIRTUAL ASSISTIVE TOUCH (IPHONE STYLE) ================= -->
+<div id="assistiveTouchWrap" class="assistive-wrap hidden">
+  <div id="assistiveTouchBackdrop" class="assistive-backdrop" onclick="tutupAssistiveTouchMenu()"></div>
+  <div id="assistiveTouchMenu" class="assistive-menu" role="dialog" aria-label="Menu Pintasan AssistiveTouch">
+    <div class="assistive-menu-head">Pintasan Menu Cepat</div>
+    <div class="assistive-grid">
+      <button type="button" class="assistive-item" data-assist-m="absensi" onclick="pilihMenuAssistive('absensi')">
+        <span class="assistive-item-ic">📍</span>
+        <span class="assistive-item-lbl">Absensi</span>
+      </button>
+      <button type="button" class="assistive-item" data-assist-m="tagihan" onclick="pilihMenuAssistive('tagihan')">
+        <span class="assistive-item-ic">🧮</span>
+        <span class="assistive-item-lbl">Data Tagihan</span>
+      </button>
+      <button type="button" class="assistive-item" data-assist-m="home" onclick="pilihMenuAssistive('home')">
+        <span class="assistive-item-ic">🏠</span>
+        <span class="assistive-item-lbl">Beranda</span>
+      </button>
+      <button type="button" class="assistive-item" data-assist-m="performance" onclick="pilihMenuAssistive('performance')">
+        <span class="assistive-item-ic">📈</span>
+        <span class="assistive-item-lbl">Performance</span>
+      </button>
+      <button type="button" class="assistive-item" data-assist-m="karyawan" onclick="pilihMenuAssistive('karyawan')">
+        <span class="assistive-item-ic">👥</span>
+        <span class="assistive-item-lbl">Portal Karyawan</span>
+      </button>
+      <button type="button" class="assistive-item" onclick="tutupAssistiveTouchMenu()">
+        <span class="assistive-item-ic">✕</span>
+        <span class="assistive-item-lbl">Tutup</span>
+      </button>
+    </div>
+  </div>
+  <button type="button" id="assistiveTouchBtn" class="assistive-touch-btn" title="AssistiveTouch Navigasi Cepat" aria-label="AssistiveTouch">
+    <span class="assistive-ring-outer">
+      <span class="assistive-ring-mid">
+        <span class="assistive-ring-inner"></span>
+      </span>
+    </span>
+  </button>
 </div>
 
 <script>
@@ -5305,6 +5521,7 @@
     $('loginPass').value = '';
     $('auth').classList.add('hidden');
     $('app').classList.remove('hidden');
+    if ($('assistiveTouchWrap')) $('assistiveTouchWrap').classList.remove('hidden');
     document.body.classList.add('dash');
     $('uNama').textContent = S.nama;
     $('uJabatan').textContent = S.jabatan;
@@ -5395,6 +5612,8 @@
     S = { token:'', nama:'', jabatan:'', menus:[], menuCategories:[] };
     toggleMenu(false);
     tutupModalOnline();
+    if (typeof tutupAssistiveTouchMenu === 'function') tutupAssistiveTouchMenu();
+    if ($('assistiveTouchWrap')) $('assistiveTouchWrap').classList.add('hidden');
     $('app').classList.add('hidden'); $('auth').classList.remove('hidden');
     document.body.classList.remove('dash');
     resetFoto();
@@ -5435,6 +5654,8 @@
   const rp = n => 'Rp ' + Math.round(Number(n) || 0).toLocaleString('id-ID');
   const jmlHari = n => Math.round(Number(n) || 0).toLocaleString('id-ID') + ' hari';
 
+  let VALID_BH_KATEGORI_SET = {};
+
   function muatDashboard() {
     api('getDataDashboard', S.token).then(r => {
       const box = $('chartBox'), bar = $('barBox'), perBox = $('periodeChartBox'); if (!box) return;
@@ -5445,6 +5666,14 @@
         if (perBox) perBox.textContent = t;
         return;
       }
+      const bhSetNow = {};
+      (r.itemsGab || []).concat(r.items || []).forEach(it => {
+        const nm = String(it && it.nama ? it.nama : '').trim().toUpperCase();
+        if (nm && nm !== '(TANPA KATEGORI)') bhSetNow[nm] = true;
+      });
+      if (Object.keys(bhSetNow).length > 0) {
+        VALID_BH_KATEGORI_SET = bhSetNow;
+      }
       if (r.items.length) { box.className = ''; box.innerHTML = gambarDonut(r.items, r.total); } else box.textContent = 'Belum ada data pembayaran.';
       if ($('barTitle')) $('barTitle').textContent = 'Plan Closing : ' + rp(r.totalGab || 0);
       if (bar) {
@@ -5453,20 +5682,47 @@
       if (perBox) {
         if (r.periodeChart && Array.isArray(r.periodeChart.series) && r.periodeChart.series.length > 0) {
           perBox.className = '';
-          perBox.innerHTML = gambarDiagramPeriode(r.periodeChart);
-          setTimeout(sinkronGarisTrenPeriode_, 30);
+          perBox.innerHTML = gambarDiagramPeriode(r.periodeChart, bhSetNow);
         } else {
-          perBox.textContent = 'Belum ada data periode pada file arsip maupun berjalan.';
+          perBox.textContent = 'Belum ada data periode pada Kolom BH.';
         }
       }
     }).catch(e => { ['chartBox','barBox','periodeChartBox'].forEach(i => { const b=$(i); if (b) b.textContent = 'Gagal memuat: ' + e.message; }); });
   }
 
-  function gambarDiagramPeriode(pc) {
-    const produkList = Array.isArray(pc.produkList) ? pc.produkList : [];
-    const series = Array.isArray(pc.series) ? pc.series : [];
+  function gambarDiagramPeriode(pc, bhSetOverride) {
+    const rawSeries = Array.isArray(pc.series) ? pc.series : [];
+    const runningOnly = rawSeries.filter(s => Boolean(s && s.isBerjalan));
+    const series = runningOnly.length > 0 ? runningOnly : (rawSeries.length > 0 ? [rawSeries[rawSeries.length - 1]] : []);
+
+    const bhAllowed = (bhSetOverride && Object.keys(bhSetOverride).length > 0)
+      ? bhSetOverride
+      : VALID_BH_KATEGORI_SET;
+    const hasBhFilter = Object.keys(bhAllowed).length > 0;
+
+    const seriesProdSet = {};
+    series.forEach(s => {
+      const vals = (s && s.values) ? s.values : {};
+      Object.keys(vals).forEach(k => {
+        const kUp = String(k || '').trim().toUpperCase();
+        if (!kUp || kUp === '(TANPA KATEGORI)') return;
+        if (Number(vals[k]) > 0 || !hasBhFilter) {
+          seriesProdSet[kUp] = true;
+        }
+      });
+    });
+
+    const rawProdukList = Array.isArray(pc.produkList) ? pc.produkList : Object.keys(seriesProdSet);
+    const produkList = rawProdukList
+      .map(p => String(p || '').trim().toUpperCase())
+      .filter((p, i, arr) => {
+        if (!p || p === '(TANPA KATEGORI)' || arr.indexOf(p) !== i) return false;
+        if (hasBhFilter) return Boolean(bhAllowed[p]);
+        return Boolean(seriesProdSet[p]);
+      });
+
     if (!series.length || !produkList.length) {
-      return '<div class="tg-empty">Belum ada data diagram periode.</div>';
+      return '<div class="tg-empty">Belum ada data diagram periode pada Kolom BH.</div>';
     }
 
     const warnaMap = {
@@ -5488,46 +5744,21 @@
     const legendHtml = '<div class="per-legend">' +
       produkList.map((prod, idx) => {
         const w = getWarnaProduk(prod, idx);
-        let trendBadge = '';
-        if (series.length >= 2) {
-          const prevVal = Number(series[series.length - 2].values && series[series.length - 2].values[prod]) || 0;
-          const currVal = Number(series[series.length - 1].values && series[series.length - 1].values[prod]) || 0;
-          const diff = currVal - prevVal;
-          const naik = diff > 0;
-          const turun = diff < 0;
-          const arahTxt = naik ? '▲ Naik' : (turun ? '▼ Turun' : '• Tetap');
-          const arahBg = naik ? '#dcfce7' : (turun ? '#fee2e2' : '#f1f5f9');
-          const arahCol = naik ? '#15803d' : (turun ? '#b91c1c' : '#475569');
-          trendBadge = '<span style="font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;background:' + arahBg + ';color:' + arahCol + ';margin-left:3px">' + arahTxt + '</span>';
-        }
         return '<div class="per-leg-item">' +
           '<span class="per-leg-dot" style="background:' + w + '"></span>' +
           '<span>' + esc(prod) + '</span>' +
-          trendBadge +
         '</div>';
       }).join('') +
-      '<div style="margin-left:auto;font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:6px">' +
-        '<span>⎯⎯ Garis Penghubung Tren Produk</span>' +
-      '</div>' +
     '</div>';
 
     const groupsHtml = series.map((s, gIdx) => {
-      const isRun = Boolean(s.isBerjalan) || (series.length > 1 && gIdx === series.length - 1);
+      const isRun = Boolean(s.isBerjalan) || (series.length === 1);
       const barsHtml = produkList.map((prod, pIdx) => {
         const val = Number(s.values && s.values[prod]) || 0;
         const pct = val > 0 ? Math.max(6, Math.round((val / maxVal) * 150)) : 4;
         const w = getWarnaProduk(prod, pIdx);
-        let deltaArrow = '';
-        if (gIdx > 0) {
-          const prevV = Number(series[gIdx - 1].values && series[gIdx - 1].values[prod]) || 0;
-          if (val > prevV) {
-            deltaArrow = ' <span style="color:#16a34a;font-weight:900" title="Naik dibanding periode sebelumnya">▲</span>';
-          } else if (val < prevV) {
-            deltaArrow = ' <span style="color:#dc2626;font-weight:900" title="Turun dibanding periode sebelumnya">▼</span>';
-          }
-        }
-        return '<div class="per-bar-col" data-gidx="' + gIdx + '" data-pidx="' + pIdx + '" title="' + esc(s.periode + (isRun ? ' (Periode Berjalan)' : '') + ' • ' + prod + ': ' + rp(val)) + '">' +
-          '<div class="per-bar-val">' + (val > 0 ? rp(val) : 'Rp 0') + deltaArrow + '</div>' +
+        return '<div class="per-bar-col" data-gidx="' + gIdx + '" data-pidx="' + pIdx + '" title="' + esc(s.periode + ' • ' + prod + ': ' + rp(val)) + '">' +
+          '<div class="per-bar-val">' + (val > 0 ? rp(val) : 'Rp 0') + '</div>' +
           '<div class="per-bar" data-prod="' + esc(prod) + '" data-color="' + w + '" data-val="' + val + '" style="height:' + pct + 'px;background:' + w + '"></div>' +
         '</div>';
       }).join('');
@@ -5544,77 +5775,14 @@
     return '<div class="per-chart-wrap">' +
       legendHtml +
       '<div class="per-scroll"><div class="per-plot" id="perPlotArea">' +
-        '<svg class="per-trend-svg" id="perTrendSvg"></svg>' +
         groupsHtml +
       '</div></div>' +
     '</div>';
   }
 
   function sinkronGarisTrenPeriode_() {
-    const plot = $('perPlotArea');
-    const svg = $('perTrendSvg');
-    if (!plot || !svg) return;
-    const groups = plot.querySelectorAll('.per-group');
-    if (!groups || groups.length === 0) {
-      svg.innerHTML = '';
-      return;
-    }
-
-    const plotRect = plot.getBoundingClientRect();
-    if (!plotRect.width || !plotRect.height) return;
-    svg.setAttribute('viewBox', '0 0 ' + Math.round(plotRect.width) + ' ' + Math.round(plotRect.height));
-
-    // Kumpulkan titik tengah atas setiap batang per produk lintas periode
-    const prodPoints = {};
-    const prodColors = {};
-    groups.forEach((grp, gIdx) => {
-      const bars = grp.querySelectorAll('.per-bar');
-      bars.forEach((barEl) => {
-        const prod = barEl.getAttribute('data-prod') || '';
-        const color = barEl.getAttribute('data-color') || '#0284c7';
-        const val = Number(barEl.getAttribute('data-val')) || 0;
-        const r = barEl.getBoundingClientRect();
-        const cx = Math.round((r.left - plotRect.left) + (r.width / 2));
-        const cy = Math.round(r.top - plotRect.top);
-        if (!prodPoints[prod]) prodPoints[prod] = [];
-        prodColors[prod] = color;
-        prodPoints[prod].push({ x: cx, y: cy, val: val, gIdx: gIdx });
-      });
-    });
-
-    let svgMarkup = '';
-    Object.keys(prodPoints).forEach(prod => {
-      const pts = prodPoints[prod];
-      const color = prodColors[prod] || '#0284c7';
-      if (pts.length >= 2) {
-        for (let i = 1; i < pts.length; i++) {
-          const p1 = pts[i - 1];
-          const p2 = pts[i];
-          const naik = p2.val > p1.val;
-          const turun = p2.val < p1.val;
-          const midX = Math.round((p1.x + p2.x) / 2);
-          const midY = Math.round((p1.y + p2.y) / 2) - 8;
-          const arrowSym = naik ? '▲' : (turun ? '▼' : '•');
-          const arrowCol = naik ? '#16a34a' : (turun ? '#dc2626' : color);
-
-          svgMarkup +=
-            '<line x1="' + p1.x + '" y1="' + p1.y + '" x2="' + p2.x + '" y2="' + p2.y + '" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" opacity="0.9"/>' +
-            '<line x1="' + p1.x + '" y1="' + p1.y + '" x2="' + p2.x + '" y2="' + p2.y + '" stroke="' + color + '" stroke-width="2.5" stroke-dasharray="5,3" stroke-linecap="round"/>' +
-            '<circle cx="' + midX + '" cy="' + midY + '" r="8" fill="#ffffff" stroke="' + arrowCol + '" stroke-width="1.5"/>' +
-            '<text x="' + midX + '" y="' + (midY + 3.5) + '" text-anchor="middle" font-size="9" font-weight="900" fill="' + arrowCol + '">' + arrowSym + '</text>';
-        }
-      }
-      pts.forEach(pt => {
-        svgMarkup +=
-          '<circle cx="' + pt.x + '" cy="' + pt.y + '" r="4.5" fill="' + color + '" stroke="#ffffff" stroke-width="2"/>';
-      });
-    });
-
-    svg.innerHTML = svgMarkup;
+    // Grafik garis kenaikan/penurunan dinonaktifkan sesuai permintaan; hanya menampilkan batang hasil Kolom BH
   }
-  window.addEventListener('resize', () => {
-    if ($('perPlotArea')) sinkronGarisTrenPeriode_();
-  });
 
   function gambarBar(items) {
     const max = Math.max.apply(null, items.map(i => i.nilai)) || 1;
@@ -6775,7 +6943,7 @@
   }
   // ================== DATA TAGIHAN ==================
   let TAGIHAN = [];
-  let TG_KATEGORI_LIST = ['SEMUA', 'ALLO BANK', 'KREDIVO', 'KREDIVO OR'];
+  let TG_KATEGORI_LIST = ['SEMUA'];
   let TG_KAT_AKTIF = 'SEMUA';
 
   let TG_OPTS = { result: [], area: [], kecamatan: [], cuci: [] };
@@ -6995,7 +7163,29 @@
         return;
       }
       TAGIHAN = (r.items || []).map((it, idx) => Object.assign({ _idx: idx }, it));
-      TG_KATEGORI_LIST = ['SEMUA'].concat(r.kategoriList || ['ALLO BANK', 'KREDIVO', 'KREDIVO OR']);
+      const bhTagihanSet = {};
+      TAGIHAN.forEach(it => {
+        const k = String(it && it.kategori ? it.kategori : '').trim().toUpperCase();
+        if (k && k !== '(TANPA KATEGORI)') bhTagihanSet[k] = true;
+      });
+      const hasItemsBh = Object.keys(bhTagihanSet).length > 0;
+      const hasDashBh = Object.keys(VALID_BH_KATEGORI_SET).length > 0;
+      const prioritasKat = ['ALLO BANK', 'KREDIVO', 'KREDIVO OR'];
+      let filteredKat = [];
+      if (hasItemsBh) {
+        const allKeys = Object.keys(bhTagihanSet);
+        filteredKat = prioritasKat.filter(k => bhTagihanSet[k]).concat(
+          allKeys.filter(k => prioritasKat.indexOf(k) < 0).sort()
+        );
+      } else if (hasDashBh) {
+        const allKeys = Object.keys(VALID_BH_KATEGORI_SET);
+        filteredKat = prioritasKat.filter(k => VALID_BH_KATEGORI_SET[k]).concat(
+          allKeys.filter(k => prioritasKat.indexOf(k) < 0).sort()
+        );
+      } else if (Array.isArray(r.kategoriList)) {
+        filteredKat = r.kategoriList.filter(Boolean);
+      }
+      TG_KATEGORI_LIST = ['SEMUA'].concat(filteredKat);
       if (TG_KATEGORI_LIST.indexOf(TG_KAT_AKTIF) < 0) TG_KAT_AKTIF = 'SEMUA';
 
       renderKategoriBar_();
@@ -9619,24 +9809,21 @@
           '<label for="absJam">Jam Absen</label>' +
           '<input type="text" id="absJam" class="ub-readonly" value="' + esc(initJam) + '" readonly>' +
 
-          '<label for="absLokasi">Kolom Kategori Lokasi Absen (Otomatis Cek Radius GPS ≤ 1 KM)</label>' +
-          '<input type="text" id="absLokasi" class="ub-readonly" style="font-weight:800" value="Mendeteksi titik koordinat GPS..." readonly>' +
+          '<input type="hidden" id="absLokasi" value="">' +
 
           '<div class="abs-kategori-grid">' +
             '<div class="abs-kat-card" id="cardAbsenKantor">' +
               '<div class="kat-ic">🏢</div>' +
               '<div class="kat-lbl">ABSEN DI KANTOR</div>' +
-              '<div class="kat-sub">Radius ≤ 1.0 KM dari Kantor</div>' +
             '</div>' +
             '<div class="abs-kat-card" id="cardAbsenLuar">' +
               '<div class="kat-ic">🚗</div>' +
               '<div class="kat-lbl">DILUAR KANTOR</div>' +
-              '<div class="kat-sub">Radius &gt; 1.0 KM (Kunjungan/Lapangan)</div>' +
             '</div>' +
           '</div>' +
 
-          '<label for="absKoordinatDetail">Detail Titik Koordinat GPS &amp; Jarak Kantor</label>' +
-          '<input type="text" id="absKoordinatDetail" class="ub-readonly" value="Menunggu sinyal GPS..." readonly>' +
+          '<label for="absKoordinatDetail">Lokasi Absen</label>' +
+          '<input type="text" id="absKoordinatDetail" class="ub-readonly" value="Mendeteksi nama jalan..." readonly>' +
 
           '<label>Foto Selfie Absensi (Wajib Kamera)</label>' +
           '<div class="abs-cam-box">' +
@@ -9650,9 +9837,9 @@
             '<input type="file" id="absFileFallback" accept="image/*" capture="user" class="hidden" onchange="handleAbsFileFallback_(event)">' +
             '<input type="file" id="absFileGaleri" accept="image/*" class="hidden" onchange="handleAbsFileFallback_(event)">' +
             '<button type="button" class="btn-abs-cam" id="btnAbsCapture" onclick="aksiTombolKameraAbsensi()">📸 Ambil Foto</button>' +
-            '<div style="display:flex;gap:8px;margin-top:8px">' +
-              '<button type="button" class="outline full" style="font-size:12px;min-height:38px" onclick="bukaFallbackFileAbsensi_(true)">🔄 Kamera HP Native</button>' +
-              '<button type="button" class="outline full" style="font-size:12px;min-height:38px" onclick="bukaFallbackFileAbsensi_(false)">📁 Pilih File Foto</button>' +
+            '<div class="hidden" style="display:none !important;gap:8px;margin-top:8px">' +
+              '<button type="button" class="outline full hidden" style="display:none !important;font-size:12px;min-height:38px" onclick="bukaFallbackFileAbsensi_(true)">🔄 Kamera HP Native</button>' +
+              '<button type="button" class="outline full hidden" style="display:none !important;font-size:12px;min-height:38px" onclick="bukaFallbackFileAbsensi_(false)">📁 Pilih File Foto</button>' +
             '</div>' +
           '</div>' +
 
@@ -9836,6 +10023,22 @@
     });
   }
 
+  function ekstrakNamaJalanSaja_(data) {
+    if (!data) return '';
+    const a = data.address || {};
+    const jalanUtama = a.road || a.pedestrian || a.residential || a.footway || a.path || a.street || data.name || '';
+    const areaPendukung = a.suburb || a.village || a.neighbourhood || a.city_district || a.town || a.city || '';
+    if (jalanUtama && areaPendukung && jalanUtama.toLowerCase() !== areaPendukung.toLowerCase()) {
+      return String(jalanUtama).trim() + ', ' + String(areaPendukung).trim();
+    }
+    if (jalanUtama) return String(jalanUtama).trim();
+    if (data.display_name) {
+      const parts = String(data.display_name).split(',').map(s => s.trim()).filter(Boolean);
+      return parts.slice(0, 2).join(', ');
+    }
+    return '';
+  }
+
   function terapkanHasilGpsAbsensi_(lat, lng) {
     const latNum = parseFloat(lat);
     const lngNum = parseFloat(lng);
@@ -9851,9 +10054,7 @@
     ABS_GPS_STATE.statusRadius = statusLokasi;
 
     if ($('absLokasi')) {
-      $('absLokasi').value = statusLokasi + ' (Jarak: ' + jarakKm.toFixed(2) + ' KM dari Kantor)';
-      $('absLokasi').style.color = (statusLokasi === 'KANTOR') ? '#065f46' : '#92400e';
-      $('absLokasi').style.background = (statusLokasi === 'KANTOR') ? '#ecfdf5' : '#fffbeb';
+      $('absLokasi').value = statusLokasi;
     }
     if ($('cardAbsenKantor')) {
       $('cardAbsenKantor').classList.toggle('active-kantor', statusLokasi === 'KANTOR');
@@ -9862,7 +10063,7 @@
       $('cardAbsenLuar').classList.toggle('active-luar', statusLokasi === 'DILUAR KANTOR');
     }
     if ($('absKoordinatDetail')) {
-      $('absKoordinatDetail').value = latNum.toFixed(6) + ', ' + lngNum.toFixed(6) + (ABS_GPS_STATE.namaJalan ? ' — ' + ABS_GPS_STATE.namaJalan : '');
+      $('absKoordinatDetail').value = ABS_GPS_STATE.namaJalan || 'Mendeteksi nama jalan...';
     }
   }
 
@@ -9875,6 +10076,7 @@
 
     if (!navigator.geolocation) {
       if ($('absLokasi')) $('absLokasi').value = 'GPS tidak didukung';
+      if ($('absKoordinatDetail')) $('absKoordinatDetail').value = 'GPS tidak didukung';
       if (typeof cb === 'function') cb(false);
       return;
     }
@@ -9887,21 +10089,40 @@
         fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + encodeURIComponent(lat) + '&lon=' + encodeURIComponent(lng) + '&accept-language=id')
           .then(r => r.ok ? r.json() : null)
           .then(data => {
-            if (data && data.display_name) {
-              ABS_GPS_STATE.namaJalan = String(data.display_name).trim();
+            const namaJalan = ekstrakNamaJalanSaja_(data);
+            if (namaJalan) {
+              ABS_GPS_STATE.namaJalan = namaJalan;
               if ($('absKoordinatDetail')) {
-                $('absKoordinatDetail').value = lat.toFixed(6) + ', ' + lng.toFixed(6) + ' — ' + ABS_GPS_STATE.namaJalan;
+                $('absKoordinatDetail').value = ABS_GPS_STATE.namaJalan;
               }
+              if (typeof cb === 'function') cb(true);
+            } else {
+              apiSilent_('reverseGeocodeAbsensi', S.token, lat, lng).then(res => {
+                if (res && res.sukses && res.namaJalan && res.namaJalan.indexOf('Koordinat') < 0) {
+                  ABS_GPS_STATE.namaJalan = String(res.namaJalan).trim();
+                  if ($('absKoordinatDetail')) $('absKoordinatDetail').value = ABS_GPS_STATE.namaJalan;
+                }
+                if (typeof cb === 'function') cb(true);
+              }).catch(() => {
+                if (typeof cb === 'function') cb(true);
+              });
             }
-            if (typeof cb === 'function') cb(true);
           })
           .catch(() => {
-            if (typeof cb === 'function') cb(true);
+            apiSilent_('reverseGeocodeAbsensi', S.token, lat, lng).then(res => {
+              if (res && res.sukses && res.namaJalan && res.namaJalan.indexOf('Koordinat') < 0) {
+                ABS_GPS_STATE.namaJalan = String(res.namaJalan).trim();
+                if ($('absKoordinatDetail')) $('absKoordinatDetail').value = ABS_GPS_STATE.namaJalan;
+              }
+              if (typeof cb === 'function') cb(true);
+            }).catch(() => {
+              if (typeof cb === 'function') cb(true);
+            });
           });
       },
       () => {
-        if ($('absLokasi') && (!$('absLokasi').value || $('absLokasi').value.indexOf('Mendeteksi') >= 0)) {
-          $('absLokasi').value = 'Pastikan Izin GPS Aktif (Klik Cek Ulang GPS)';
+        if ($('absKoordinatDetail') && (!$('absKoordinatDetail').value || $('absKoordinatDetail').value.indexOf('Mendeteksi') >= 0)) {
+          $('absKoordinatDetail').value = 'Pastikan Izin GPS Aktif (Klik Cek Ulang GPS)';
         }
         if (typeof cb === 'function') cb(false);
       },
@@ -11929,7 +12150,110 @@
         '<div class="panel placeholder"><div class="big">' + MENU[m].ikon + '</div>' +
         '<h3>' + esc(MENU[m].judul) + '</h3></div>';
     }
+    if (typeof syncAssistiveActiveMenu_ === 'function') syncAssistiveActiveMenu_(m);
   }
+
+  // ---------- VIRTUAL ASSISTIVE TOUCH (IPHONE STYLE) ----------
+  function syncAssistiveActiveMenu_(m) {
+    document.querySelectorAll('#assistiveTouchMenu .assistive-item[data-assist-m]').forEach(btn => {
+      btn.classList.toggle('on', btn.getAttribute('data-assist-m') === m);
+    });
+  }
+
+  function toggleAssistiveTouchMenu(force) {
+    const menu = $('assistiveTouchMenu');
+    const back = $('assistiveTouchBackdrop');
+    const btn = $('assistiveTouchBtn');
+    if (!menu || !back || !btn) return;
+    const isOpen = force !== undefined ? Boolean(force) : !menu.classList.contains('show');
+    menu.classList.toggle('show', isOpen);
+    back.classList.toggle('show', isOpen);
+    btn.classList.toggle('active', isOpen);
+    if (isOpen && typeof CUR !== 'undefined') {
+      syncAssistiveActiveMenu_(CUR);
+    }
+  }
+
+  function tutupAssistiveTouchMenu() {
+    toggleAssistiveTouchMenu(false);
+  }
+
+  function pilihMenuAssistive(targetMenu) {
+    tutupAssistiveTouchMenu();
+    if (targetMenu) {
+      nav(targetMenu);
+    }
+  }
+
+  (function initAssistiveTouchDrag_() {
+    const btn = $('assistiveTouchBtn');
+    if (!btn) return;
+    let isDown = false;
+    let moved = false;
+    let startX = 0;
+    let startY = 0;
+    let initialLeft = 0;
+    let initialTop = 0;
+
+    function onPointerDown(e) {
+      if (e.type === 'mousedown' && e.button !== 0) return;
+      const pt = e.touches ? e.touches[0] : e;
+      const rect = btn.getBoundingClientRect();
+      isDown = true;
+      moved = false;
+      startX = pt.clientX;
+      startY = pt.clientY;
+      initialLeft = rect.left;
+      initialTop = rect.top;
+      btn.classList.add('dragging');
+      btn.style.transition = 'none';
+    }
+
+    function onPointerMove(e) {
+      if (!isDown) return;
+      const pt = e.touches ? e.touches[0] : e;
+      const dx = pt.clientX - startX;
+      const dy = pt.clientY - startY;
+      if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+        moved = true;
+      }
+      if (!moved) return;
+      if (e.cancelable) e.preventDefault();
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const bw = btn.offsetWidth || 56;
+      const bh = btn.offsetHeight || 56;
+      const nextLeft = Math.max(8, Math.min(w - bw - 8, initialLeft + dx));
+      const nextTop = Math.max(8, Math.min(h - bh - 8, initialTop + dy));
+      btn.style.left = nextLeft + 'px';
+      btn.style.top = nextTop + 'px';
+      btn.style.right = 'auto';
+      btn.style.bottom = 'auto';
+    }
+
+    function onPointerUp() {
+      if (!isDown) return;
+      isDown = false;
+      btn.classList.remove('dragging');
+      btn.style.transition = 'left 0.25s cubic-bezier(0.16, 1, 0.3, 1), top 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease, transform 0.18s ease';
+      if (moved) {
+        const rect = btn.getBoundingClientRect();
+        const w = window.innerWidth;
+        const bw = btn.offsetWidth || 56;
+        const snapLeft = (rect.left + bw / 2 < w / 2) ? 12 : (w - bw - 12);
+        btn.style.left = snapLeft + 'px';
+      } else {
+        toggleAssistiveTouchMenu();
+      }
+    }
+
+    btn.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove, { passive: false });
+    window.addEventListener('mouseup', onPointerUp);
+    btn.addEventListener('touchstart', onPointerDown, { passive: true });
+    window.addEventListener('touchmove', onPointerMove, { passive: false });
+    window.addEventListener('touchend', onPointerUp);
+  })();
 
   pulihkanSesiLogin_();
 </script>
