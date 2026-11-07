@@ -1204,6 +1204,12 @@
     background: #f8fafc;
   }
   .tg-left { min-width: 0; flex: 1; }
+  .tid-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
   .tg-item .tid {
     font-weight: 700;
     color: var(--muted);
@@ -1211,6 +1217,102 @@
     letter-spacing: 0.3px;
     font-family: 'JetBrains Mono', monospace;
     word-break: break-all;
+  }
+  .wa-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    line-height: 1.3;
+    flex-shrink: 0;
+  }
+  .wa-badge .wa-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .wa-badge.wa-on {
+    background: var(--success-soft);
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+  .wa-badge.wa-on .wa-dot {
+    background: #10b981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+  }
+  .wa-badge.wa-off {
+    background: var(--danger-soft);
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+  .wa-badge.wa-off .wa-dot {
+    background: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
+  }
+  .ns-tagihan-head {
+    font-size: 15.5px;
+    font-weight: 800;
+    color: var(--dark);
+    padding-bottom: 10px;
+    margin-bottom: 6px;
+    border-bottom: 1.5px solid var(--line);
+    line-height: 1.35;
+  }
+  .va-allo-box {
+    color: var(--text);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  .va-allo-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .va-allo-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+  .va-allo-list li {
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .va-allo-foot {
+    margin-top: 10px;
+    font-weight: 700;
+    color: var(--dark);
+  }
+  .va-kredivo-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .va-kredivo-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text);
+    word-break: break-word;
+  }
+  .va-kredivo-row:last-child {
+    border-bottom: 0;
+  }
+  .va-kredivo-num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--primary-hover);
+    font-weight: 800;
   }
   .tg-name-row { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
   .btn-plus-hist {
@@ -6691,6 +6793,7 @@
   const NS_TABS = [
     ['nasabah',  '👤', 'PROFIL'],
     ['tagihan',  '🧮', 'TAGIHAN'],
+    ['vanumber', '💳', 'VA NUMBER'],
     ['kantor',   '🏢', 'KANTOR'],
     ['cuci',     '🧼', 'DATA CUCI'],
     ['historis', '🕒', 'RIWAYAT']
@@ -6942,9 +7045,16 @@
 
     box.innerHTML = list.map(t => {
       const clsRes = t.result === 'BELUM DIKERJAKAN' ? 'res-belum' : 'res';
+      const isWaAktif = Boolean(t.waAktif);
       return '<div class="tg-item" onclick="bukaDetailNasabah(' + t._idx + ')">' +
         '<div class="tg-left">' +
-          '<div class="tid">ID: ' + esc(t.userId || '-') + '</div>' +
+          '<div class="tid-row">' +
+            '<span class="tid">ID: ' + esc(t.userId || '-') + '</span>' +
+            '<span class="wa-badge ' + (isWaAktif ? 'wa-on' : 'wa-off') + '">' +
+              '<span class="wa-dot"></span>' +
+              '<span>' + (isWaAktif ? 'WA AKTIF' : 'WA TIDAK AKTIF') + '</span>' +
+            '</span>' +
+          '</div>' +
           '<div class="tg-name-row">' +
             '<button type="button" class="btn-plus-hist" title="Catat Penanganan" onclick="event.stopPropagation();bukaFormHistoris(' + t._idx + ')">+</button>' +
             '<div class="tnm">' + esc(t.nama || '(TANPA NAMA)') + '</div>' +
@@ -7408,6 +7518,49 @@
     }
   }
 
+  function formatRekAllo_(telp) {
+    let s = String(telp == null ? '' : telp).trim();
+    if (!s) return '-';
+    if (s.indexOf('+62') === 0) return '0' + s.slice(3);
+    if (s.indexOf('62') === 0) return '0' + s.slice(2);
+    return s;
+  }
+
+  function renderVaKredivo_(rawVa) {
+    const s = String(rawVa == null ? '' : rawVa).trim();
+    if (!s) return '<div class="tg-empty">Data VA Number tidak tersedia.</div>';
+    let entries = [];
+    try {
+      const obj = JSON.parse(s);
+      if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+        entries = Object.keys(obj).map(k => [k, String(obj[k] == null ? '' : obj[k])]);
+      }
+    } catch (e) {
+      const re = /"([^"]+)"\s*:\s*"([^"]*)"/g;
+      let m;
+      while ((m = re.exec(s)) !== null) {
+        entries.push([m[1], m[2]]);
+      }
+    }
+    if (entries.length > 0) {
+      return '<div class="ns-card"><div class="va-kredivo-list">' +
+        entries.map(pair =>
+          '<div class="va-kredivo-row">' +
+            '<span>' + esc(pair[0]) + ' : <span class="va-kredivo-num">' + esc(pair[1]) + '</span></span>' +
+          '</div>'
+        ).join('') +
+      '</div></div>';
+    }
+    const cleanText = s
+      .replace(/^\s*\{\s*|\s*\}\s*$/g, '')
+      .split(/\s*,\s*(?=")/)
+      .map(part => part.replace(/"/g, '').replace(/\s*:\s*/, ' : ').trim())
+      .filter(Boolean);
+    return '<div class="ns-card"><div class="va-kredivo-list">' +
+      cleanText.map(line => '<div class="va-kredivo-row"><span>' + esc(line) + '</span></div>').join('') +
+    '</div></div>';
+  }
+
   function renderModalNasabah_() {
     const it = TG_NASABAH_AKTIF;
     if (!it) return;
@@ -7421,10 +7574,10 @@
     if (TG_TAB_NASABAH === 'nasabah') {
       $('mnBody').innerHTML =
         '<div class="ns-card">' +
+          '<div class="ns-tagihan-head">Tagihan : ' + esc(it.kategori || '-') + '</div>' +
           '<div class="ns-row"><div class="ns-lbl">User ID</div><div class="ns-val">' + esc(it.userId || '-') + '</div></div>' +
           '<div class="ns-row"><div class="ns-lbl">No. Telepon</div><div class="ns-val">' + esc(it.telp || '-') + '</div></div>' +
           '<div class="ns-row"><div class="ns-lbl">Nama Lengkap</div><div class="ns-val">' + esc(it.nama || '-') + '</div></div>' +
-          '<div class="ns-row"><div class="ns-lbl">NIK</div><div class="ns-val">' + esc(it.nik || '-') + '</div></div>' +
           '<div class="ns-row"><div class="ns-lbl">Tanggal Lahir</div><div class="ns-val">' + esc(it.tglLahir || '-') + '</div></div>' +
           '<div class="ns-row" style="align-items:center">' +
             '<div class="ns-lbl">Alamat</div>' +
@@ -7458,6 +7611,28 @@
           '<div class="ns-row"><div class="ns-lbl">Total Tagihan</div><div class="ns-val val-merah-bold">' + esc(rp(it.os || 0)) + '</div></div>' +
           extraKredivo +
         '</div>';
+    } else if (TG_TAB_NASABAH === 'vanumber') {
+      const katUpper = String(it.kategori || '').trim().toUpperCase();
+      if (katUpper === 'ALLO BANK') {
+        const noRek = formatRekAllo_(it.telp);
+        $('mnBody').innerHTML =
+          '<div class="ns-card va-allo-box">' +
+            '<div class="va-allo-title">Cara Bayar Tagihan Allo Bank</div>' +
+            '<ol class="va-allo-list">' +
+              '<li>Silakan buka aplikasi M-Banking atau kunjungi mesin ATM terdekat.</li>' +
+              '<li>Pilih menu Transfer Antar Bank, kemudian masukkan atau pilih transfer ke Allo Bank.</li>' +
+              '<li>Masukkan nomor rekening : <b>' + esc(noRek) + '</b></li>' +
+              '<li>Pastikan data tagihan atas nama : <b>' + esc(it.nama || '-') + '</b></li>' +
+              '<li>Isi nominal bayar sesuai kesepakatan</li>' +
+              '<li>Klik OK dan kirimkan bukti bayarnya kepada petugas kami agar segera diproses</li>' +
+            '</ol>' +
+            '<div class="va-allo-foot">Terimakasih</div>' +
+          '</div>';
+      } else if (katUpper === 'KREDIVO' || katUpper === 'KREDIVO OR') {
+        $('mnBody').innerHTML = renderVaKredivo_(it.vaNumber);
+      } else {
+        $('mnBody').innerHTML = '<div class="tg-empty">Informasi VA Number tidak tersedia untuk produk ini.</div>';
+      }
     } else if (TG_TAB_NASABAH === 'kantor') {
       const katUpper = String(it.kategori || '').trim().toUpperCase();
       if (katUpper !== 'ALLO BANK') {
