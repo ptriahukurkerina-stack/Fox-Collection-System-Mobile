@@ -4330,7 +4330,7 @@
     color: var(--primary-hover);
   }
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -5683,6 +5683,11 @@
         if (r.periodeChart && Array.isArray(r.periodeChart.series) && r.periodeChart.series.length > 0) {
           perBox.className = '';
           perBox.innerHTML = gambarDiagramPeriode(r.periodeChart, bhSetNow);
+          requestAnimationFrame(() => {
+            sinkronGarisTrenPeriode_();
+            setTimeout(sinkronGarisTrenPeriode_, 80);
+            setTimeout(sinkronGarisTrenPeriode_, 350);
+          });
         } else {
           perBox.textContent = 'Belum ada data periode pada Kolom BH.';
         }
@@ -5691,37 +5696,59 @@
   }
 
   function gambarDiagramPeriode(pc, bhSetOverride) {
-    const rawSeries = Array.isArray(pc.series) ? pc.series : [];
-    const runningOnly = rawSeries.filter(s => Boolean(s && s.isBerjalan));
-    const series = runningOnly.length > 0 ? runningOnly : (rawSeries.length > 0 ? [rawSeries[rawSeries.length - 1]] : []);
+    const rawSeries = Array.isArray(pc && pc.series) ? pc.series : [];
+    // Urutkan periode arsip (1Uc3t1J80coRzYsSpIvhm8Y1Rl-anZSZgOUCNa10hdBU) di kiri dan periode berjalan (16Cqr8mUwvM2Hd8HrNSgzoOF_NvDPmlxLMi0ik9GiGzc) di paling kanan
+    const archList = rawSeries.filter(s => s && !s.isBerjalan);
+    const runList = rawSeries.filter(s => s && s.isBerjalan);
+    const series = archList.concat(runList);
 
     const bhAllowed = (bhSetOverride && Object.keys(bhSetOverride).length > 0)
       ? bhSetOverride
       : VALID_BH_KATEGORI_SET;
     const hasBhFilter = Object.keys(bhAllowed).length > 0;
 
-    const seriesProdSet = {};
-    series.forEach(s => {
+    const prioritasProd = ['ALLO BANK', 'KREDIVO', 'KREDIVO OR'];
+    const urutProduk_ = arr => {
+      const uniq = {};
+      (arr || []).forEach(p => {
+        const k = String(p || '').trim().toUpperCase();
+        if (k && k !== '(TANPA KATEGORI)') uniq[k] = true;
+      });
+      const keys = Object.keys(uniq);
+      return prioritasProd.filter(p => uniq[p]).concat(
+        keys.filter(p => prioritasProd.indexOf(p) < 0).sort()
+      );
+    };
+
+    // Tentukan produk yang benar-benar ada di Kolom BH untuk masing-masing periode
+    const seriesWithProds = series.map((s, idx) => {
+      const isRun = Boolean(s && s.isBerjalan) || (archList.length === 0 && idx === series.length - 1);
       const vals = (s && s.values) ? s.values : {};
-      Object.keys(vals).forEach(k => {
-        const kUp = String(k || '').trim().toUpperCase();
-        if (!kUp || kUp === '(TANPA KATEGORI)') return;
-        if (Number(vals[k]) > 0 || !hasBhFilter) {
-          seriesProdSet[kUp] = true;
-        }
-      });
+      let rawProds = Array.isArray(s && s.activeProds) && s.activeProds.length > 0
+        ? s.activeProds
+        : Object.keys(vals);
+
+      // Pada periode berjalan (16Cqr8mUwvM2Hd8HrNSgzoOF_NvDPmlxLMi0ik9GiGzc), pastikan hanya produk yang ada di Kolom BH saat ini yang ditampilkan
+      if (isRun && hasBhFilter && (!Array.isArray(s && s.activeProds) || s.activeProds.length === 0)) {
+        rawProds = rawProds.filter(p => Boolean(bhAllowed[String(p || '').trim().toUpperCase()]));
+      }
+
+      const activeProds = urutProduk_(rawProds);
+      return {
+        periode: String(s && s.periode ? s.periode : ''),
+        isBerjalan: isRun,
+        activeProds: activeProds,
+        values: vals
+      };
+    }).filter(s => s.periode && s.activeProds.length > 0);
+
+    const allProdsUnion = [];
+    seriesWithProds.forEach(s => {
+      s.activeProds.forEach(p => allProdsUnion.push(p));
     });
+    const produkList = urutProduk_(allProdsUnion);
 
-    const rawProdukList = Array.isArray(pc.produkList) ? pc.produkList : Object.keys(seriesProdSet);
-    const produkList = rawProdukList
-      .map(p => String(p || '').trim().toUpperCase())
-      .filter((p, i, arr) => {
-        if (!p || p === '(TANPA KATEGORI)' || arr.indexOf(p) !== i) return false;
-        if (hasBhFilter) return Boolean(bhAllowed[p]);
-        return Boolean(seriesProdSet[p]);
-      });
-
-    if (!series.length || !produkList.length) {
+    if (!seriesWithProds.length || !produkList.length) {
       return '<div class="tg-empty">Belum ada data diagram periode pada Kolom BH.</div>';
     }
 
@@ -5733,8 +5760,8 @@
     const getWarnaProduk = (prod, idx) => warnaMap[String(prod || '').toUpperCase()] || WARNA[idx % WARNA.length];
 
     let maxVal = 0;
-    series.forEach(s => {
-      produkList.forEach(p => {
+    seriesWithProds.forEach(s => {
+      s.activeProds.forEach(p => {
         const v = Number(s.values && s.values[p]) || 0;
         if (v > maxVal) maxVal = v;
       });
@@ -5751,12 +5778,13 @@
       }).join('') +
     '</div>';
 
-    const groupsHtml = series.map((s, gIdx) => {
-      const isRun = Boolean(s.isBerjalan) || (series.length === 1);
-      const barsHtml = produkList.map((prod, pIdx) => {
+    const groupsHtml = seriesWithProds.map((s, gIdx) => {
+      const isRun = Boolean(s.isBerjalan);
+      const barsHtml = s.activeProds.map(prod => {
+        const pIdx = produkList.indexOf(prod);
         const val = Number(s.values && s.values[prod]) || 0;
         const pct = val > 0 ? Math.max(6, Math.round((val / maxVal) * 150)) : 4;
-        const w = getWarnaProduk(prod, pIdx);
+        const w = getWarnaProduk(prod, pIdx >= 0 ? pIdx : 0);
         return '<div class="per-bar-col" data-gidx="' + gIdx + '" data-pidx="' + pIdx + '" title="' + esc(s.periode + ' • ' + prod + ': ' + rp(val)) + '">' +
           '<div class="per-bar-val">' + (val > 0 ? rp(val) : 'Rp 0') + '</div>' +
           '<div class="per-bar" data-prod="' + esc(prod) + '" data-color="' + w + '" data-val="' + val + '" style="height:' + pct + 'px;background:' + w + '"></div>' +
@@ -5766,7 +5794,7 @@
       const xLabClass = isRun ? 'per-xlab berjalan' : 'per-xlab';
       const runBadge = isRun ? '<span class="per-badge-berjalan">Berjalan</span>' : '';
 
-      return '<div class="per-group' + (isRun ? ' is-berjalan' : '') + '" data-periode="' + esc(s.periode) + '">' +
+      return '<div class="per-group' + (isRun ? ' is-berjalan' : '') + '" data-periode="' + esc(s.periode) + '" data-gidx="' + gIdx + '">' +
         '<div class="per-bars">' + barsHtml + '</div>' +
         '<div class="' + xLabClass + '"><span>' + esc(s.periode) + '</span>' + runBadge + '</div>' +
       '</div>';
@@ -5774,15 +5802,88 @@
 
     return '<div class="per-chart-wrap">' +
       legendHtml +
-      '<div class="per-scroll"><div class="per-plot" id="perPlotArea">' +
+      '<div class="per-scroll" onscroll="sinkronGarisTrenPeriode_()"><div class="per-plot" id="perPlotArea">' +
+        '<svg class="per-trend-svg" id="perTrendSvg"></svg>' +
         groupsHtml +
       '</div></div>' +
     '</div>';
   }
 
   function sinkronGarisTrenPeriode_() {
-    // Grafik garis kenaikan/penurunan dinonaktifkan sesuai permintaan; hanya menampilkan batang hasil Kolom BH
+    const plot = $('perPlotArea');
+    const svg = $('perTrendSvg');
+    if (!plot || !svg) return;
+
+    const plotRect = plot.getBoundingClientRect();
+    if (!plotRect.width || !plotRect.height) return;
+
+    svg.setAttribute('viewBox', '0 0 ' + Math.round(plotRect.width) + ' ' + Math.round(plotRect.height));
+    svg.setAttribute('width', Math.round(plotRect.width));
+    svg.setAttribute('height', Math.round(plotRect.height));
+
+    const groups = plot.querySelectorAll('.per-group');
+    const byProd = {};
+
+    groups.forEach((grp, gIdx) => {
+      const bars = grp.querySelectorAll('.per-bar[data-prod]');
+      bars.forEach(barEl => {
+        const prod = String(barEl.getAttribute('data-prod') || '').trim().toUpperCase();
+        if (!prod) return;
+        const r = barEl.getBoundingClientRect();
+        if (!r.width && !r.height) return;
+        const x = (r.left - plotRect.left) + (r.width / 2);
+        const y = (r.top - plotRect.top);
+        const color = barEl.getAttribute('data-color') || '#0284c7';
+        const val = Number(barEl.getAttribute('data-val')) || 0;
+        if (!byProd[prod]) byProd[prod] = [];
+        byProd[prod].push({ gIdx: gIdx, x: x, y: y, color: color, val: val });
+      });
+    });
+
+    let svgHtml = '';
+    Object.keys(byProd).forEach(prod => {
+      const pts = byProd[prod];
+      // Hanya hubungkan garis jika produk tersebut ada di minimal 2 periode
+      if (!pts || pts.length < 2) return;
+      pts.sort((a, b) => a.gIdx - b.gIdx);
+      const color = pts[0].color;
+
+      for (let i = 0; i < pts.length - 1; i++) {
+        const p1 = pts[i];
+        const p2 = pts[i + 1];
+        // Garis latar putih tipis agar kontras di atas batang
+        svgHtml += '<line x1="' + p1.x.toFixed(1) + '" y1="' + p1.y.toFixed(1) + '" x2="' + p2.x.toFixed(1) + '" y2="' + p2.y.toFixed(1) + '" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" opacity="0.85"></line>';
+        // Garis penghubung utama sesuai warna produk
+        svgHtml += '<line x1="' + p1.x.toFixed(1) + '" y1="' + p1.y.toFixed(1) + '" x2="' + p2.x.toFixed(1) + '" y2="' + p2.y.toFixed(1) + '" stroke="' + color + '" stroke-width="2.5" stroke-dasharray="5 3" stroke-linecap="round"></line>';
+
+        // Panah arah di tengah/ujung segmen untuk memperjelas naik/turun
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        if (len > 24) {
+          const ux = dx / len;
+          const uy = dy / len;
+          const ax = p2.x - ux * 8;
+          const ay = p2.y - uy * 8;
+          const px = -uy * 4.5;
+          const py = ux * 4.5;
+          const bx = ax - ux * 7;
+          const by = ay - uy * 7;
+          svgHtml += '<polygon points="' + ax.toFixed(1) + ',' + ay.toFixed(1) + ' ' + (bx + px).toFixed(1) + ',' + (by + py).toFixed(1) + ' ' + (bx - px).toFixed(1) + ',' + (by - py).toFixed(1) + '" fill="' + color + '"></polygon>';
+        }
+      }
+
+      // Titik simpul pada tiap batang produk yang terhubung
+      pts.forEach(p => {
+        svgHtml += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="4.5" fill="' + color + '" stroke="#ffffff" stroke-width="2"></circle>';
+      });
+    });
+
+    svg.innerHTML = svgHtml;
   }
+  window.addEventListener('resize', () => {
+    if (typeof sinkronGarisTrenPeriode_ === 'function') sinkronGarisTrenPeriode_();
+  });
 
   function gambarBar(items) {
     const max = Math.max.apply(null, items.map(i => i.nilai)) || 1;
