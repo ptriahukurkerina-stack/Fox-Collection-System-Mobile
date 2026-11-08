@@ -12247,30 +12247,24 @@
     $('content').innerHTML =
       '<div class="lk-grid">' +
         '<div class="panel">' +
-          '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px">' +
-            '<div>' +
-              '<h3 class="pt" style="margin:0">➕ Tambahkan Karyawan Baru</h3>' +
-              '<div class="lk-sm" style="margin-top:2px">Pusat Administrasi • Input Data ke Spreadsheet User Login</div>' +
-            '</div>' +
-            '<span class="pic-badge">Kolom A – D</span>' +
-          '</div>' +
+          '<h3 class="pt" style="margin:0 0 12px">➕ Tambahkan Karyawan</h3>' +
 
-          '<label for="tkNama">Nama Karyawan (Kolom A)</label>' +
-          '<input type="text" id="tkNama" placeholder="Masukkan nama lengkap / username login..." autocomplete="off">' +
+          '<label for="tkNama">Nama</label>' +
+          '<input type="text" id="tkNama" placeholder="Masukkan nama karyawan..." autocomplete="off">' +
 
-          '<label for="tkJabatan">Jabatan (Kolom B)</label>' +
+          '<label for="tkJabatan">Jabatan</label>' +
           '<select id="tkJabatan">' +
             '<option value="">-- Pilih Jabatan --</option>' +
             jabOpts +
           '</select>' +
 
-          '<label for="tkPassword">Password (Kolom C)</label>' +
+          '<label for="tkPassword">Password</label>' +
           '<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">' +
-            '<input type="text" id="tkPassword" placeholder="Masukkan password login..." style="margin-bottom:0;flex:1" autocomplete="off">' +
+            '<input type="text" id="tkPassword" placeholder="Masukkan password..." style="margin-bottom:0;flex:1" autocomplete="off">' +
             '<button type="button" class="outline sm" onclick="isiPasswordAcakTambahKaryawan()" title="Buat Password Otomatis">🎲 Acak</button>' +
           '</div>' +
 
-          '<label for="tkEmail">Email (Kolom D)</label>' +
+          '<label for="tkEmail">Email</label>' +
           '<input type="email" id="tkEmail" placeholder="Contoh: karyawan@email.com" autocomplete="off">' +
 
           '<button type="button" class="full" id="tkBtnSimpan" onclick="simpanFormTambahKaryawan()">➕ Tambahkan Karyawan</button>' +
@@ -12279,10 +12273,7 @@
 
         '<div class="panel">' +
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:12px">' +
-            '<div>' +
-              '<h3 class="pt" style="margin:0">📋 Daftar Karyawan Terdaftar <span class="lk-sm" id="tkTotalLabel" style="font-weight:600"></span></h3>' +
-              '<div class="lk-sm" style="margin-top:2px">ID: 14OOcJdkgf6HiCMRLp55xRB1FsrQz9SgcPyAv_jkmkhs</div>' +
-            '</div>' +
+            '<h3 class="pt" style="margin:0">📋 Daftar Karyawan Terdaftar <span class="lk-sm" id="tkTotalLabel" style="font-weight:600"></span></h3>' +
             '<button type="button" class="outline sm" onclick="segarkanDaftarKaryawanAdmin()">⟳ Segarkan</button>' +
           '</div>' +
           '<input type="text" id="tkCariInput" placeholder="🔍 Cari nama, jabatan, atau email..." oninput="ubahCariTambahKaryawan(this.value)" style="margin-bottom:12px">' +
@@ -12354,13 +12345,16 @@
       return;
     }
 
-    const rows = list.slice().reverse().map(it =>
+    const rows = list.map(it =>
       '<tr>' +
         '<td class="c" style="font-weight:700;color:var(--muted)">#' + esc(it.row) + '</td>' +
         '<td><b>' + esc(it.nama || '-') + '</b></td>' +
         '<td><span class="pic-badge">' + esc(it.jabatan || '-') + '</span></td>' +
         '<td style="font-family:\'JetBrains Mono\',monospace;font-size:12.5px">' + esc(it.password || '-') + '</td>' +
         '<td>' + esc(it.email || '-') + '</td>' +
+        '<td class="c">' +
+          '<button type="button" class="btn-hapus" data-row="' + esc(it.row) + '" data-nama="' + esc(it.nama || '') + '" onclick="hapusKaryawanAdmin(Number(this.dataset.row), this.dataset.nama)">🗑 Hapus</button>' +
+        '</td>' +
       '</tr>'
     ).join('');
 
@@ -12369,14 +12363,30 @@
         '<thead>' +
           '<tr>' +
             '<th class="c" style="width:64px">Baris</th>' +
-            '<th>Kolom A (Nama)</th>' +
-            '<th>Kolom B (Jabatan)</th>' +
-            '<th>Kolom C (Password)</th>' +
-            '<th>Kolom D (Email)</th>' +
+            '<th>Nama</th>' +
+            '<th>Jabatan</th>' +
+            '<th>Password</th>' +
+            '<th>Email</th>' +
+            '<th class="c" style="width:90px">Aksi</th>' +
           '</tr>' +
         '</thead>' +
         '<tbody>' + rows + '</tbody>' +
       '</table>';
+  }
+
+  function hapusKaryawanAdmin(row, nama) {
+    const info = nama ? ('"' + nama + '" (Baris #' + row + ')') : ('Baris #' + row);
+    if (!confirm('Hapus karyawan ' + info + '?')) return;
+    api('hapusKaryawanBaru', S.token, row, nama).then(res => {
+      if (!res || !res.sukses) {
+        alert((res && res.pesan) ? res.pesan : 'Gagal menghapus karyawan.');
+        return;
+      }
+      pesan('tkMsg', res.pesan || 'Karyawan berhasil dihapus.', 'ok');
+      segarkanDaftarKaryawanAdmin();
+    }).catch(err => {
+      alert('Gagal menghapus: ' + (err.message || String(err)));
+    });
   }
 
   function simpanFormTambahKaryawan() {
@@ -12385,10 +12395,10 @@
     const password = ($('tkPassword') ? $('tkPassword').value : '').trim();
     const email = ($('tkEmail') ? $('tkEmail').value : '').trim();
 
-    if (!nama) return pesan('tkMsg', 'Nama karyawan (Kolom A) wajib diisi.', 'err');
-    if (!jabatan) return pesan('tkMsg', 'Jabatan (Kolom B) wajib dipilih.', 'err');
-    if (!password) return pesan('tkMsg', 'Password (Kolom C) wajib diisi.', 'err');
-    if (!email) return pesan('tkMsg', 'Email (Kolom D) wajib diisi.', 'err');
+    if (!nama) return pesan('tkMsg', 'Nama wajib diisi.', 'err');
+    if (!jabatan) return pesan('tkMsg', 'Jabatan wajib dipilih.', 'err');
+    if (!password) return pesan('tkMsg', 'Password wajib diisi.', 'err');
+    if (!email) return pesan('tkMsg', 'Email wajib diisi.', 'err');
 
     pesan('tkMsg', '', '');
     const btn = $('tkBtnSimpan');
