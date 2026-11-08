@@ -4330,7 +4330,7 @@
     color: var(--primary-hover);
   }
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -5223,7 +5223,8 @@
     absensi:     { judul:'Absensi',              ikon:'📍' },
     emailblast:  { judul:'Inbox Inbox Email Blast Resmi',    ikon:'✉️' },
     laporanharian: { judul:'Laporan Harian',     ikon:'📅' },
-    daftarhadir: { judul:'Daftar Hadir',         ikon:'📋' }
+    daftarhadir: { judul:'Daftar Hadir',         ikon:'📋' },
+    tambahkaryawan: { judul:'Tambahkan Karyawan', ikon:'➕' }
   };
 
   const DEFAULT_MENU_CATEGORIES = [
@@ -5266,6 +5267,12 @@
       items: [
         { key: 'daftarhadir', judul: 'Daftar Hadir' }
       ]
+    },
+    {
+      judul: 'PUSAT ADMINISTRASI',
+      items: [
+        { key: 'tambahkaryawan', judul: 'Tambahkan Karyawan' }
+      ]
     }
   ];
 
@@ -5299,6 +5306,9 @@
     }
     if (list.length > 0 && list.indexOf('daftarhadir') < 0) {
       list.push('daftarhadir');
+    }
+    if (list.length > 0 && list.indexOf('tambahkaryawan') < 0) {
+      list.push('tambahkaryawan');
     }
     const rawCats = (Array.isArray(customCategories) && customCategories.length > 0)
       ? customCategories
@@ -5367,6 +5377,18 @@
         komCat.items.push({ key: 'daftarhadir', judul: 'Daftar Hadir' });
       } else {
         cats.push({ judul: 'PUSAT KOMUNIKASI', items: [{ key: 'daftarhadir', judul: 'Daftar Hadir' }] });
+      }
+    }
+    const adaTambahKaryawanDiCats = cats.some(c => c.items.some(it => it && it.key === 'tambahkaryawan'));
+    if (!adaTambahKaryawanDiCats) {
+      const admCat = cats.find(c => {
+        const ju = String(c.judul || '').toUpperCase();
+        return ju.indexOf('PUSAT ADMINISTRASI') >= 0 || ju.indexOf('ADMINISTRASI') >= 0;
+      });
+      if (admCat) {
+        admCat.items.push({ key: 'tambahkaryawan', judul: 'Tambahkan Karyawan' });
+      } else {
+        cats.push({ judul: 'PUSAT ADMINISTRASI', items: [{ key: 'tambahkaryawan', judul: 'Tambahkan Karyawan' }] });
       }
     }
 
@@ -6182,7 +6204,7 @@
       '<label>Referensi / Mitra (Opsional)</label><input type="text" id="lkRef" placeholder="Contoh: Kredivo">' +
       '<label>Akun Debit (Bertambah)</label><select id="lkDebit">' + opt + '</select>' +
       '<label>Akun Kredit (Sumber)</label><select id="lkCredit">' + opt + '</select>' +
-      '<label>Nominal (Rp)</label><input type="number" id="lkAmt" min="1" inputmode="numeric" placeholder="0">' +
+      '<label>Nominal (Rp)</label><input type="text" id="lkAmt" inputmode="numeric" placeholder="0" oninput="formatNominalJurnal_(this)" onkeyup="formatNominalJurnal_(this)">' +
       '<label>Lampiran Kwitansi</label>' +
       '<div class="file-row">' +
         '<input type="file" id="lkFileKwitansi" accept="image/*" class="hidden" onchange="bacaFileInput_(this,\'lblFileKwitansi\',v=>FILE_KWITANSI=v)">' +
@@ -6194,14 +6216,25 @@
       '<div class="twrap"><table class="pc" style="min-width:720px"><thead><tr><th>Tanggal</th><th>Deskripsi</th><th>Akun</th><th class="r">Nominal</th><th class="c">Kwitansi</th><th class="c">Status</th><th class="c">Aksi</th></tr></thead><tbody>' + rows + '</tbody></table></div></div></div>';
   }
 
+  function formatNominalJurnal_(el) {
+    if (!el) return;
+    const raw = String(el.value || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
+    if (!raw) {
+      el.value = '';
+      return;
+    }
+    el.value = raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
   function lkSimpan() {
+    const rawAmt = String($('lkAmt').value || '').replace(/[^0-9]/g, '');
     const d = {
       date: $('lkDate').value,
       description: $('lkDesc').value.trim(),
       ref: $('lkRef').value.trim(),
       debitCode: $('lkDebit').value,
       creditCode: $('lkCredit').value,
-      amount: $('lkAmt').value,
+      amount: rawAmt,
       fileData: FILE_KWITANSI ? FILE_KWITANSI.data : '',
       mimeType: FILE_KWITANSI ? FILE_KWITANSI.mimeType : ''
     };
@@ -12193,6 +12226,207 @@
     }
   }
 
+  // ============================================================================
+  // MENU PUSAT ADMINISTRASI -> SUB MENU: TAMBAHKAN KARYAWAN
+  // Target Spreadsheet ID: 14OOcJdkgf6HiCMRLp55xRB1FsrQz9SgcPyAv_jkmkhs
+  // Kolom A: Nama | Kolom B: Jabatan | Kolom C: Password | Kolom D: Email
+  // ============================================================================
+  let TK_STATE = {
+    items: [],
+    jabatanOptions: ['KOMISARIS', 'DIREKTUR', 'ADMIN', 'TL', 'DC', 'FC'],
+    searchQuery: '',
+    showPassForm: false
+  };
+
+  function muatHalamanTambahKaryawan() {
+    TK_STATE.searchQuery = '';
+    const jabOpts = (TK_STATE.jabatanOptions || ['KOMISARIS', 'DIREKTUR', 'ADMIN', 'TL', 'DC', 'FC'])
+      .map(j => '<option value="' + esc(j) + '">' + esc(j) + '</option>')
+      .join('');
+
+    $('content').innerHTML =
+      '<div class="lk-grid">' +
+        '<div class="panel">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px">' +
+            '<div>' +
+              '<h3 class="pt" style="margin:0">➕ Tambahkan Karyawan Baru</h3>' +
+              '<div class="lk-sm" style="margin-top:2px">Pusat Administrasi • Input Data ke Spreadsheet User Login</div>' +
+            '</div>' +
+            '<span class="pic-badge">Kolom A – D</span>' +
+          '</div>' +
+
+          '<label for="tkNama">Nama Karyawan (Kolom A)</label>' +
+          '<input type="text" id="tkNama" placeholder="Masukkan nama lengkap / username login..." autocomplete="off">' +
+
+          '<label for="tkJabatan">Jabatan (Kolom B)</label>' +
+          '<select id="tkJabatan">' +
+            '<option value="">-- Pilih Jabatan --</option>' +
+            jabOpts +
+          '</select>' +
+
+          '<label for="tkPassword">Password (Kolom C)</label>' +
+          '<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">' +
+            '<input type="text" id="tkPassword" placeholder="Masukkan password login..." style="margin-bottom:0;flex:1" autocomplete="off">' +
+            '<button type="button" class="outline sm" onclick="isiPasswordAcakTambahKaryawan()" title="Buat Password Otomatis">🎲 Acak</button>' +
+          '</div>' +
+
+          '<label for="tkEmail">Email (Kolom D)</label>' +
+          '<input type="email" id="tkEmail" placeholder="Contoh: karyawan@email.com" autocomplete="off">' +
+
+          '<button type="button" class="full" id="tkBtnSimpan" onclick="simpanFormTambahKaryawan()">➕ Tambahkan Karyawan</button>' +
+          '<div id="tkMsg" class="msg"></div>' +
+        '</div>' +
+
+        '<div class="panel">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:12px">' +
+            '<div>' +
+              '<h3 class="pt" style="margin:0">📋 Daftar Karyawan Terdaftar <span class="lk-sm" id="tkTotalLabel" style="font-weight:600"></span></h3>' +
+              '<div class="lk-sm" style="margin-top:2px">ID: 14OOcJdkgf6HiCMRLp55xRB1FsrQz9SgcPyAv_jkmkhs</div>' +
+            '</div>' +
+            '<button type="button" class="outline sm" onclick="segarkanDaftarKaryawanAdmin()">⟳ Segarkan</button>' +
+          '</div>' +
+          '<input type="text" id="tkCariInput" placeholder="🔍 Cari nama, jabatan, atau email..." oninput="ubahCariTambahKaryawan(this.value)" style="margin-bottom:12px">' +
+          '<div id="tkTableWrap" class="twrap">' +
+            '<div class="placeholder">Memuat daftar karyawan...</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    segarkanDaftarKaryawanAdmin();
+  }
+
+  function isiPasswordAcakTambahKaryawan() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+    let res = '';
+    for (let i = 0; i < 6; i++) {
+      res += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    const el = $('tkPassword');
+    if (el) el.value = res;
+  }
+
+  function ubahCariTambahKaryawan(q) {
+    TK_STATE.searchQuery = String(q || '').trim();
+    renderTabelKaryawanAdmin_();
+  }
+
+  function segarkanDaftarKaryawanAdmin() {
+    api('getDataTambahKaryawan', S.token).then(res => {
+      if (!res || !res.sukses) {
+        const msg = (res && res.pesan) ? res.pesan : 'Gagal memuat daftar karyawan.';
+        if ($('tkTableWrap')) $('tkTableWrap').innerHTML = '<div class="tg-empty">' + esc(msg) + '</div>';
+        return;
+      }
+      TK_STATE.items = Array.isArray(res.items) ? res.items : [];
+      if (Array.isArray(res.jabatanOptions) && res.jabatanOptions.length > 0) {
+        TK_STATE.jabatanOptions = res.jabatanOptions;
+        const sel = $('tkJabatan');
+        if (sel) {
+          const curVal = sel.value;
+          sel.innerHTML = '<option value="">-- Pilih Jabatan --</option>' +
+            TK_STATE.jabatanOptions.map(j => '<option value="' + esc(j) + '">' + esc(j) + '</option>').join('');
+          if (curVal) sel.value = curVal;
+        }
+      }
+      renderTabelKaryawanAdmin_();
+    }).catch(err => {
+      if ($('tkTableWrap')) {
+        $('tkTableWrap').innerHTML = '<div class="tg-empty">Gagal memuat data: ' + esc(err.message || String(err)) + '</div>';
+      }
+    });
+  }
+
+  function renderTabelKaryawanAdmin_() {
+    const wrap = $('tkTableWrap');
+    if (!wrap) return;
+    const all = TK_STATE.items || [];
+    const q = String(TK_STATE.searchQuery || '').toLowerCase();
+    const list = q
+      ? all.filter(it => (String(it.nama || '') + ' ' + String(it.jabatan || '') + ' ' + String(it.email || '')).toLowerCase().indexOf(q) >= 0)
+      : all;
+
+    if ($('tkTotalLabel')) {
+      $('tkTotalLabel').textContent = '(' + list.length + ' karyawan)';
+    }
+
+    if (list.length === 0) {
+      wrap.innerHTML = '<div class="tg-empty">Belum ada data karyawan yang sesuai.</div>';
+      return;
+    }
+
+    const rows = list.slice().reverse().map(it =>
+      '<tr>' +
+        '<td class="c" style="font-weight:700;color:var(--muted)">#' + esc(it.row) + '</td>' +
+        '<td><b>' + esc(it.nama || '-') + '</b></td>' +
+        '<td><span class="pic-badge">' + esc(it.jabatan || '-') + '</span></td>' +
+        '<td style="font-family:\'JetBrains Mono\',monospace;font-size:12.5px">' + esc(it.password || '-') + '</td>' +
+        '<td>' + esc(it.email || '-') + '</td>' +
+      '</tr>'
+    ).join('');
+
+    wrap.innerHTML =
+      '<table class="pc" style="min-width:580px">' +
+        '<thead>' +
+          '<tr>' +
+            '<th class="c" style="width:64px">Baris</th>' +
+            '<th>Kolom A (Nama)</th>' +
+            '<th>Kolom B (Jabatan)</th>' +
+            '<th>Kolom C (Password)</th>' +
+            '<th>Kolom D (Email)</th>' +
+          '</tr>' +
+        '</thead>' +
+        '<tbody>' + rows + '</tbody>' +
+      '</table>';
+  }
+
+  function simpanFormTambahKaryawan() {
+    const nama = ($('tkNama') ? $('tkNama').value : '').trim();
+    const jabatan = ($('tkJabatan') ? $('tkJabatan').value : '').trim();
+    const password = ($('tkPassword') ? $('tkPassword').value : '').trim();
+    const email = ($('tkEmail') ? $('tkEmail').value : '').trim();
+
+    if (!nama) return pesan('tkMsg', 'Nama karyawan (Kolom A) wajib diisi.', 'err');
+    if (!jabatan) return pesan('tkMsg', 'Jabatan (Kolom B) wajib dipilih.', 'err');
+    if (!password) return pesan('tkMsg', 'Password (Kolom C) wajib diisi.', 'err');
+    if (!email) return pesan('tkMsg', 'Email (Kolom D) wajib diisi.', 'err');
+
+    pesan('tkMsg', '', '');
+    const btn = $('tkBtnSimpan');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Menyimpan...';
+    }
+    const pulih = () => {
+      const b = $('tkBtnSimpan');
+      if (b) {
+        b.disabled = false;
+        b.textContent = '➕ Tambahkan Karyawan';
+      }
+    };
+
+    api('simpanKaryawanBaru', S.token, {
+      nama: nama,
+      jabatan: jabatan,
+      password: password,
+      email: email
+    }).then(res => {
+      pulih();
+      if (!res || !res.sukses) {
+        pesan('tkMsg', (res && res.pesan) ? res.pesan : 'Gagal menambahkan karyawan.', 'err');
+        return;
+      }
+      pesan('tkMsg', res.pesan || 'Karyawan berhasil ditambahkan.', 'ok');
+      if ($('tkNama')) $('tkNama').value = '';
+      if ($('tkJabatan')) $('tkJabatan').value = '';
+      if ($('tkPassword')) $('tkPassword').value = '';
+      if ($('tkEmail')) $('tkEmail').value = '';
+      segarkanDaftarKaryawanAdmin();
+    }).catch(err => {
+      pulih();
+      pesan('tkMsg', 'Gagal: ' + (err.message || String(err)), 'err');
+    });
+  }
+
   // ---------- NAVIGASI ----------
   function nav(m) {
     if (typeof CUR !== 'undefined' && CUR === 'absensi' && m !== 'absensi') {
@@ -12246,6 +12480,8 @@
       muatHalamanLaporanHarian();
     } else if (m === 'daftarhadir') {
       muatHalamanDaftarHadir();
+    } else if (m === 'tambahkaryawan') {
+      muatHalamanTambahKaryawan();
     } else {
       $('content').innerHTML =
         '<div class="panel placeholder"><div class="big">' + MENU[m].ikon + '</div>' +
