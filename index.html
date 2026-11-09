@@ -1451,6 +1451,80 @@
   .ns-row:last-child { border-bottom: 0; }
   .ns-lbl { font-weight: 700; color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.3px; }
   .ns-val { font-weight: 700; color: var(--text); word-break: break-word; white-space: pre-wrap; min-width: 0; }
+  #modalNasabah.desk-full { padding: 8px; }
+  #modalNasabah.desk-full .mbox {
+    max-width: 98vw !important;
+    width: 98vw !important;
+    height: 95vh !important;
+    max-height: 95vh !important;
+    border-radius: 18px;
+  }
+  #modalNasabah.desk-full #mnTabs { display: none !important; }
+  #modalNasabah.desk-full #mnBody {
+    padding: 12px;
+    background: #f1f5f9;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .ns-desk-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(230px, 1fr));
+    gap: 10px;
+    flex: 1;
+    min-height: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+  }
+  .ns-desk-col {
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+  .ns-desk-head {
+    padding: 10px 12px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .ns-desk-content {
+    padding: 10px;
+    overflow-y: auto;
+    overflow-x: auto;
+    flex: 1;
+    min-height: 0;
+  }
+  .ns-desk-content .ns-card { padding: 11px; }
+  .ns-desk-content .ns-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+    padding: 6px 0;
+    font-size: 12.5px;
+  }
+  .ns-desk-content .ns-lbl { font-size: 10.5px; }
+  .ns-desk-content .diskon-box {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .ns-desk-content .diskon-box .d-val { font-size: 15px; }
   .diskon-box {
     background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
     border: 1.5px solid #34d399;
@@ -7886,9 +7960,242 @@
     '</div></div>';
   }
 
+  function isDesktopNasabahModal_() {
+    try {
+      if (window.AndroidApp) return false;
+      const ua = String(navigator.userAgent || '');
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) return false;
+      return window.innerWidth > 900;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function htmlProfilNasabah_(it) {
+    return '<div class="ns-card">' +
+      '<div class="ns-tagihan-head">Tagihan : ' + esc(it.kategori || '-') + '</div>' +
+      '<div class="ns-row"><div class="ns-lbl">User ID</div><div class="ns-val">' + esc(it.userId || '-') + '</div></div>' +
+      '<div class="ns-row"><div class="ns-lbl">No. Telepon</div><div class="ns-val">' + esc(it.telp || '-') + '</div></div>' +
+      '<div class="ns-row"><div class="ns-lbl">Nama Lengkap</div><div class="ns-val">' + esc(it.nama || '-') + '</div></div>' +
+      '<div class="ns-row"><div class="ns-lbl">Tanggal Lahir</div><div class="ns-val">' + esc(it.tglLahir || '-') + '</div></div>' +
+      '<div class="ns-row" style="align-items:center">' +
+        '<div class="ns-lbl">Alamat</div>' +
+        '<div class="ns-val" style="display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;flex-wrap:wrap">' +
+          '<span style="flex:1;min-width:140px;word-break:break-word">' + esc(it.alamat || '-') + '</span>' +
+          '<button type="button" class="btn-gmaps-ujung" id="btnBukaGmapsNasabah" onclick="bukaRuteGoogleMapsNasabah()">🗺️ Tampilkan di Google Map</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="ns-row"><div class="ns-lbl">Email</div><div class="ns-val">' + esc(it.email || '-') + '</div></div>' +
+    '</div>';
+  }
+
+  function htmlTagihanNasabah_(it) {
+    const katUpper = String(it.kategori || '').trim().toUpperCase();
+    const isKredivo = (katUpper === 'KREDIVO' || katUpper === 'KREDIVO OR');
+    let extraKredivo = '';
+    if (isKredivo) {
+      extraKredivo =
+        '<div class="ns-row"><div class="ns-lbl">Pembayaran Terakhir</div><div class="ns-val">' + esc(rp(it.lastPayment || 0)) + '</div></div>' +
+        '<div class="ns-row"><div class="ns-lbl">Tanggal Bayar Terakhir</div><div class="ns-val">' + esc(formatRpAtauTeks_(it.lastPaymentDate)) + '</div></div>' +
+        '<div class="ns-row"><div class="ns-lbl">Tipe Pinjaman</div><div class="ns-val">' + esc(it.loanType || '-') + '</div></div>' +
+        '<div class="ns-row"><div class="ns-lbl">Nama Dragon</div><div class="ns-val">' + esc(it.namaDragon || '-') + '</div></div>';
+    }
+    return '<div class="diskon-box">' +
+      '<div class="d-lbl">🏷️ Program Diskon Pelunasan</div>' +
+      '<div class="d-val">' + esc(rp(it.programDiskon || 0)) + '</div>' +
+    '</div>' +
+    '<div class="ns-card">' +
+      '<div class="ns-row"><div class="ns-lbl">Keterlambatan</div><div class="ns-val">' + esc(formatHari_(it.keterlambatan)) + '</div></div>' +
+      '<div class="ns-row"><div class="ns-lbl">Total Tagihan</div><div class="ns-val val-merah-bold">' + esc(rp(it.os || 0)) + '</div></div>' +
+      extraKredivo +
+    '</div>';
+  }
+
+  function htmlVaNasabah_(it) {
+    const katUpper = String(it.kategori || '').trim().toUpperCase();
+    if (katUpper === 'ALLO BANK') {
+      const noRek = formatRekAllo_(it.telp);
+      return '<div class="ns-card va-allo-box">' +
+        '<div class="va-allo-title">Cara Bayar Tagihan Allo Bank</div>' +
+        '<ol class="va-allo-list">' +
+          '<li>Silakan buka aplikasi M-Banking atau kunjungi mesin ATM terdekat.</li>' +
+          '<li>Pilih menu Transfer Antar Bank, kemudian masukkan atau pilih transfer ke Allo Bank.</li>' +
+          '<li>Masukkan nomor rekening : <b>' + esc(noRek) + '</b></li>' +
+          '<li>Pastikan data tagihan atas nama : <b>' + esc(it.nama || '-') + '</b></li>' +
+          '<li>Isi nominal bayar sesuai kesepakatan</li>' +
+          '<li>Klik OK dan kirimkan bukti bayarnya kepada petugas kami agar segera diproses</li>' +
+        '</ol>' +
+        '<div class="va-allo-foot">Terimakasih</div>' +
+      '</div>';
+    } else if (katUpper === 'KREDIVO' || katUpper === 'KREDIVO OR') {
+      return renderVaKredivo_(it.vaNumber);
+    }
+    return '<div class="tg-empty">Informasi VA Number tidak tersedia untuk produk ini.</div>';
+  }
+
+  function htmlKantorNasabah_(it) {
+    const katUpper = String(it.kategori || '').trim().toUpperCase();
+    if (katUpper !== 'ALLO BANK') {
+      return '<div class="tg-empty">Informasi kantor hanya tersedia untuk produk <b>ALLO BANK</b>.</div>';
+    }
+    return '<div class="ns-card">' +
+      '<div class="ns-row"><div class="ns-lbl">Nama Perusahaan</div><div class="ns-val">' + esc(it.namaPerusahaan || '-') + '</div></div>' +
+      '<div class="ns-row"><div class="ns-lbl">Alamat Kantor</div><div class="ns-val">' + esc(it.alamatPerusahaan || '-') + '</div></div>' +
+      '<div class="ns-row"><div class="ns-lbl">Kontak Darurat</div><div class="ns-val">' + esc(it.namaKontakDarurat || '-') + '</div></div>' +
+      '<div class="ns-row"><div class="ns-lbl">No. Kontak Darurat</div><div class="ns-val">' + esc(it.nomorKontakDarurat || '-') + '</div></div>' +
+    '</div>';
+  }
+
+  function htmlTambahanHp_(rows) {
+    if (!rows || !rows.length) {
+      return '<div class="tg-empty">Data tidak ditemukan.</div>';
+    }
+    return rows.map((r, i) =>
+      '<div class="ns-card">' +
+        '<div style="font-weight:800;font-size:13.5px;color:var(--primary);margin-bottom:6px">' + (i + 1) + '.</div>' +
+        '<div class="ns-row"><div class="ns-lbl">Sumber Data</div><div class="ns-val">: ' + esc(r.sumberData || '-') + '</div></div>' +
+        '<div class="ns-row"><div class="ns-lbl">Nama Sumber</div><div class="ns-val">: ' + esc(r.namaSumber || '-') + '</div></div>' +
+        '<div class="ns-row"><div class="ns-lbl">No hp</div><div class="ns-val">: ' + esc(r.noHp || '-') + '</div></div>' +
+        '<div class="ns-row"><div class="ns-lbl">Jenis Sumber</div><div class="ns-val">: ' + esc(r.jenisSumber || '-') + '</div></div>' +
+      '</div>'
+    ).join('');
+  }
+
+  function htmlTabelCuci_(rows) {
+    if (!rows || !rows.length) {
+      return '<div class="tg-empty">Data cuci tidak ditemukan untuk nasabah ini.</div>';
+    }
+    return '<div class="twrap"><table class="pc" style="min-width:640px">' +
+      '<thead><tr>' +
+        '<th>No</th>' +
+        '<th>Hubungan</th>' +
+        '<th>Nama</th>' +
+        '<th>NIK</th>' +
+        '<th>No. HP</th>' +
+        '<th>Email</th>' +
+        '<th>BPJS</th>' +
+      '</tr></thead>' +
+      '<tbody>' +
+        rows.map((r, i) =>
+          '<tr>' +
+            '<td>' + (i + 1) + '</td>' +
+            '<td>' + esc(r.hubunganKeluarga || '-') + '</td>' +
+            '<td><b>' + esc(r.nama || '-') + '</b></td>' +
+            '<td>' + esc(r.nik || '-') + '</td>' +
+            '<td>' + esc(r.noHp || '-') + '</td>' +
+            '<td>' + esc(r.email || '-') + '</td>' +
+            '<td>' + esc(r.bpjs || '-') + '</td>' +
+          '</tr>'
+        ).join('') +
+      '</tbody>' +
+    '</table></div>';
+  }
+
+  function htmlTabelHistoris_(rows) {
+    if (!rows || !rows.length) {
+      return '<div class="tg-empty">Belum ada riwayat penanganan tercatat.</div>';
+    }
+    return '<div class="twrap"><table class="pc" style="min-width:680px">' +
+      '<thead><tr>' +
+        '<th>No</th>' +
+        '<th>Waktu</th>' +
+        '<th>Nasabah</th>' +
+        '<th>PIC</th>' +
+        '<th>Tindakan</th>' +
+        '<th>Hasil</th>' +
+        '<th>Kronologi</th>' +
+      '</tr></thead>' +
+      '<tbody>' +
+        rows.map((r, i) =>
+          '<tr>' +
+            '<td>' + (i + 1) + '</td>' +
+            '<td>' + esc(r.tanggalInput || '-') + '</td>' +
+            '<td>' + esc(r.namaNasabah || '-') + '</td>' +
+            '<td><b>' + esc(r.pic || '-') + '</b></td>' +
+            '<td>' + esc(r.action || '-') + '</td>' +
+            '<td>' + esc(r.result || '-') + '</td>' +
+            '<td style="white-space:pre-wrap">' + esc(r.historis || '-') + '</td>' +
+          '</tr>'
+        ).join('') +
+      '</tbody>' +
+    '</table></div>';
+  }
+
+  function muatDataTambahanHpNasabah_(it, cb) {
+    if (it._tambahanHpRows) { cb(it._tambahanHpRows); return; }
+    apiSilent_('getDataTambahanHpByUserId', S.token, it.userId || '').then(r => {
+      const rows = (r && r.sukses && Array.isArray(r.items)) ? r.items : [];
+      if (rows.length > 0) {
+        it._tambahanHpRows = rows;
+        cb(it._tambahanHpRows);
+        return;
+      }
+      return lookupTambahanHpDirect_(it.userId || '').then(fallbackRows => {
+        it._tambahanHpRows = fallbackRows || [];
+        cb(it._tambahanHpRows);
+      });
+    }).catch(() => {
+      lookupTambahanHpDirect_(it.userId || '').then(fallbackRows => {
+        it._tambahanHpRows = fallbackRows || [];
+        cb(it._tambahanHpRows);
+      });
+    });
+  }
+
   function renderModalNasabah_() {
     const it = TG_NASABAH_AKTIF;
     if (!it) return;
+    const isDesk = isDesktopNasabahModal_();
+    const modalEl = $('modalNasabah');
+    if (modalEl) modalEl.classList.toggle('desk-full', isDesk);
+    if (isDesk) {
+      $('mnTabs').innerHTML = '';
+      $('mnBody').innerHTML =
+        '<div class="ns-desk-grid">' +
+          '<div class="ns-desk-col"><div class="ns-desk-head">👤 PROFIL</div><div class="ns-desk-content" id="mnDesk_nasabah">' + htmlProfilNasabah_(it) + '</div></div>' +
+          '<div class="ns-desk-col"><div class="ns-desk-head">🧮 TAGIHAN</div><div class="ns-desk-content" id="mnDesk_tagihan">' + htmlTagihanNasabah_(it) + '</div></div>' +
+          '<div class="ns-desk-col"><div class="ns-desk-head">💳 VA NUMBER</div><div class="ns-desk-content" id="mnDesk_vanumber">' + htmlVaNasabah_(it) + '</div></div>' +
+          '<div class="ns-desk-col"><div class="ns-desk-head">🏢 KANTOR</div><div class="ns-desk-content" id="mnDesk_kantor">' + htmlKantorNasabah_(it) + '</div></div>' +
+          '<div class="ns-desk-col"><div class="ns-desk-head">📱 Tambahan No Hp</div><div class="ns-desk-content" id="mnDesk_tambahanhp">' + (it._tambahanHpRows ? htmlTambahanHp_(it._tambahanHpRows) : '<div class="placeholder">Memuat tambahan no hp...</div>') + '</div></div>' +
+          '<div class="ns-desk-col"><div class="ns-desk-head">🧼 DATA CUCI</div><div class="ns-desk-content" id="mnDesk_cuci">' + (it._cuciRows ? htmlTabelCuci_(it._cuciRows) : '<div class="placeholder">Memuat data cuci...</div>') + '</div></div>' +
+          '<div class="ns-desk-col"><div class="ns-desk-head">🕒 RIWAYAT</div><div class="ns-desk-content" id="mnDesk_historis">' + (it._historisRows ? htmlTabelHistoris_(it._historisRows) : '<div class="placeholder">Memuat riwayat penanganan...</div>') + '</div></div>' +
+        '</div>';
+      if (!it._tambahanHpRows) {
+        muatDataTambahanHpNasabah_(it, rows => {
+          const el = $('mnDesk_tambahanhp');
+          if (TG_NASABAH_AKTIF === it && el) el.innerHTML = htmlTambahanHp_(rows);
+        });
+      }
+      if (!it._cuciRows) {
+        apiSilent_('getDataCuciByNik', S.token, it.nik || '').then(r => {
+          const el = $('mnDesk_cuci');
+          if (!r || !r.sukses) {
+            if (TG_NASABAH_AKTIF === it && el) el.innerHTML = '<div class="tg-empty">' + esc((r && r.pesan) || 'Gagal memuat data cuci.') + '</div>';
+            return;
+          }
+          it._cuciRows = r.items || [];
+          if (TG_NASABAH_AKTIF === it && el) el.innerHTML = htmlTabelCuci_(it._cuciRows);
+        }).catch(e => {
+          const el = $('mnDesk_cuci');
+          if (TG_NASABAH_AKTIF === it && el) el.innerHTML = '<div class="tg-empty">Gagal memuat: ' + esc(e.message) + '</div>';
+        });
+      }
+      if (!it._historisRows) {
+        apiSilent_('getDataHistorisByNik', S.token, it.nik || '').then(r => {
+          const el = $('mnDesk_historis');
+          if (!r || !r.sukses) {
+            if (TG_NASABAH_AKTIF === it && el) el.innerHTML = '<div class="tg-empty">' + esc((r && r.pesan) || 'Gagal memuat riwayat penanganan.') + '</div>';
+            return;
+          }
+          it._historisRows = r.items || [];
+          if (TG_NASABAH_AKTIF === it && el) el.innerHTML = htmlTabelHistoris_(it._historisRows);
+        }).catch(e => {
+          const el = $('mnDesk_historis');
+          if (TG_NASABAH_AKTIF === it && el) el.innerHTML = '<div class="tg-empty">Gagal memuat: ' + esc(e.message) + '</div>';
+        });
+      }
+      return;
+    }
 
     $('mnTabs').innerHTML = NS_TABS.map(t =>
       '<button type="button" class="ns-tab' + (TG_TAB_NASABAH === t[0] ? ' on' : '') + '" onclick="pilihTabNasabah(\'' + t[0] + '\')">' +
@@ -7977,28 +8284,10 @@
         renderTambahanHp_(it._tambahanHpRows);
       } else {
         $('mnBody').innerHTML = '<div class="placeholder">Memuat tambahan no hp...</div>';
-        api('getDataTambahanHpByUserId', S.token, it.userId || '').then(r => {
-          const rows = (r && r.sukses && Array.isArray(r.items)) ? r.items : [];
-          if (rows.length > 0) {
-            it._tambahanHpRows = rows;
-            if (TG_NASABAH_AKTIF === it && TG_TAB_NASABAH === 'tambahanhp') {
-              renderTambahanHp_(it._tambahanHpRows);
-            }
-            return;
+        muatDataTambahanHpNasabah_(it, rows => {
+          if (TG_NASABAH_AKTIF === it && TG_TAB_NASABAH === 'tambahanhp') {
+            renderTambahanHp_(rows);
           }
-          return lookupTambahanHpDirect_(it.userId || '').then(fallbackRows => {
-            it._tambahanHpRows = fallbackRows || [];
-            if (TG_NASABAH_AKTIF === it && TG_TAB_NASABAH === 'tambahanhp') {
-              renderTambahanHp_(it._tambahanHpRows);
-            }
-          });
-        }).catch(() => {
-          lookupTambahanHpDirect_(it.userId || '').then(fallbackRows => {
-            it._tambahanHpRows = fallbackRows || [];
-            if (TG_NASABAH_AKTIF === it && TG_TAB_NASABAH === 'tambahanhp') {
-              renderTambahanHp_(it._tambahanHpRows);
-            }
-          });
         });
       }
     } else if (TG_TAB_NASABAH === 'cuci') {
@@ -8069,19 +8358,7 @@
   }
 
   function renderTambahanHp_(rows) {
-    if (!rows || !rows.length) {
-      $('mnBody').innerHTML = '<div class="tg-empty">Data tidak ditemukan.</div>';
-      return;
-    }
-    $('mnBody').innerHTML = rows.map((r, i) =>
-      '<div class="ns-card">' +
-        '<div style="font-weight:800;font-size:13.5px;color:var(--primary);margin-bottom:6px">' + (i + 1) + '.</div>' +
-        '<div class="ns-row"><div class="ns-lbl">Sumber Data</div><div class="ns-val">: ' + esc(r.sumberData || '-') + '</div></div>' +
-        '<div class="ns-row"><div class="ns-lbl">Nama Sumber</div><div class="ns-val">: ' + esc(r.namaSumber || '-') + '</div></div>' +
-        '<div class="ns-row"><div class="ns-lbl">No hp</div><div class="ns-val">: ' + esc(r.noHp || '-') + '</div></div>' +
-        '<div class="ns-row"><div class="ns-lbl">Jenis Sumber</div><div class="ns-val">: ' + esc(r.jenisSumber || '-') + '</div></div>' +
-      '</div>'
-    ).join('');
+    $('mnBody').innerHTML = htmlTambahanHp_(rows);
   }
 
   function renderTabelCuci_(rows) {
