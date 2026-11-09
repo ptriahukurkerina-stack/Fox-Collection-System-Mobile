@@ -4330,7 +4330,7 @@
     color: var(--primary-hover);
   }
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -7097,6 +7097,7 @@
     ['tagihan',  '🧮', 'TAGIHAN'],
     ['vanumber', '💳', 'VA NUMBER'],
     ['kantor',   '🏢', 'KANTOR'],
+    ['tambahanhp', '📱', 'Tambahan No Hp'],
     ['cuci',     '🧼', 'DATA CUCI'],
     ['historis', '🕒', 'RIWAYAT']
   ];
@@ -7971,6 +7972,24 @@
           '<div class="ns-row"><div class="ns-lbl">Kontak Darurat</div><div class="ns-val">' + esc(it.namaKontakDarurat || '-') + '</div></div>' +
           '<div class="ns-row"><div class="ns-lbl">No. Kontak Darurat</div><div class="ns-val">' + esc(it.nomorKontakDarurat || '-') + '</div></div>' +
         '</div>';
+    } else if (TG_TAB_NASABAH === 'tambahanhp') {
+      if (it._tambahanHpRows) {
+        renderTambahanHp_(it._tambahanHpRows);
+      } else {
+        $('mnBody').innerHTML = '<div class="placeholder">Memuat tambahan no hp...</div>';
+        api('getDataTambahanHpByUserId', S.token, it.userId || '').then(r => {
+          if (!r.sukses) {
+            $('mnBody').innerHTML = '<div class="tg-empty">' + esc(r.pesan || 'Gagal memuat data.') + '</div>';
+            return;
+          }
+          it._tambahanHpRows = r.items || [];
+          if (TG_NASABAH_AKTIF === it && TG_TAB_NASABAH === 'tambahanhp') {
+            renderTambahanHp_(it._tambahanHpRows);
+          }
+        }).catch(e => {
+          $('mnBody').innerHTML = '<div class="tg-empty">Gagal memuat: ' + esc(e.message) + '</div>';
+        });
+      }
     } else if (TG_TAB_NASABAH === 'cuci') {
       if (it._cuciRows) {
         renderTabelCuci_(it._cuciRows);
@@ -8008,6 +8027,22 @@
         });
       }
     }
+  }
+
+  function renderTambahanHp_(rows) {
+    if (!rows || !rows.length) {
+      $('mnBody').innerHTML = '<div class="tg-empty">Data tidak ditemukan.</div>';
+      return;
+    }
+    $('mnBody').innerHTML = rows.map((r, i) =>
+      '<div class="ns-card">' +
+        '<div style="font-weight:800;font-size:13.5px;color:var(--primary);margin-bottom:6px">' + (i + 1) + '.</div>' +
+        '<div class="ns-row"><div class="ns-lbl">Sumber Data</div><div class="ns-val">: ' + esc(r.sumberData || '-') + '</div></div>' +
+        '<div class="ns-row"><div class="ns-lbl">Nama Sumber</div><div class="ns-val">: ' + esc(r.namaSumber || '-') + '</div></div>' +
+        '<div class="ns-row"><div class="ns-lbl">No hp</div><div class="ns-val">: ' + esc(r.noHp || '-') + '</div></div>' +
+        '<div class="ns-row"><div class="ns-lbl">Jenis Sumber</div><div class="ns-val">: ' + esc(r.jenisSumber || '-') + '</div></div>' +
+      '</div>'
+    ).join('');
   }
 
   function renderTabelCuci_(rows) {
