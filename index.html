@@ -7978,16 +7978,27 @@
       } else {
         $('mnBody').innerHTML = '<div class="placeholder">Memuat tambahan no hp...</div>';
         api('getDataTambahanHpByUserId', S.token, it.userId || '').then(r => {
-          if (!r.sukses) {
-            $('mnBody').innerHTML = '<div class="tg-empty">' + esc(r.pesan || 'Gagal memuat data.') + '</div>';
+          const rows = (r && r.sukses && Array.isArray(r.items)) ? r.items : [];
+          if (rows.length > 0) {
+            it._tambahanHpRows = rows;
+            if (TG_NASABAH_AKTIF === it && TG_TAB_NASABAH === 'tambahanhp') {
+              renderTambahanHp_(it._tambahanHpRows);
+            }
             return;
           }
-          it._tambahanHpRows = r.items || [];
-          if (TG_NASABAH_AKTIF === it && TG_TAB_NASABAH === 'tambahanhp') {
-            renderTambahanHp_(it._tambahanHpRows);
-          }
-        }).catch(e => {
-          $('mnBody').innerHTML = '<div class="tg-empty">Gagal memuat: ' + esc(e.message) + '</div>';
+          return lookupTambahanHpDirect_(it.userId || '').then(fallbackRows => {
+            it._tambahanHpRows = fallbackRows || [];
+            if (TG_NASABAH_AKTIF === it && TG_TAB_NASABAH === 'tambahanhp') {
+              renderTambahanHp_(it._tambahanHpRows);
+            }
+          });
+        }).catch(() => {
+          lookupTambahanHpDirect_(it.userId || '').then(fallbackRows => {
+            it._tambahanHpRows = fallbackRows || [];
+            if (TG_NASABAH_AKTIF === it && TG_TAB_NASABAH === 'tambahanhp') {
+              renderTambahanHp_(it._tambahanHpRows);
+            }
+          });
         });
       }
     } else if (TG_TAB_NASABAH === 'cuci') {
@@ -8027,6 +8038,34 @@
         });
       }
     }
+  }
+
+  function lookupTambahanHpDirect_(userId) {
+    const uid = String(userId == null ? '' : userId).trim().replace(/^'+/, '');
+    if (!uid) return Promise.resolve([]);
+    const safeUid = uid.replace(/'/g, "\\'");
+    const tq = "select A,B,C,D,E,F where A = '" + safeUid + "' or A = '" + safeUid.toUpperCase() + "' or A = '" + safeUid.toLowerCase() + "'";
+    const url = 'https://docs.google.com/spreadsheets/d/1Vvqcv_jT82ldkaH-aucMIC4G5oO8V4S5woDwuSLM2o8/gviz/tq?tqx=out:json&tq=' + encodeURIComponent(tq);
+    return fetch(url)
+      .then(res => res.text())
+      .then(txt => {
+        const start = txt.indexOf('{');
+        const end = txt.lastIndexOf('}');
+        if (start < 0 || end < 0) return [];
+        const json = JSON.parse(txt.slice(start, end + 1));
+        const rows = (json && json.table && Array.isArray(json.table.rows)) ? json.table.rows : [];
+        const cellVal = c => (c && (c.f != null ? c.f : c.v) != null) ? String(c.f != null ? c.f : c.v).trim() : '';
+        return rows.map(r => {
+          const c = (r && Array.isArray(r.c)) ? r.c : [];
+          return {
+            sumberData: cellVal(c[2]),
+            namaSumber: cellVal(c[4]),
+            noHp: cellVal(c[3]),
+            jenisSumber: cellVal(c[5])
+          };
+        });
+      })
+      .catch(() => []);
   }
 
   function renderTambahanHp_(rows) {
