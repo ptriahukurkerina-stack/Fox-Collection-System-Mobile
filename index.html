@@ -1451,17 +1451,34 @@
   .ns-row:last-child { border-bottom: 0; }
   .ns-lbl { font-weight: 700; color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.3px; }
   .ns-val { font-weight: 700; color: var(--text); word-break: break-word; white-space: pre-wrap; min-width: 0; }
-  #modalNasabah.desk-full { padding: 8px; }
+  #modalNasabah.desk-full { padding: 6px; }
   #modalNasabah.desk-full .mbox {
-    max-width: 98vw !important;
-    width: 98vw !important;
-    height: 95vh !important;
-    max-height: 95vh !important;
-    border-radius: 18px;
+    max-width: 99vw !important;
+    width: 99vw !important;
+    height: 96vh !important;
+    max-height: 96vh !important;
+    border-radius: 14px;
+  }
+  #modalNasabah.desk-full .mhead {
+    padding: 8px 14px;
+    gap: 8px;
+  }
+  #modalNasabah.desk-full .mhead h3 {
+    font-size: 13px;
+    gap: 6px;
+  }
+  #modalNasabah.desk-full .mhead .pic-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+  #modalNasabah.desk-full .mhead button {
+    padding: 4px 10px;
+    min-height: 28px;
+    font-size: 11px;
   }
   #modalNasabah.desk-full #mnTabs { display: none !important; }
   #modalNasabah.desk-full #mnBody {
-    padding: 12px;
+    padding: 8px;
     background: #f1f5f9;
     flex: 1;
     display: flex;
@@ -1470,18 +1487,30 @@
   }
   .ns-desk-grid {
     display: grid;
-    grid-template-columns: repeat(7, minmax(230px, 1fr));
-    gap: 10px;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
     flex: 1;
     min-height: 0;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-bottom: 4px;
+    overflow: hidden;
+  }
+  .ns-desk-row-top {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    min-height: 0;
+    height: 100%;
+  }
+  .ns-desk-row-bottom {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    min-height: 0;
+    height: 100%;
   }
   .ns-desk-col {
     background: #ffffff;
     border: 1px solid var(--line);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -1490,41 +1519,129 @@
     overflow: hidden;
   }
   .ns-desk-head {
-    padding: 10px 12px;
+    padding: 6px 10px;
     background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
     color: #ffffff;
-    font-size: 12px;
+    font-size: 10.5px;
     font-weight: 800;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.25px;
     text-transform: uppercase;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     flex-shrink: 0;
+    line-height: 1.2;
   }
   .ns-desk-content {
-    padding: 10px;
+    padding: 7px 8px;
     overflow-y: auto;
     overflow-x: auto;
     flex: 1;
     min-height: 0;
+    font-size: 10.5px;
+    line-height: 1.25;
   }
-  .ns-desk-content .ns-card { padding: 11px; }
+  .ns-desk-content .ns-card {
+    padding: 7px 9px;
+    border-radius: 8px;
+  }
+  .ns-desk-content .ns-card + .ns-card { margin-top: 6px; }
+  .ns-desk-content .ns-tagihan-head {
+    font-size: 11.5px;
+    padding-bottom: 5px;
+    margin-bottom: 4px;
+    line-height: 1.25;
+  }
   .ns-desk-content .ns-row {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2px;
-    padding: 6px 0;
-    font-size: 12.5px;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 2px 6px;
+    padding: 3.5px 0;
+    font-size: 10.5px;
+    line-height: 1.25;
   }
-  .ns-desk-content .ns-lbl { font-size: 10.5px; }
+  .ns-desk-content .ns-lbl {
+    font-size: 9.5px;
+    letter-spacing: 0.2px;
+    line-height: 1.25;
+  }
+  .ns-desk-content .ns-val {
+    font-size: 10.5px;
+    line-height: 1.25;
+  }
+  .ns-desk-content .val-merah-bold {
+    font-size: 11.5px !important;
+  }
   .ns-desk-content .diskon-box {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    padding: 10px 12px;
-    margin-bottom: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 6px 9px;
+    margin-bottom: 6px;
+    border-radius: 8px;
   }
-  .ns-desk-content .diskon-box .d-val { font-size: 15px; }
+  .ns-desk-content .diskon-box .d-lbl { font-size: 9.5px; }
+  .ns-desk-content .diskon-box .d-val { font-size: 12px; }
+  .ns-desk-content .va-allo-box {
+    font-size: 10px;
+    line-height: 1.35;
+  }
+  .ns-desk-content .va-allo-title {
+    font-size: 11px;
+    margin-bottom: 5px;
+    padding-bottom: 4px;
+  }
+  .ns-desk-content .va-allo-list {
+    padding-left: 14px;
+  }
+  .ns-desk-content .va-allo-list li {
+    margin-bottom: 2.5px;
+    font-size: 10px;
+  }
+  .ns-desk-content .va-allo-foot {
+    margin-top: 5px;
+    font-size: 10px;
+  }
+  .ns-desk-content .va-kredivo-row {
+    padding: 4px 0;
+    font-size: 10px;
+    gap: 6px;
+  }
+  .ns-desk-content .btn-gmaps-ujung {
+    min-height: 22px;
+    padding: 3px 7px;
+    font-size: 9.5px;
+    border-radius: 6px;
+  }
+  .ns-desk-content .twrap {
+    border-radius: 6px;
+  }
+  .ns-desk-content table.pc {
+    min-width: 0 !important;
+    width: 100% !important;
+    font-size: 9.5px;
+  }
+  .ns-desk-content table.pc th {
+    padding: 5px 5px;
+    font-size: 9px;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+  }
+  .ns-desk-content table.pc td {
+    padding: 4px 5px;
+    font-size: 9.5px;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+  .ns-desk-content .tg-empty,
+  .ns-desk-content .placeholder {
+    padding: 14px 8px;
+    font-size: 10.5px;
+  }
+  #mnDesk_tambahanhp .ns-card > div:first-child {
+    font-size: 10.5px !important;
+    margin-bottom: 3px !important;
+  }
   .diskon-box {
     background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
     border: 1.5px solid #34d399;
@@ -4404,7 +4521,7 @@
     color: var(--primary-hover);
   }
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+</head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -8152,13 +8269,17 @@
       $('mnTabs').innerHTML = '';
       $('mnBody').innerHTML =
         '<div class="ns-desk-grid">' +
-          '<div class="ns-desk-col"><div class="ns-desk-head">👤 PROFIL</div><div class="ns-desk-content" id="mnDesk_nasabah">' + htmlProfilNasabah_(it) + '</div></div>' +
-          '<div class="ns-desk-col"><div class="ns-desk-head">🧮 TAGIHAN</div><div class="ns-desk-content" id="mnDesk_tagihan">' + htmlTagihanNasabah_(it) + '</div></div>' +
-          '<div class="ns-desk-col"><div class="ns-desk-head">💳 VA NUMBER</div><div class="ns-desk-content" id="mnDesk_vanumber">' + htmlVaNasabah_(it) + '</div></div>' +
-          '<div class="ns-desk-col"><div class="ns-desk-head">🏢 KANTOR</div><div class="ns-desk-content" id="mnDesk_kantor">' + htmlKantorNasabah_(it) + '</div></div>' +
-          '<div class="ns-desk-col"><div class="ns-desk-head">📱 Tambahan No Hp</div><div class="ns-desk-content" id="mnDesk_tambahanhp">' + (it._tambahanHpRows ? htmlTambahanHp_(it._tambahanHpRows) : '<div class="placeholder">Memuat tambahan no hp...</div>') + '</div></div>' +
-          '<div class="ns-desk-col"><div class="ns-desk-head">🧼 DATA CUCI</div><div class="ns-desk-content" id="mnDesk_cuci">' + (it._cuciRows ? htmlTabelCuci_(it._cuciRows) : '<div class="placeholder">Memuat data cuci...</div>') + '</div></div>' +
-          '<div class="ns-desk-col"><div class="ns-desk-head">🕒 RIWAYAT</div><div class="ns-desk-content" id="mnDesk_historis">' + (it._historisRows ? htmlTabelHistoris_(it._historisRows) : '<div class="placeholder">Memuat riwayat penanganan...</div>') + '</div></div>' +
+          '<div class="ns-desk-row-top">' +
+            '<div class="ns-desk-col"><div class="ns-desk-head">👤 PROFIL</div><div class="ns-desk-content" id="mnDesk_nasabah">' + htmlProfilNasabah_(it) + '</div></div>' +
+            '<div class="ns-desk-col"><div class="ns-desk-head">🧮 TAGIHAN</div><div class="ns-desk-content" id="mnDesk_tagihan">' + htmlTagihanNasabah_(it) + '</div></div>' +
+            '<div class="ns-desk-col"><div class="ns-desk-head">💳 VA NUMBER</div><div class="ns-desk-content" id="mnDesk_vanumber">' + htmlVaNasabah_(it) + '</div></div>' +
+            '<div class="ns-desk-col"><div class="ns-desk-head">🏢 KANTOR</div><div class="ns-desk-content" id="mnDesk_kantor">' + htmlKantorNasabah_(it) + '</div></div>' +
+          '</div>' +
+          '<div class="ns-desk-row-bottom">' +
+            '<div class="ns-desk-col"><div class="ns-desk-head">📱 Tambahan No Hp</div><div class="ns-desk-content" id="mnDesk_tambahanhp">' + (it._tambahanHpRows ? htmlTambahanHp_(it._tambahanHpRows) : '<div class="placeholder">Memuat tambahan no hp...</div>') + '</div></div>' +
+            '<div class="ns-desk-col"><div class="ns-desk-head">🧼 DATA CUCI</div><div class="ns-desk-content" id="mnDesk_cuci">' + (it._cuciRows ? htmlTabelCuci_(it._cuciRows) : '<div class="placeholder">Memuat data cuci...</div>') + '</div></div>' +
+            '<div class="ns-desk-col"><div class="ns-desk-head">🕒 RIWAYAT</div><div class="ns-desk-content" id="mnDesk_historis">' + (it._historisRows ? htmlTabelHistoris_(it._historisRows) : '<div class="placeholder">Memuat riwayat penanganan...</div>') + '</div></div>' +
+          '</div>' +
         '</div>';
       if (!it._tambahanHpRows) {
         muatDataTambahanHpNasabah_(it, rows => {
