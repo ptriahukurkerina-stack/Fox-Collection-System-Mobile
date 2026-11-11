@@ -4428,22 +4428,29 @@
     flex-shrink: 0;
   }
 
-  /* Grid 2 Foto Sebaris untuk Hemat Ruang Layar Android */
+  /* Grid Foto Daftar Hadir Compact & Proporsional */
   .dh-photo-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    margin-top: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+  }
+  @media (max-width: 480px) {
+    .dh-photo-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
   }
   .dh-card {
     background: #ffffff;
     border: 1.5px solid var(--line);
     border-radius: var(--radius-md);
-    padding: 9px;
+    padding: 7px;
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    align-items: center;
+    gap: 5px;
     min-width: 0;
     transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
   }
@@ -4453,25 +4460,29 @@
   }
   /* Urutan 1: Nama dari Kolom B */
   .dh-card-nama {
-    font-size: 12.5px;
+    width: 100%;
+    font-size: 11px;
     font-weight: 800;
     color: var(--dark);
     text-align: center;
-    line-height: 1.25;
-    padding: 5px 6px;
+    line-height: 1.2;
+    padding: 4px 6px;
     background: var(--primary-soft);
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid #bae6fd;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  /* Urutan 2: Foto dari Kolom D */
+  /* Urutan 2: Foto dari Kolom D (Ukuran Dikecilkan & Disesuaikan) */
   .dh-card-foto-wrap {
     position: relative;
     width: 100%;
+    max-width: 110px;
+    height: 132px;
     aspect-ratio: 3 / 4;
-    border-radius: 10px;
+    margin: 0 auto;
+    border-radius: 8px;
     overflow: hidden;
     background: #0f172a;
     border: 1px solid var(--line);
@@ -4492,22 +4503,23 @@
   }
   .dh-card-foto-empty {
     color: #94a3b8;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     text-align: center;
-    padding: 10px;
+    padding: 8px;
   }
   /* Urutan 3: Jam Masuk dari Kolom C */
   .dh-card-jam {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 3px;
     background: #f8fafc;
     border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 5px 6px;
-    font-size: 11px;
+    border-radius: 6px;
+    padding: 4px 4px;
+    font-size: 9.5px;
     font-weight: 700;
     color: var(--muted);
     white-space: nowrap;
@@ -4516,12 +4528,12 @@
   }
   .dh-card-jam b {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11.5px;
+    font-size: 10px;
     font-weight: 800;
     color: var(--primary-hover);
   }
 </style>
-</head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -8266,6 +8278,7 @@
     const modalEl = $('modalNasabah');
     if (modalEl) modalEl.classList.toggle('desk-full', isDesk);
     if (isDesk) {
+      const nikDesk = String(it.nik == null ? '' : it.nik).trim().replace(/^'+/, '') || '-';
       $('mnTabs').innerHTML = '';
       $('mnBody').innerHTML =
         '<div class="ns-desk-grid">' +
@@ -8277,7 +8290,7 @@
           '</div>' +
           '<div class="ns-desk-row-bottom">' +
             '<div class="ns-desk-col"><div class="ns-desk-head">📱 Tambahan No Hp</div><div class="ns-desk-content" id="mnDesk_tambahanhp">' + (it._tambahanHpRows ? htmlTambahanHp_(it._tambahanHpRows) : '<div class="placeholder">Memuat tambahan no hp...</div>') + '</div></div>' +
-            '<div class="ns-desk-col"><div class="ns-desk-head">🧼 DATA CUCI</div><div class="ns-desk-content" id="mnDesk_cuci">' + (it._cuciRows ? htmlTabelCuci_(it._cuciRows) : '<div class="placeholder">Memuat data cuci...</div>') + '</div></div>' +
+            '<div class="ns-desk-col"><div class="ns-desk-head">🧼 DATA CUCI : ' + esc(nikDesk) + '</div><div class="ns-desk-content" id="mnDesk_cuci">' + (it._cuciRows ? htmlTabelCuci_(it._cuciRows) : '<div class="placeholder">Memuat data cuci...</div>') + '</div></div>' +
             '<div class="ns-desk-col"><div class="ns-desk-head">🕒 RIWAYAT</div><div class="ns-desk-content" id="mnDesk_historis">' + (it._historisRows ? htmlTabelHistoris_(it._historisRows) : '<div class="placeholder">Memuat riwayat penanganan...</div>') + '</div></div>' +
           '</div>' +
         '</div>';
