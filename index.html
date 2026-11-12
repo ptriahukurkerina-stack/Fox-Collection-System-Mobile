@@ -8722,11 +8722,13 @@
     if (!frame) return;
     const raw = String(htmlContent == null ? '' : htmlContent).trim();
     const hasHtmlTag = /<html[\s>]/i.test(raw);
+    const openScr = '<scr' + 'ipt>';
+    const closeScr = '<\/' + 'scr' + 'ipt>';
     const autoFitOneScreenStyle = '<style id="ktAutoFitStyle">' +
       'html,body{margin:0!important;padding:0!important;width:100%!important;height:100%!important;overflow:hidden!important;-webkit-text-size-adjust:100%;}' +
       '::-webkit-scrollbar{display:none!important;width:0!important;height:0!important;}' +
       '</style>';
-    const autoFitScript = '<script>' +
+    const autoFitScript = openScr +
       'function fitKartuFullOneScreen_(){' +
         'try{' +
           'var docEl=document.documentElement,b=document.body;' +
@@ -8760,13 +8762,13 @@
           '}else{' +
             'var offY2=Math.max(0,(vh-sh)/2);' +
             'wrap.style.transform="translate(0px,"+offY2+"px)";' +
-          }' +
+          '}' +
         '}catch(e){}' +
       '}' +
       'window.addEventListener("load",function(){fitKartuFullOneScreen_();setTimeout(fitKartuFullOneScreen_,80);setTimeout(fitKartuFullOneScreen_,250);});' +
       'window.addEventListener("resize",fitKartuFullOneScreen_);' +
       'setTimeout(fitKartuFullOneScreen_,30);' +
-      '<\/script>';
+      closeScr;
     let finalDoc = '';
     if (hasHtmlTag) {
       finalDoc = raw;
