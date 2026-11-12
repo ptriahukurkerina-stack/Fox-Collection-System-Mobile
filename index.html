@@ -1375,7 +1375,15 @@
   .tg-pill.res { background: var(--success-soft); color: #065f46; }
   .tg-pill.res-belum { background: var(--danger-soft); color: #991b1b; }
   .tg-pill.cuci-ada { background: #ccfbf1; color: #0f766e; }
-  .tg-right { text-align: right; flex-shrink: 0; }
+  .tg-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .tg-os-wrap { text-align: right; }
   .tg-os-lbl { font-size: 11px; color: var(--muted); font-weight: 600; }
   .tg-os-val {
     font-size: 15px;
@@ -1384,6 +1392,77 @@
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
     font-family: 'JetBrains Mono', monospace;
+  }
+  .btn-kartu-tagihan {
+    padding: 8px 13px;
+    min-height: 38px;
+    font-size: 12px;
+    font-weight: 800;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    color: #ffffff;
+    white-space: nowrap;
+    flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(2, 132, 199, 0.24);
+  }
+  .btn-kartu-tagihan:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 5px 14px rgba(2, 132, 199, 0.32);
+  }
+  /* ---------- POP UP KARTU TAGIHAN (UKURAN ANDROID HAMPIR PENUH UNTUK SCREENSHOT) ---------- */
+  #modalKartuTagihan {
+    padding: 6px;
+    align-items: center;
+    justify-content: center;
+  }
+  #modalKartuTagihan .mbox {
+    width: 98vw !important;
+    max-width: 560px !important;
+    height: 96vh !important;
+    height: 96dvh !important;
+    max-height: 96vh !important;
+    max-height: 96dvh !important;
+    border-radius: 12px !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #ffffff;
+  }
+  #modalKartuTagihan .mhead {
+    padding: 8px 12px;
+    min-height: 42px;
+    gap: 8px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--line);
+  }
+  #modalKartuTagihan .mhead h3 {
+    font-size: 13.5px;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #modalKartuTagihan .mhead button {
+    padding: 5px 11px;
+    min-height: 30px;
+    font-size: 12px;
+  }
+  #modalKartuTagihan .mbody {
+    padding: 0 !important;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+  }
+  #ktFrame {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    border: 0;
+    display: block;
+    background: #ffffff;
   }
   .tg-empty { text-align: center; padding: 28px 12px; color: var(--muted); font-size: 13.5px; }
 
@@ -2463,6 +2542,17 @@
       border-top: 1px dashed var(--line);
       padding-top: 10px;
       text-align: left;
+    }
+    .tg-os-wrap { text-align: left; }
+    #modalKartuTagihan { padding: 3px !important; }
+    #modalKartuTagihan .mbox {
+      width: 98.5vw !important;
+      max-width: 98.5vw !important;
+      height: 97vh !important;
+      height: 97dvh !important;
+      max-height: 97vh !important;
+      max-height: 97dvh !important;
+      border-radius: 10px !important;
     }
 
     .ns-row, .by-info { grid-template-columns: minmax(0, 1fr); gap: 3px; padding: 8px 0; }
@@ -4669,6 +4759,17 @@
   </div>
 </div>
 
+<!-- ================= POP UP KARTU TAGIHAN (HTML_KARTU_TAGIHAN KOLOM B) ================= -->
+<div class="modal" id="modalKartuTagihan" onclick="if(event.target===this)tutupModalKartuTagihan()">
+  <div class="mbox">
+    <div class="mhead">
+      <h3 id="ktTitle">Kartu Tagihan</h3>
+      <button type="button" class="outline" onclick="tutupModalKartuTagihan()">Tutup ✕</button>
+    </div>
+    <div class="mbody" id="ktBody"></div>
+  </div>
+</div>
+
 <!-- ================= POP UP ISI HISTORIS PENANGANAN (TOMBOL +) ================= -->
 <div class="modal" id="modalHistoris" onclick="if(event.target===this)tutupModalHistoris()">
   <div class="mbox" style="max-width:640px">
@@ -6195,6 +6296,7 @@
       tutupModalBiaya();
       tutupModalFile();
       tutupModalNasabah();
+      tutupModalKartuTagihan();
       tutupModalHistoris();
       tutupModalBuktiBayar();
       tutupModalOnline();
@@ -7596,8 +7698,11 @@
           '</div>' +
         '</div>' +
         '<div class="tg-right">' +
-          '<div class="tg-os-lbl">Total Tagihan</div>' +
-          '<div class="tg-os-val">' + rp(t.os || 0) + '</div>' +
+          '<div class="tg-os-wrap">' +
+            '<div class="tg-os-lbl">Total Tagihan</div>' +
+            '<div class="tg-os-val">' + rp(t.os || 0) + '</div>' +
+          '</div>' +
+          '<button type="button" class="btn-kartu-tagihan" onclick="event.stopPropagation();bukaKartuTagihan(' + t._idx + ')">Kartu Tagihan</button>' +
         '</div>' +
       '</div>';
     }).join('');
@@ -8561,6 +8666,131 @@
 
   function tutupModalNasabah() {
     $('modalNasabah').classList.remove('show');
+  }
+
+  // ---------- POP UP KARTU TAGIHAN (SHEET HTML_KARTU_TAGIHAN KOLOM B) ----------
+  const KARTU_TAGIHAN_CACHE = {};
+  const KARTU_TAGIHAN_SHEET_ID = '16Cqr8mUwvM2Hd8HrNSgzoOF_NvDPmlxLMi0ik9GiGzc';
+  const KARTU_TAGIHAN_SHEET_NAME = 'HTML_KARTU_TAGIHAN';
+
+  function normUserIdKartu_(v) {
+    return String(v == null ? '' : v).trim().replace(/^'+/, '').replace(/\.0+$/, '').trim().toLowerCase();
+  }
+
+  function fetchKartuTagihanGvizFallback_(userId) {
+    const targetId = normUserIdKartu_(userId);
+    if (!targetId) return Promise.reject(new Error('User ID kosong.'));
+    const url = 'https://docs.google.com/spreadsheets/d/' + KARTU_TAGIHAN_SHEET_ID + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(KARTU_TAGIHAN_SHEET_NAME);
+    return fetch(url).then(r => r.text()).then(txt => {
+      const m = txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\);?/);
+      if (!m) throw new Error('Format respon sheet HTML_KARTU_TAGIHAN tidak dikenali.');
+      const json = JSON.parse(m[1]);
+      const rows = (json && json.table && json.table.rows) ? json.table.rows : [];
+      for (let i = 0; i < rows.length; i++) {
+        const c = rows[i] && rows[i].c ? rows[i].c : [];
+        const c0 = c[0] ? (c[0].f != null ? c[0].f : c[0].v) : '';
+        const c0Raw = c[0] && c[0].v != null ? c[0].v : '';
+        if (normUserIdKartu_(c0) === targetId || normUserIdKartu_(c0Raw) === targetId) {
+          const c1 = c[1] ? (c[1].v != null ? String(c[1].v) : (c[1].f != null ? String(c[1].f) : '')) : '';
+          if (!c1.trim()) throw new Error('Kolom B pada sheet HTML_KARTU_TAGIHAN kosong untuk User ID ' + userId + '.');
+          return { sukses: true, userId: String(userId).trim(), row: i + 1, html: c1 };
+        }
+      }
+      throw new Error('Kartu Tagihan untuk User ID ' + userId + ' tidak ditemukan di sheet HTML_KARTU_TAGIHAN.');
+    });
+  }
+
+  function renderHtmlKartuTagihanToModal_(htmlContent) {
+    const body = $('ktBody');
+    if (!body) return;
+    body.innerHTML = '<iframe id="ktFrame" title="Kartu Tagihan"></iframe>';
+    const frame = $('ktFrame');
+    if (!frame) return;
+    const raw = String(htmlContent == null ? '' : htmlContent).trim();
+    const hasHtmlTag = /<html[\s>]/i.test(raw);
+    const autoFitScript = '<script>' +
+      'function fitKartu_(){' +
+        'try{' +
+          'var docEl=document.documentElement,b=document.body;' +
+          'if(!b)return;' +
+          'b.style.margin="0";' +
+          'b.style.transformOrigin="top center";' +
+          'b.style.transform="none";' +
+          'var vw=window.innerWidth||docEl.clientWidth;' +
+          'var sw=Math.max(b.scrollWidth,docEl.scrollWidth);' +
+          'if(sw>vw&&vw>0){' +
+            'var sc=vw/sw;' +
+            'b.style.transform="scale("+sc+")";' +
+            'b.style.width=(100/sc)+"%";' +
+          '}' +
+        '}catch(e){}' +
+      '}' +
+      'window.addEventListener("load",fitKartu_);' +
+      'window.addEventListener("resize",fitKartu_);' +
+      'setTimeout(fitKartu_,120);' +
+      '<\/script>';
+    const finalDoc = hasHtmlTag
+      ? (raw.indexOf('</body>') >= 0 ? raw.replace(/<\/body>/i, autoFitScript + '</body>') : (raw + autoFitScript))
+      : ('<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body{margin:0;padding:0;background:#fff;font-family:sans-serif;}</style></head><body>' + raw + autoFitScript + '</body></html>');
+    frame.srcdoc = finalDoc;
+  }
+
+  function bukaKartuTagihan(idx) {
+    const item = TAGIHAN[idx];
+    if (!item) return;
+    const userId = String(item.userId || '').trim();
+    const modal = $('modalKartuTagihan');
+    const title = $('ktTitle');
+    const body = $('ktBody');
+    if (!modal || !body) return;
+
+    if (title) {
+      title.innerHTML = '<span>🪪 Kartu Tagihan — ' + esc(item.nama || '-') + '</span>' +
+        '<span class="pic-badge">ID: ' + esc(userId || '-') + '</span>';
+    }
+    modal.classList.add('show');
+
+    if (!userId) {
+      body.innerHTML = '<div class="tg-empty" style="padding:36px 16px">User ID nasabah kosong pada sheet BA KREDIVO FIELD.</div>';
+      return;
+    }
+
+    const cacheKey = normUserIdKartu_(userId);
+    if (KARTU_TAGIHAN_CACHE[cacheKey]) {
+      renderHtmlKartuTagihanToModal_(KARTU_TAGIHAN_CACHE[cacheKey]);
+      return;
+    }
+
+    body.innerHTML = '<div class="placeholder" style="padding:48px 16px"><div class="big">⏳</div><h3>Memuat Kartu Tagihan...</h3><p>Mencocokkan User ID <b>' + esc(userId) + '</b> pada sheet HTML_KARTU_TAGIHAN...</p></div>';
+
+    api('getKartuTagihanByUserId', S.token, userId)
+      .then(r => {
+        if (r && r.sukses && r.html) {
+          KARTU_TAGIHAN_CACHE[cacheKey] = r.html;
+          renderHtmlKartuTagihanToModal_(r.html);
+          return;
+        }
+        return fetchKartuTagihanGvizFallback_(userId).then(fb => {
+          KARTU_TAGIHAN_CACHE[cacheKey] = fb.html;
+          renderHtmlKartuTagihanToModal_(fb.html);
+        }).catch(() => {
+          const msg = (r && r.pesan) ? r.pesan : ('Kartu Tagihan untuk User ID ' + userId + ' tidak ditemukan.');
+          body.innerHTML = '<div class="tg-empty" style="padding:36px 16px">' + esc(msg) + '</div>';
+        });
+      })
+      .catch(err => {
+        fetchKartuTagihanGvizFallback_(userId).then(fb => {
+          KARTU_TAGIHAN_CACHE[cacheKey] = fb.html;
+          renderHtmlKartuTagihanToModal_(fb.html);
+        }).catch(errFb => {
+          body.innerHTML = '<div class="tg-empty" style="padding:36px 16px">Gagal memuat Kartu Tagihan: ' + esc((errFb && errFb.message) || (err && err.message) || 'Terjadi kesalahan') + '</div>';
+        });
+      });
+  }
+
+  function tutupModalKartuTagihan() {
+    const m = $('modalKartuTagihan');
+    if (m) m.classList.remove('show');
   }
 
   // ================== MENU SLIP GAJI ==================
