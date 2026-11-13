@@ -1818,6 +1818,177 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* ---------- DIAGRAM GRAFIK PROGRESS PAYMENT (BERANDA) ---------- */
+  .pp-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+  .pp-summary-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #bae6fd;
+    border-radius: var(--radius-md);
+  }
+  .pp-sum-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .pp-sum-lbl {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #0369a1;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .pp-sum-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--dark);
+    font-variant-numeric: tabular-nums;
+  }
+  .pp-chart-shell {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px;
+    align-items: stretch;
+    width: 100%;
+  }
+  .pp-yaxis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 36px 6px 28px 0;
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--muted);
+    white-space: nowrap;
+    user-select: none;
+    border-right: 1.5px solid var(--line-strong);
+  }
+  .pp-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+  }
+  .pp-plot {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 250px;
+    padding: 36px 14px 0;
+    border-bottom: 2px solid var(--line-strong);
+    min-width: max-content;
+    background:
+      linear-gradient(to bottom, rgba(148, 163, 184, 0.16) 1px, transparent 1px) 0 36px / 100% 46.5px repeat-y;
+  }
+  .pp-trend-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 4;
+    overflow: visible;
+  }
+  .pp-day-col {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: 34px;
+    min-width: 34px;
+    height: 100%;
+  }
+  .pp-day-col.has-pay {
+    width: 44px;
+    min-width: 44px;
+  }
+  .pp-bar-area {
+    position: relative;
+    width: 100%;
+    height: 186px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .pp-val-tag {
+    position: relative;
+    z-index: 6;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #065f46;
+    background: #ecfdf5;
+    border: 1px solid #6ee7b7;
+    padding: 2px 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    margin-bottom: 6px;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    transform: translateY(-2px);
+  }
+  .pp-bar {
+    width: 18px;
+    border-radius: 5px 5px 0 0;
+    min-height: 3px;
+    background: #e2e8f0;
+    transition: height 0.25s ease, background 0.2s ease;
+  }
+  .pp-day-col.has-pay .pp-bar {
+    width: 22px;
+    background: linear-gradient(180deg, #10b981 0%, #0284c7 100%);
+    box-shadow: 0 3px 10px rgba(2, 132, 199, 0.24);
+  }
+  .pp-day-col.carry-pay .pp-bar {
+    background: linear-gradient(180deg, rgba(14, 165, 233, 0.28) 0%, rgba(2, 132, 199, 0.14) 100%);
+    border-top: 2px dashed #38bdf8;
+  }
+  .pp-xlab {
+    margin-top: 6px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    padding: 0 5px;
+    border-radius: 6px;
+  }
+  .pp-day-col.has-pay .pp-xlab {
+    background: var(--primary);
+    color: #ffffff;
+    font-weight: 800;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+  }
+  .pp-foot-note {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 11.5px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
   /* ---------- DIAGRAM BATANG PERIODE & PRODUK (BERANDA) ---------- */
   .per-chart-wrap {
     display: flex;
@@ -3356,7 +3527,7 @@
   }
   .pf-cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
   }
   .pf-dc-card {
@@ -3742,6 +3913,9 @@
   }
 
   @media (max-width: 860px) {
+    .pf-cards-grid {
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    }
     .pf-kpi-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -4639,7 +4813,7 @@
     color: var(--primary-hover);
   }
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -5997,9 +6171,14 @@
 
   let VALID_BH_KATEGORI_SET = {};
 
+  const PROGRESS_PAYMENT_SS_ID = '13l33Gn_FCnRmG0ridMTMFB0OOK2cymDmiavzxQl340w';
+  const PROGRESS_PAYMENT_SHEET_NAME = 'PAYMENT KREDIVO FIELD';
+  const NAMA_BULAN_INDO = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
   function muatDashboard() {
+    muatProgressPaymentDashboard_();
     api('getDataDashboard', S.token).then(r => {
-      const box = $('chartBox'), bar = $('barBox'), perBox = $('periodeChartBox'); if (!box) return;
+      const box = $('chartBox'), bar = $('barBox'), perBox = $('periodeChartBox'), ppBox = $('progressPaymentBox'); if (!box) return;
       if (!r.sukses) {
         const t = r.pesan || 'Gagal memuat data.';
         box.textContent = t;
@@ -6020,6 +6199,9 @@
       if (bar) {
         if (r.itemsGab.length) { bar.className = ''; bar.innerHTML = gambarBar(r.itemsGab); } else bar.textContent = 'Belum ada data plan closing.';
       }
+      if (ppBox && r.progressPayment && Array.isArray(r.progressPayment.days) && r.progressPayment.days.length > 0) {
+        terapkanProgressPaymentKeDom_(r.progressPayment);
+      }
       if (perBox) {
         if (r.periodeChart && Array.isArray(r.periodeChart.series) && r.periodeChart.series.length > 0) {
           perBox.className = '';
@@ -6034,6 +6216,261 @@
         }
       }
     }).catch(e => { ['chartBox','barBox','periodeChartBox'].forEach(i => { const b=$(i); if (b) b.textContent = 'Gagal memuat: ' + e.message; }); });
+  }
+
+  function parseNominalProgressPayment_(raw) {
+    if (typeof raw === 'number') return isFinite(raw) ? raw : 0;
+    if (raw == null) return 0;
+    let s = String(raw).trim();
+    if (!s) return 0;
+    s = s.replace(/^[Rr][Pp]\.?\s*/, '').trim();
+    if (s.indexOf('.') >= 0 && s.indexOf(',') >= 0) {
+      if (s.lastIndexOf(',') > s.lastIndexOf('.')) s = s.replace(/\./g, '').replace(',', '.');
+      else s = s.replace(/,/g, '');
+    } else if (s.indexOf('.') >= 0) {
+      const pts = s.split('.');
+      if (pts.length > 2 || (pts.length === 2 && pts[1].length === 3)) s = s.replace(/\./g, '');
+    } else if (s.indexOf(',') >= 0) {
+      const pts = s.split(',');
+      if (pts.length > 2 || (pts.length === 2 && pts[1].length === 3)) s = s.replace(/,/g, '');
+      else s = s.replace(',', '.');
+    }
+    s = s.replace(/[^0-9.-]/g, '');
+    const n = Number(s);
+    return isFinite(n) ? n : 0;
+  }
+
+  function parseTanggalProgressPaymentClient_(rawVal, fmtVal) {
+    const candidates = [fmtVal, rawVal];
+    for (let idx = 0; idx < candidates.length; idx++) {
+      const c = candidates[idx];
+      if (!c) continue;
+      if (c instanceof Date && !isNaN(c.getTime())) {
+        return { day: c.getDate(), month: c.getMonth() + 1, year: c.getFullYear() };
+      }
+      const s = String(c).trim();
+      if (!s) continue;
+      const gviz = s.match(/^Date\(\s*(\d{4})\s*,\s*(\d{1,2})\s*,\s*(\d{1,2})/i);
+      if (gviz) {
+        return { year: parseInt(gviz[1], 10), month: parseInt(gviz[2], 10) + 1, day: parseInt(gviz[3], 10) };
+      }
+      const dmy = s.match(/^(\d{1,2})[\/\-.\s](\d{1,2})[\/\-.\s](\d{2,4})/);
+      if (dmy) {
+        const p1 = parseInt(dmy[1], 10), p2 = parseInt(dmy[2], 10);
+        let y = parseInt(dmy[3], 10);
+        if (y < 100) y += 2000;
+        if (p2 >= 1 && p2 <= 12 && p1 >= 1 && p1 <= 31) return { day: p1, month: p2, year: y };
+        if (p1 >= 1 && p1 <= 12 && p2 >= 1 && p2 <= 31) return { day: p2, month: p1, year: y };
+      }
+      const ymd = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+      if (ymd) {
+        return { year: parseInt(ymd[1], 10), month: parseInt(ymd[2], 10), day: parseInt(ymd[3], 10) };
+      }
+    }
+    return null;
+  }
+
+  function muatProgressPaymentDashboard_() {
+    const url = 'https://docs.google.com/spreadsheets/d/' + PROGRESS_PAYMENT_SS_ID + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(PROGRESS_PAYMENT_SHEET_NAME);
+    fetch(url).then(res => res.text()).then(txt => {
+      const start = txt.indexOf('{');
+      const end = txt.lastIndexOf('}');
+      if (start < 0 || end <= start) return;
+      const json = JSON.parse(txt.substring(start, end + 1));
+      const rows = (json && json.table && Array.isArray(json.table.rows)) ? json.table.rows : [];
+
+      const now = new Date();
+      const curYear = now.getFullYear();
+      const curMonth = now.getMonth() + 1; // 1..12
+      const daysInMonth = new Date(curYear, curMonth, 0).getDate();
+
+      const dailyMap = {};
+      const countMap = {};
+      for (let d = 1; d <= daysInMonth; d++) {
+        dailyMap[d] = 0;
+        countMap[d] = 0;
+      }
+
+      let totalTransaksi = 0;
+      rows.forEach(r => {
+        const cells = (r && Array.isArray(r.c)) ? r.c : [];
+        const cellE = cells[4]; // Kolom E = Pencapaian Payment
+        const cellF = cells[5]; // Kolom F = Tanggal Pembayaran
+        if (!cellE || !cellF) return;
+        const nominal = parseNominalProgressPayment_(cellE.v != null ? cellE.v : cellE.f);
+        if (!nominal || nominal <= 0) return;
+        const tgl = parseTanggalProgressPaymentClient_(cellF.v, cellF.f);
+        if (!tgl) return;
+        if (tgl.year === curYear && tgl.month === curMonth && tgl.day >= 1 && tgl.day <= daysInMonth) {
+          dailyMap[tgl.day] = (dailyMap[tgl.day] || 0) + nominal;
+          countMap[tgl.day] = (countMap[tgl.day] || 0) + 1;
+          totalTransaksi++;
+        }
+      });
+
+      const days = [];
+      let runningTotal = 0;
+      const mmStr = curMonth < 10 ? '0' + curMonth : String(curMonth);
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dailyVal = Math.round(dailyMap[d] || 0);
+        const cnt = countMap[d] || 0;
+        const hasPay = dailyVal > 0;
+        if (hasPay) runningTotal += dailyVal;
+        const ddStr = d < 10 ? '0' + d : String(d);
+        days.push({
+          day: d,
+          dateStr: ddStr + '/' + mmStr + '/' + curYear,
+          daily: dailyVal,
+          cumulative: runningTotal,
+          count: cnt,
+          hasPayment: hasPay
+        });
+      }
+
+      const ppData = {
+        bulan: curMonth,
+        tahun: curYear,
+        namaBulan: (NAMA_BULAN_INDO[curMonth - 1] || '') + ' ' + curYear,
+        daysInMonth: daysInMonth,
+        totalAkumulasi: runningTotal,
+        totalTransaksi: totalTransaksi,
+        days: days
+      };
+      terapkanProgressPaymentKeDom_(ppData);
+    }).catch(() => {});
+  }
+
+  function terapkanProgressPaymentKeDom_(pp) {
+    const ppBox = $('progressPaymentBox');
+    if (!ppBox || !pp || !Array.isArray(pp.days)) return;
+    if ($('progPayBadge') && pp.namaBulan) {
+      $('progPayBadge').textContent = pp.namaBulan + ' (1 - ' + (pp.daysInMonth || pp.days.length) + ')';
+    }
+    if ($('progPayTitle')) {
+      $('progPayTitle').textContent = 'Progress Payment : ' + rp(pp.totalAkumulasi || 0);
+    }
+    ppBox.className = '';
+    ppBox.innerHTML = gambarDiagramProgressPayment_(pp);
+    requestAnimationFrame(() => {
+      sinkronGarisProgressPayment_();
+      setTimeout(sinkronGarisProgressPayment_, 80);
+      setTimeout(sinkronGarisProgressPayment_, 300);
+    });
+  }
+
+  function gambarDiagramProgressPayment_(pp) {
+    const days = Array.isArray(pp && pp.days) ? pp.days : [];
+    if (!days.length) {
+      return '<div class="tg-empty">Belum ada data progress payment bulan berjalan.</div>';
+    }
+
+    const totalAkum = Number(pp.totalAkumulasi) || 0;
+    const maxValRaw = days.reduce((m, d) => Math.max(m, Number(d.cumulative) || 0), 0);
+    const niceMax = maxValRaw > 0 ? Math.ceil(maxValRaw / 500000) * 500000 : 2000000;
+
+    const yTicks = [
+      niceMax,
+      Math.round(niceMax * 0.75),
+      Math.round(niceMax * 0.5),
+      Math.round(niceMax * 0.25),
+      0
+    ];
+
+    let lastActiveDay = 0;
+    days.forEach(d => {
+      if (d.hasPayment && d.day > lastActiveDay) lastActiveDay = d.day;
+    });
+
+    const yAxisHtml = '<div class="pp-yaxis">' +
+      yTicks.map(v => '<span>' + rp(v) + '</span>').join('') +
+    '</div>';
+
+    const colsHtml = days.map(d => {
+      const cumVal = Number(d.cumulative) || 0;
+      const dailyVal = Number(d.daily) || 0;
+      const hasPay = Boolean(d.hasPayment);
+      const isCarry = !hasPay && cumVal > 0 && d.day <= lastActiveDay;
+      const barHeight = (hasPay || isCarry) && niceMax > 0
+        ? Math.max(8, Math.round((cumVal / niceMax) * 160))
+        : 4;
+
+      const colClass = 'pp-day-col' + (hasPay ? ' has-pay' : (isCarry ? ' carry-pay' : ''));
+      const tooltip = 'Tanggal ' + d.dateStr +
+        (hasPay ? (' • Payment Hari Ini: ' + rp(dailyVal) + ' • Total Akumulasi: ' + rp(cumVal)) : (cumVal > 0 ? (' • Akumulasi: ' + rp(cumVal)) : ' • Belum ada payment'));
+
+      const valTagHtml = hasPay
+        ? '<div class="pp-val-tag">' + rp(cumVal) + '</div>'
+        : '';
+
+      return '<div class="' + colClass + '" data-day="' + d.day + '" data-has="' + (hasPay ? '1' : '0') + '" data-cum="' + cumVal + '" title="' + esc(tooltip) + '">' +
+        '<div class="pp-bar-area">' +
+          valTagHtml +
+          '<div class="pp-bar" style="height:' + barHeight + 'px"></div>' +
+        '</div>' +
+        '<div class="pp-xlab">' + d.day + '</div>' +
+      '</div>';
+    }).join('');
+
+    const activeDaysCount = days.filter(d => d.hasPayment).length;
+
+    return '<div class="pp-wrap">' +
+      '<div class="pp-summary-bar">' +
+        '<div class="pp-sum-item"><span class="pp-sum-lbl">Total Akumulasi Payment (' + esc(pp.namaBulan || 'Bulan Ini') + ')</span><span class="pp-sum-val">' + rp(totalAkum) + '</span></div>' +
+        '<div class="pp-sum-item" style="text-align:right"><span class="pp-sum-lbl">Hari Aktif / Transaksi</span><span class="pp-sum-val" style="font-size:13px;color:var(--primary)">' + activeDaysCount + ' Hari • ' + (Number(pp.totalTransaksi) || 0) + ' Payment</span></div>' +
+      '</div>' +
+      '<div class="pp-chart-shell">' +
+        yAxisHtml +
+        '<div class="pp-scroll" onscroll="sinkronGarisProgressPayment_()">' +
+          '<div class="pp-plot" id="ppPlotArea">' +
+            '<svg class="pp-trend-svg" id="ppTrendSvg"></svg>' +
+            colsHtml +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pp-foot-note">' +
+        '<span>Sumber: <b>PAYMENT KREDIVO FIELD</b> (Kolom E: Payment Rp • Kolom F: Tanggal)</span>' +
+        '<span>Horizontal: Tanggal 1 - ' + (pp.daysInMonth || days.length) + ' Otomatis</span>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function sinkronGarisProgressPayment_() {
+    const plot = $('ppPlotArea');
+    const svg = $('ppTrendSvg');
+    if (!plot || !svg) return;
+    const plotRect = plot.getBoundingClientRect();
+    if (!plotRect.width || !plotRect.height) return;
+
+    svg.setAttribute('viewBox', '0 0 ' + Math.round(plotRect.width) + ' ' + Math.round(plotRect.height));
+    svg.setAttribute('width', Math.round(plotRect.width));
+    svg.setAttribute('height', Math.round(plotRect.height));
+
+    const cols = plot.querySelectorAll('.pp-day-col[data-has="1"]');
+    const pts = [];
+    cols.forEach(col => {
+      const bar = col.querySelector('.pp-bar');
+      if (!bar) return;
+      const r = bar.getBoundingClientRect();
+      if (!r.width && !r.height) return;
+      pts.push({
+        x: (r.left - plotRect.left) + (r.width / 2),
+        y: (r.top - plotRect.top)
+      });
+    });
+
+    let svgHtml = '';
+    if (pts.length >= 2) {
+      for (let i = 0; i < pts.length - 1; i++) {
+        const p1 = pts[i];
+        const p2 = pts[i + 1];
+        svgHtml += '<line x1="' + p1.x.toFixed(1) + '" y1="' + p1.y.toFixed(1) + '" x2="' + p2.x.toFixed(1) + '" y2="' + p2.y.toFixed(1) + '" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity="0.9"></line>';
+        svgHtml += '<line x1="' + p1.x.toFixed(1) + '" y1="' + p1.y.toFixed(1) + '" x2="' + p2.x.toFixed(1) + '" y2="' + p2.y.toFixed(1) + '" stroke="#0284c7" stroke-width="2.8" stroke-linecap="round"></line>';
+      }
+    }
+    pts.forEach(p => {
+      svgHtml += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="5" fill="#10b981" stroke="#ffffff" stroke-width="2"></circle>';
+    });
+    svg.innerHTML = svgHtml;
   }
 
   function gambarDiagramPeriode(pc, bhSetOverride) {
@@ -13274,6 +13711,7 @@
       $('content').innerHTML =
         '<div class="panel"><h3 class="pt">Pencapaian Pembayaran per Produk</h3><div id="chartBox" class="placeholder">Memuat grafik pembayaran...</div></div>' +
         '<div class="panel clickable" onclick="bukaPlan()"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px"><h3 class="pt" id="barTitle" style="margin:0">Plan Closing : Rp ...</h3><span class="pic-badge">Rincian Tim ➔</span></div><div id="barBox" class="placeholder">Memuat plan closing...</div></div>' +
+        '<div class="panel"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;flex-wrap:wrap"><h3 class="pt" id="progPayTitle" style="margin:0">Progress Payment</h3><span class="pic-badge" id="progPayBadge">Bulan Berjalan</span></div><div id="progressPaymentBox" class="placeholder">Memuat grafik progress payment...</div></div>' +
         '<div class="panel clickable" onclick="bukaProd()"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px"><h3 class="pt" style="margin:0">Produktivitas Penanganan</h3><span class="pic-badge">Detail ➔</span></div>' +
         '<div id="prodBox" class="placeholder">Memuat produktivitas...</div></div>' +
         '<div class="panel"><h3 class="pt">Diagram Pencapaian per Periode &amp; Produk</h3><div id="periodeChartBox" class="placeholder">Memuat diagram periode...</div></div>';
