@@ -1082,7 +1082,7 @@
   .tg-kat-bar::-webkit-scrollbar { display: none; }
   .tg-filter-grid {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 10px;
     margin: 4px 0 14px;
   }
@@ -2517,7 +2517,6 @@
     .panel { padding: 16px 14px; border-radius: var(--radius-lg); }
     .lk-2col { grid-template-columns: minmax(0, 1fr); }
     .tg-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-    .tg-filter-grid > .fbox:last-child { grid-column: 1 / -1; }
     .legend { min-width: 100%; }
     .kr-list, .ps-list { max-height: none; overflow-y: visible; }
   }
@@ -5946,6 +5945,8 @@
   function doLogout() {
     hentikanPantauPesanMasuk_();
     hentikanHeartbeatOnline_();
+    hentikanJamPerformance_();
+    hentikanAutoRefreshPerformance_();
     const oldToken = S.token;
     hapusSesiLokal_();
     if (oldToken) api('prosesLogout', oldToken).catch(()=>{});
@@ -7399,8 +7400,8 @@
   let TG_KATEGORI_LIST = ['SEMUA'];
   let TG_KAT_AKTIF = 'SEMUA';
 
-  let TG_OPTS = { result: [], area: [], kecamatan: [], cuci: [] };
-  let TG_SEL  = { result: {}, area: {}, kecamatan: {}, cuci: {} };
+  let TG_OPTS = { result: [], area: [], kecamatan: [], cuci: [], whatsapp: [] };
+  let TG_SEL  = { result: {}, area: {}, kecamatan: {}, cuci: {}, whatsapp: {} };
   let TG_NASABAH_AKTIF = null;
   let TG_TAB_NASABAH = 'nasabah';
 
@@ -7462,6 +7463,14 @@
               '<span class="txt" id="lblEnum_cuci">Memuat...</span><span>▾</span>' +
             '</button>' +
             '<div class="enum-drop" id="dropEnum_cuci"></div>' +
+          '</div>' +
+
+          '<div class="fbox" id="fbox_whatsapp">' +
+            '<div class="fbox-title"><span>WHATSAPP</span></div>' +
+            '<button type="button" class="enum-btn" onclick="toggleEnumDrop(\'whatsapp\')">' +
+              '<span class="txt" id="lblEnum_whatsapp">Memuat...</span><span>▾</span>' +
+            '</button>' +
+            '<div class="enum-drop" id="dropEnum_whatsapp"></div>' +
           '</div>' +
 
           '<div class="fbox">' +
@@ -7567,7 +7576,7 @@
   }
 
   function toggleEnumDrop(key) {
-    ['result', 'area', 'kecamatan', 'cuci'].forEach(k => {
+    ['result', 'area', 'kecamatan', 'cuci', 'whatsapp'].forEach(k => {
       const el = $('dropEnum_' + k);
       if (!el) return;
       if (k === key) el.classList.toggle('open');
@@ -7576,7 +7585,7 @@
   }
 
   function tutupSemuaEnumDrop() {
-    ['result', 'area', 'kecamatan', 'cuci'].forEach(k => {
+    ['result', 'area', 'kecamatan', 'cuci', 'whatsapp'].forEach(k => {
       const el = $('dropEnum_' + k);
       if (el) el.classList.remove('open');
     });
@@ -7647,6 +7656,7 @@
       initEnumFilter_('area', r.areaList || ['TIDAK ADA AREA']);
       syncKecamatanByArea_(true);
       initEnumFilter_('cuci', ['ADA', 'TIDAK']);
+      initEnumFilter_('whatsapp', r.whatsappList || ['AKTIF', 'TIDAK AKTIF']);
 
       box.className = '';
       renderTagihan();
@@ -7669,6 +7679,8 @@
       if (!TG_SEL.area[t.area]) return false;
       if (!TG_SEL.kecamatan[t.kecamatan]) return false;
       if (!TG_SEL.cuci[t.dataCuci || 'TIDAK']) return false;
+      const waStatus = t.whatsapp || (t.waAktif ? 'AKTIF' : 'TIDAK AKTIF');
+      if (!TG_SEL.whatsapp[waStatus]) return false;
       if (q) {
         const gab = (t.userId + ' ' + t.nama + ' ' + t.telp + ' ' + t.nik).toLowerCase();
         if (gab.indexOf(q) < 0) return false;
@@ -11076,6 +11088,9 @@
   let PF_RAW_DATA = null;
   let PF_ACTIVE_CATEGORY = 'ALL';
   let PF_CLOCK_TIMER = null;
+  let PF_AUTO_REFRESH_TIMER = null;
+  const PF_AUTO_REFRESH_INTERVAL_MS = 5 * 60 * 1000;
+  let PF_IS_REFRESHING = false;
   let PF_CURRENT_PAYMENT_LIST = [];
   let PF_CURRENT_PTP_LIST = [];
 
@@ -11137,6 +11152,22 @@
     }
   }
 
+  function mulaiAutoRefreshPerformance_() {
+    hentikanAutoRefreshPerformance_();
+    PF_AUTO_REFRESH_TIMER = setInterval(() => {
+      if (typeof CUR !== 'undefined' && CUR === 'performance') {
+        muatDataPerformance(true, true);
+      }
+    }, PF_AUTO_REFRESH_INTERVAL_MS);
+  }
+
+  function hentikanAutoRefreshPerformance_() {
+    if (PF_AUTO_REFRESH_TIMER) {
+      clearInterval(PF_AUTO_REFRESH_TIMER);
+      PF_AUTO_REFRESH_TIMER = null;
+    }
+  }
+
   function tutupModalPerformance(id) {
     const m = $(id);
     if (m) m.classList.remove('show');
@@ -11151,7 +11182,7 @@
           '<div class="pf-clock-badge" id="pfLiveClock"><i class="far fa-clock"></i> Memuat waktu...</div>' +
         '</div>' +
         '<div class="pf-actions">' +
-          '<button type="button" class="pf-btn-act refresh" onclick="muatDataPerformance(true)"><i class="fas fa-sync-alt"></i> Refresh Data</button>' +
+          '<button type="button" id="pfBtnRefreshData" class="pf-btn-act refresh" onclick="muatDataPerformance(true)"><i class="fas fa-sync-alt" id="pfRefreshIcon"></i> Refresh Data</button>' +
           '<button type="button" class="pf-btn-act rank" onclick="bukaModalRankPerformance()"><i class="fas fa-trophy"></i> Top Rank</button>' +
           '<button type="button" class="pf-btn-act acctype" onclick="bukaModalAccTypePerformance()"><i class="fas fa-layer-group"></i> Payment by Type</button>' +
           '<button type="button" class="pf-btn-act listpay" onclick="bukaModalPaymentPerformance()"><i class="fas fa-list-ul"></i> List Payment</button>' +
@@ -11192,6 +11223,7 @@
       '</div>';
 
     mulaiJamPerformance_();
+    mulaiAutoRefreshPerformance_();
     sinkronTombolDownloadPerformance_();
     if (PF_RAW_DATA) {
       renderKategoriPerformance_(PF_RAW_DATA.categories || []);
@@ -11214,9 +11246,26 @@
     if (btnPtp) btnPtp.style.display = boleh ? 'inline-flex' : 'none';
   }
 
-  function muatDataPerformance(doRefresh) {
+  function muatDataPerformance(doRefresh, isAuto) {
+    if (PF_IS_REFRESHING) return;
+    PF_IS_REFRESHING = true;
+
+    if (doRefresh && !isAuto && typeof CUR !== 'undefined' && CUR === 'performance') {
+      mulaiAutoRefreshPerformance_();
+    }
+
+    const btn = $('pfBtnRefreshData');
+    const ic = $('pfRefreshIcon') || (btn ? btn.querySelector('i') : null);
+    if (ic) ic.classList.add('fa-spin');
+    if (btn && !isAuto) btn.disabled = true;
+
     const fn = doRefresh ? 'refreshAndGetData' : 'getDashboardData';
-    api(fn).then(res => {
+    const caller = isAuto ? apiSilent_ : api;
+
+    caller(fn).then(res => {
+      PF_IS_REFRESHING = false;
+      if (ic) ic.classList.remove('fa-spin');
+      if (btn) btn.disabled = false;
       if (!res) return;
       PF_RAW_DATA = res;
       if (PF_ACTIVE_CATEGORY !== 'ALL' && (!res.categories || res.categories.indexOf(PF_ACTIVE_CATEGORY) === -1)) {
@@ -11225,8 +11274,13 @@
       renderKategoriPerformance_(res.categories || []);
       terapkanKategoriPerformance(PF_ACTIVE_CATEGORY);
     }).catch(err => {
-      const box = $('pfDeskcollContainer');
-      if (box) box.innerHTML = '<div class="placeholder" style="color:var(--danger)">Gagal memuat data performance: ' + esc(err && err.message ? err.message : String(err)) + '</div>';
+      PF_IS_REFRESHING = false;
+      if (ic) ic.classList.remove('fa-spin');
+      if (btn) btn.disabled = false;
+      if (!isAuto) {
+        const box = $('pfDeskcollContainer');
+        if (box) box.innerHTML = '<div class="placeholder" style="color:var(--danger)">Gagal memuat data performance: ' + esc(err && err.message ? err.message : String(err)) + '</div>';
+      }
     });
   }
 
@@ -13208,6 +13262,7 @@
     }
     if (typeof CUR !== 'undefined' && CUR === 'performance' && m !== 'performance') {
       hentikanJamPerformance_();
+      hentikanAutoRefreshPerformance_();
     }
     document.querySelectorAll('.menu a[data-m]').forEach(a => a.classList.toggle('active', a.dataset.m===m));
     syncActiveCategoryHighlight_(m);
