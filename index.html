@@ -5781,8 +5781,14 @@
     });
   }
 
+  function bolehAksesTambahKaryawan_() {
+    const jab = String((S && S.jabatan) || '').trim().toUpperCase();
+    return jab === 'DIREKTUR' || jab === 'ADMIN' || jab === 'TL' || jab === 'TEAM LEADER';
+  }
+
   function terapkanMenuAkses(allowedMenus, customCategories) {
-    const list = Array.isArray(allowedMenus) ? allowedMenus.slice() : [];
+    const bolehTambahKaryawan = bolehAksesTambahKaryawan_();
+    const list = (Array.isArray(allowedMenus) ? allowedMenus.slice() : []).filter(k => k !== 'tambahkaryawan' || bolehTambahKaryawan);
     if (list.length > 0 && list.indexOf('absensi') < 0) {
       list.push('absensi');
     }
@@ -5798,7 +5804,7 @@
     if (list.length > 0 && list.indexOf('daftarhadir') < 0) {
       list.push('daftarhadir');
     }
-    if (list.length > 0 && list.indexOf('tambahkaryawan') < 0) {
+    if (bolehTambahKaryawan && list.length > 0 && list.indexOf('tambahkaryawan') < 0) {
       list.push('tambahkaryawan');
     }
     const rawCats = (Array.isArray(customCategories) && customCategories.length > 0)
@@ -5870,16 +5876,18 @@
         cats.push({ judul: 'PUSAT KOMUNIKASI', items: [{ key: 'daftarhadir', judul: 'Daftar Hadir' }] });
       }
     }
-    const adaTambahKaryawanDiCats = cats.some(c => c.items.some(it => it && it.key === 'tambahkaryawan'));
-    if (!adaTambahKaryawanDiCats) {
-      const admCat = cats.find(c => {
-        const ju = String(c.judul || '').toUpperCase();
-        return ju.indexOf('PUSAT ADMINISTRASI') >= 0 || ju.indexOf('ADMINISTRASI') >= 0;
-      });
-      if (admCat) {
-        admCat.items.push({ key: 'tambahkaryawan', judul: 'Tambahkan Karyawan' });
-      } else {
-        cats.push({ judul: 'PUSAT ADMINISTRASI', items: [{ key: 'tambahkaryawan', judul: 'Tambahkan Karyawan' }] });
+    if (bolehTambahKaryawan) {
+      const adaTambahKaryawanDiCats = cats.some(c => c.items.some(it => it && it.key === 'tambahkaryawan'));
+      if (!adaTambahKaryawanDiCats) {
+        const admCat = cats.find(c => {
+          const ju = String(c.judul || '').toUpperCase();
+          return ju.indexOf('PUSAT ADMINISTRASI') >= 0 || ju.indexOf('ADMINISTRASI') >= 0;
+        });
+        if (admCat) {
+          admCat.items.push({ key: 'tambahkaryawan', judul: 'Tambahkan Karyawan' });
+        } else {
+          cats.push({ judul: 'PUSAT ADMINISTRASI', items: [{ key: 'tambahkaryawan', judul: 'Tambahkan Karyawan' }] });
+        }
       }
     }
 
@@ -6415,8 +6423,7 @@
 
     return '<div class="pp-wrap">' +
       '<div class="pp-summary-bar">' +
-        '<div class="pp-sum-item"><span class="pp-sum-lbl">Total Akumulasi Payment (' + esc(pp.namaBulan || 'Bulan Ini') + ')</span><span class="pp-sum-val">' + rp(totalAkum) + '</span></div>' +
-        '<div class="pp-sum-item" style="text-align:right"><span class="pp-sum-lbl">Hari Aktif / Transaksi</span><span class="pp-sum-val" style="font-size:13px;color:var(--primary)">' + activeDaysCount + ' Hari • ' + (Number(pp.totalTransaksi) || 0) + ' Payment</span></div>' +
+        '<div class="pp-sum-item" style="text-align:right;margin-left:auto"><span class="pp-sum-lbl">Hari Aktif / Transaksi</span><span class="pp-sum-val" style="font-size:13px;color:var(--primary)">' + activeDaysCount + ' Hari • ' + (Number(pp.totalTransaksi) || 0) + ' Payment</span></div>' +
       '</div>' +
       '<div class="pp-chart-shell">' +
         yAxisHtml +
@@ -6426,10 +6433,6 @@
             colsHtml +
           '</div>' +
         '</div>' +
-      '</div>' +
-      '<div class="pp-foot-note">' +
-        '<span>Sumber: <b>PAYMENT KREDIVO FIELD</b> (Kolom E: Payment Rp • Kolom F: Tanggal)</span>' +
-        '<span>Horizontal: Tanggal 1 - ' + (pp.daysInMonth || days.length) + ' Otomatis</span>' +
       '</div>' +
     '</div>';
   }
@@ -13493,6 +13496,10 @@
   };
 
   function muatHalamanTambahKaryawan() {
+    if (!bolehAksesTambahKaryawan_()) {
+      $('content').innerHTML = '<div class="panel placeholder"><div class="big">🔒</div><h3>Akses Ditolak</h3><p>Menu Tambahkan Karyawan hanya dapat diakses oleh jabatan DIREKTUR, ADMIN, dan TL.</p></div>';
+      return;
+    }
     TK_STATE.searchQuery = '';
     const jabOpts = (TK_STATE.jabatanOptions || ['KOMISARIS', 'DIREKTUR', 'ADMIN', 'TL', 'DC', 'FC'])
       .map(j => '<option value="' + esc(j) + '">' + esc(j) + '</option>')
