@@ -4813,7 +4813,7 @@
     color: var(--primary-hover);
   }
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -10881,9 +10881,12 @@
     const searchEl = $('rotSearchInput');
     const searchQuery = (searchEl ? searchEl.value : '').toLowerCase().trim();
 
+    const selectedPicsLower = new Set(Array.from(rotSelectedPicsAwal).map(p => String(p || '').trim().toLowerCase()));
+
     return rotAllRowsData.filter(row => {
       const matchProduct = (rotActiveProduct === 'ALL') || (row.produkBH === rotActiveProduct);
-      const matchPic = rotSelectedPicsAwal.size === 0 || rotSelectedPicsAwal.has(row.picAT);
+      const rowPicLower = String(row.picAT || '').trim().toLowerCase();
+      const matchPic = rotSelectedPicsAwal.size === 0 || rotSelectedPicsAwal.has(row.picAT) || selectedPicsLower.has(rowPicLower);
 
       let matchBA = true;
       if (rotActiveBA === 'EMPTY') {
