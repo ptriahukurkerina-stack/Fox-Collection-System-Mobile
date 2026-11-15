@@ -1764,8 +1764,12 @@
     font-size: 13px;
   }
   .hl { font-weight: 700; text-transform: uppercase; word-break: break-word; font-size: 12px; color: var(--text); }
-  .ht { background: #f1f5f9; border-radius: 999px; height: 14px; overflow: hidden; }
+  .ht { background: #f1f5f9; border-radius: 999px; height: 14px; overflow: hidden; display: flex; width: 100%; }
   .hf { height: 100%; border-radius: 999px; min-width: 4px; transition: width 0.3s ease; }
+  .hf-seg { height: 100%; transition: width 0.3s ease; }
+  .hf-plan { background: #0284c7; }
+  .hf-kurang { background: #ef4444; }
+  .hf-lebih { background: #10b981; }
   .hv {
     white-space: nowrap;
     color: var(--dark);
@@ -2929,6 +2933,40 @@
     font-family: 'JetBrains Mono', monospace;
     line-height: 1.45;
     word-break: break-word;
+  }
+  .rot-area-group {
+    margin-bottom: 10px;
+  }
+  .rot-area-group:last-child {
+    margin-bottom: 0;
+  }
+  .rot-area-title {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--primary);
+    background: var(--primary-soft);
+    padding: 5px 10px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .rot-pic-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  @media (min-width: 861px) {
+    #picAwalMenu,
+    #targetPicMenu {
+      max-height: 360px;
+      padding: 10px 12px;
+    }
+    .rot-pic-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px 10px;
+    }
   }
   @media (max-width: 860px) {
     .rot-filter-bar {
@@ -4813,7 +4851,7 @@
     color: var(--primary-hover);
   }
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -4892,7 +4930,7 @@
   <div class="main">
     <div class="topbar">
       <button class="burger" onclick="toggleMenu()" aria-label="Menu">☰</button>
-      <h1 id="judul">Beranda</h1>
+      <h1 id="judul">Dashboard</h1>
       <div class="userbox">
         <div class="un" id="uNama"></div>
         <div class="uj" id="uJabatan"></div>
@@ -5285,7 +5323,7 @@
       </button>
       <button type="button" class="assistive-item" data-assist-m="home" onclick="pilihMenuAssistive('home')">
         <span class="assistive-item-ic">🏠</span>
-        <span class="assistive-item-lbl">Beranda</span>
+        <span class="assistive-item-lbl">Dashboard</span>
       </button>
       <button type="button" class="assistive-item" data-assist-m="performance" onclick="pilihMenuAssistive('performance')">
         <span class="assistive-item-ic">📈</span>
@@ -5700,7 +5738,7 @@
   }
 
   const MENU = {
-    home:        { judul:'Beranda',              ikon:'🏠' },
+    home:        { judul:'Dashboard',            ikon:'🏠' },
     laporan:     { judul:'Laporan Keuangan',     ikon:'📁' },
     biaya:       { judul:'Pengajuan Biaya',      ikon:'🧾' },
     kebijakan:   { judul:'Pengajuan Kebijakan',  ikon:'📜' },
@@ -5722,7 +5760,7 @@
     {
       judul: 'AREA COLLECTION',
       items: [
-        { key: 'home', judul: 'Beranda' },
+        { key: 'home', judul: 'Dashboard' },
         { key: 'performance', judul: 'Performance' },
         { key: 'tagihan', judul: 'Data Tagihan' },
         { key: 'buktibayar', judul: 'Approval Bukti Bayar' },
@@ -5905,7 +5943,8 @@
         if (!key || !MENU[key]) return;
         const boleh = list.indexOf(key) >= 0;
         if (!boleh) return;
-        const labelSub = String(it.judul || MENU[key].judul).trim();
+        const rawLabelSub = String(it.judul || MENU[key].judul).trim();
+        const labelSub = (key === 'home' && rawLabelSub.toUpperCase() === 'BERANDA') ? 'Dashboard' : rawLabelSub;
         MENU[key].judul = labelSub;
         if (!firstMenu) firstMenu = key;
         visibleItems.push({ key: key, judul: labelSub, ikon: MENU[key].ikon || '📌' });
@@ -6203,7 +6242,9 @@
         VALID_BH_KATEGORI_SET = bhSetNow;
       }
       if (r.items.length) { box.className = ''; box.innerHTML = gambarDonut(r.items, r.total); } else box.textContent = 'Belum ada data pembayaran.';
-      if ($('barTitle')) $('barTitle').textContent = 'Plan Closing : ' + rp(r.totalGab || 0);
+      if ($('barTitle')) {
+        $('barTitle').textContent = 'Plan Closing : ' + rp(r.totalGab || 0) + (r.totalTarget ? ' (Target 0.5% : ' + rp(r.totalTarget) + ')' : '');
+      }
       if (bar) {
         if (r.itemsGab.length) { bar.className = ''; bar.innerHTML = gambarBar(r.itemsGab); } else bar.textContent = 'Belum ada data plan closing.';
       }
@@ -6667,11 +6708,50 @@
   });
 
   function gambarBar(items) {
-    const max = Math.max.apply(null, items.map(i => i.nilai)) || 1;
-    return '<div class="hb">' + items.map((it, i) =>
-      '<div class="hrow"><div class="hl">' + esc(it.nama) + '</div>' +
-      '<div class="ht"><div class="hf" style="width:' + (it.nilai / max * 100).toFixed(1) + '%;background:' + WARNA[i % WARNA.length] + '"></div></div>' +
-      '<div class="hv">' + rp(it.nilai) + '</div></div>').join('') + '</div>';
+    const maxFallback = Math.max.apply(null, items.map(i => Number(i.nilai) || 0)) || 1;
+    const legendHtml =
+      '<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px;font-size:11.5px;font-weight:700;color:var(--muted)">' +
+        '<span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:#0284c7;display:inline-block"></span>Plan Closing</span>' +
+        '<span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:#ef4444;display:inline-block"></span>Kurang ke Target (0.5%)</span>' +
+        '<span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:#10b981;display:inline-block"></span>Melebihi Target (&gt; 0.5%)</span>' +
+      '</div>';
+
+    return '<div class="hb">' + legendHtml + items.map((it) => {
+      const plan = Number(it.nilai) || 0;
+      const target = Number(it.target) || 0;
+
+      if (target > 0) {
+        let barInnerHtml = '';
+        let statusHtml = '';
+        if (plan < target) {
+          const kurang = target - plan;
+          const pctPlan = Math.max(0, Math.min(100, (plan / target) * 100));
+          const pctKurang = Math.max(0, 100 - pctPlan);
+          barInnerHtml =
+            (pctPlan > 0 ? '<div class="hf-seg hf-plan" style="width:' + pctPlan.toFixed(2) + '%" title="Plan Closing: ' + esc(rp(plan)) + '"></div>' : '') +
+            '<div class="hf-seg hf-kurang" style="width:' + pctKurang.toFixed(2) + '%" title="Kurang mencapai target: ' + esc(rp(kurang)) + '"></div>';
+          statusHtml = '<div style="font-size:11px;color:#dc2626;font-weight:700;margin-top:2px">Target 0.5%: ' + rp(target) + ' (Kurang ' + rp(kurang) + ')</div>';
+        } else {
+          const lebih = plan - target;
+          const pctTarget = plan > 0 ? Math.max(0, Math.min(100, (target / plan) * 100)) : 100;
+          const pctLebih = Math.max(0, 100 - pctTarget);
+          barInnerHtml =
+            '<div class="hf-seg hf-plan" style="width:' + pctTarget.toFixed(2) + '%" title="Target (0.5%): ' + esc(rp(target)) + '"></div>' +
+            (pctLebih > 0 ? '<div class="hf-seg hf-lebih" style="width:' + pctLebih.toFixed(2) + '%" title="Lebih dari target: +' + esc(rp(lebih)) + '"></div>' : '');
+          statusHtml = '<div style="font-size:11px;color:#059669;font-weight:700;margin-top:2px">Target 0.5%: ' + rp(target) + (lebih > 0 ? ' (+' + rp(lebih) + ')' : ' (Tercapai)') + '</div>';
+        }
+
+        return '<div class="hrow">' +
+          '<div class="hl">' + esc(it.nama) + '</div>' +
+          '<div class="ht">' + barInnerHtml + '</div>' +
+          '<div class="hv"><div>' + rp(plan) + '</div>' + statusHtml + '</div>' +
+        '</div>';
+      }
+
+      return '<div class="hrow"><div class="hl">' + esc(it.nama) + '</div>' +
+        '<div class="ht"><div class="hf hf-plan" style="width:' + (plan / maxFallback * 100).toFixed(1) + '%"></div></div>' +
+        '<div class="hv">' + rp(plan) + '</div></div>';
+    }).join('') + '</div>';
   }
 
   function gambarDonut(items, total) {
@@ -10559,6 +10639,7 @@
 
   let rotAllPicsAwalList = [];
   let rotAllTargetPicsList = [];
+  let rotPicsByArea = [];
   let rotHistoryLogs = [];
 
   function muatHalamanRotasi() {
@@ -10705,6 +10786,7 @@
     rotAllRowsData = data.rows || [];
     rotAllPicsAwalList = data.picsAwal || [];
     rotAllTargetPicsList = data.targetPics || [];
+    rotPicsByArea = Array.isArray(data.picsByArea) ? data.picsByArea : [];
     rotHistoryLogs = data.history || [];
 
     renderProductDropdownOptions(data.products || []);
@@ -10791,13 +10873,34 @@
       return;
     }
 
-    menu.innerHTML = list.map((item, idx) => {
-      const isChecked = selectedSet.has(item);
-      return '<label class="enum-item">' +
-        '<input type="checkbox" ' + (isChecked ? 'checked' : '') + ' onchange="handleRotasiDropdownItemChange(\'' + type + '\',' + idx + ',this)">' +
-        '<span>' + esc(item) + '</span>' +
-      '</label>';
-    }).join('');
+    if (Array.isArray(rotPicsByArea) && rotPicsByArea.length > 0) {
+      menu.innerHTML = rotPicsByArea.map(grp => {
+        const pics = Array.isArray(grp && grp.pics) ? grp.pics : [];
+        if (!pics.length) return '';
+        const itemsHtml = pics.map(item => {
+          const idx = list.indexOf(item);
+          if (idx < 0) return '';
+          const isChecked = selectedSet.has(item);
+          return '<label class="enum-item">' +
+            '<input type="checkbox" ' + (isChecked ? 'checked' : '') + ' onchange="handleRotasiDropdownItemChange(\'' + type + '\',' + idx + ',this)">' +
+            '<span>' + esc(item) + '</span>' +
+          '</label>';
+        }).join('');
+        if (!itemsHtml) return '';
+        return '<div class="rot-area-group">' +
+          '<div class="rot-area-title">' + esc(grp.area || 'Tanpa Area') + '</div>' +
+          '<div class="rot-pic-grid">' + itemsHtml + '</div>' +
+        '</div>';
+      }).join('');
+    } else {
+      menu.innerHTML = '<div class="rot-pic-grid">' + list.map((item, idx) => {
+        const isChecked = selectedSet.has(item);
+        return '<label class="enum-item">' +
+          '<input type="checkbox" ' + (isChecked ? 'checked' : '') + ' onchange="handleRotasiDropdownItemChange(\'' + type + '\',' + idx + ',this)">' +
+          '<span>' + esc(item) + '</span>' +
+        '</label>';
+      }).join('') + '</div>';
+    }
 
     updateRotasiDropdownLabel(type);
   }
@@ -13491,8 +13594,12 @@
   let TK_STATE = {
     items: [],
     jabatanOptions: ['KOMISARIS', 'DIREKTUR', 'ADMIN', 'TL', 'DC', 'FC'],
+    areaOptions: [],
     searchQuery: '',
-    showPassForm: false
+    showPassForm: false,
+    fotoFileData: '',
+    fotoMimeType: '',
+    fotoFileName: ''
   };
 
   function muatHalamanTambahKaryawan() {
@@ -13501,8 +13608,14 @@
       return;
     }
     TK_STATE.searchQuery = '';
+    TK_STATE.fotoFileData = '';
+    TK_STATE.fotoMimeType = '';
+    TK_STATE.fotoFileName = '';
     const jabOpts = (TK_STATE.jabatanOptions || ['KOMISARIS', 'DIREKTUR', 'ADMIN', 'TL', 'DC', 'FC'])
       .map(j => '<option value="' + esc(j) + '">' + esc(j) + '</option>')
+      .join('');
+    const areaOpts = (TK_STATE.areaOptions || [])
+      .map(a => '<option value="' + esc(a) + '"></option>')
       .join('');
 
     $('content').innerHTML =
@@ -13510,23 +13623,35 @@
         '<div class="panel">' +
           '<h3 class="pt" style="margin:0 0 12px">➕ Tambahkan Karyawan</h3>' +
 
-          '<label for="tkNama">Nama</label>' +
+          '<label for="tkNama">Nama (Kolom A)</label>' +
           '<input type="text" id="tkNama" placeholder="Masukkan nama karyawan..." autocomplete="off">' +
 
-          '<label for="tkJabatan">Jabatan</label>' +
+          '<label for="tkJabatan">Jabatan (Kolom B)</label>' +
           '<select id="tkJabatan">' +
             '<option value="">-- Pilih Jabatan --</option>' +
             jabOpts +
           '</select>' +
 
-          '<label for="tkPassword">Password</label>' +
+          '<label for="tkPassword">Password (Kolom C)</label>' +
           '<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">' +
             '<input type="text" id="tkPassword" placeholder="Masukkan password..." style="margin-bottom:0;flex:1" autocomplete="off">' +
             '<button type="button" class="outline sm" onclick="isiPasswordAcakTambahKaryawan()" title="Buat Password Otomatis">🎲 Acak</button>' +
           '</div>' +
 
-          '<label for="tkEmail">Email</label>' +
+          '<label for="tkEmail">Email (Kolom D)</label>' +
           '<input type="email" id="tkEmail" placeholder="Contoh: karyawan@email.com" autocomplete="off">' +
+
+          '<label for="tkArea">Area (Kolom F)</label>' +
+          '<input type="text" id="tkArea" list="tkAreaList" placeholder="Masukkan area (contoh: Bogor)..." autocomplete="off">' +
+          '<datalist id="tkAreaList">' + areaOpts + '</datalist>' +
+
+          '<label for="tkFoto">Foto Profil (Kolom E)</label>' +
+          '<input type="file" id="tkFoto" accept="image/*" onchange="pilihFotoTambahKaryawan(this)">' +
+          '<div id="tkFotoPreviewWrap" class="hidden" style="display:flex;align-items:center;gap:10px;margin:-4px 0 14px;padding:8px 10px;background:var(--surface-soft);border:1px solid var(--line);border-radius:10px">' +
+            '<img id="tkFotoPreview" src="" alt="Preview Foto" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--primary);flex-shrink:0">' +
+            '<span id="tkFotoName" class="lk-sm" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;color:var(--dark)"></span>' +
+            '<button type="button" class="ghost sm" onclick="resetFotoTambahKaryawan()">✕ Hapus</button>' +
+          '</div>' +
 
           '<button type="button" class="full" id="tkBtnSimpan" onclick="simpanFormTambahKaryawan()">➕ Tambahkan Karyawan</button>' +
           '<div id="tkMsg" class="msg"></div>' +
@@ -13537,7 +13662,7 @@
             '<h3 class="pt" style="margin:0">📋 Daftar Karyawan Terdaftar <span class="lk-sm" id="tkTotalLabel" style="font-weight:600"></span></h3>' +
             '<button type="button" class="outline sm" onclick="segarkanDaftarKaryawanAdmin()">⟳ Segarkan</button>' +
           '</div>' +
-          '<input type="text" id="tkCariInput" placeholder="🔍 Cari nama, jabatan, atau email..." oninput="ubahCariTambahKaryawan(this.value)" style="margin-bottom:12px">' +
+          '<input type="text" id="tkCariInput" placeholder="🔍 Cari nama, jabatan, area, atau email..." oninput="ubahCariTambahKaryawan(this.value)" style="margin-bottom:12px">' +
           '<div id="tkTableWrap" class="twrap">' +
             '<div class="placeholder">Memuat daftar karyawan...</div>' +
           '</div>' +
@@ -13545,6 +13670,36 @@
       '</div>';
 
     segarkanDaftarKaryawanAdmin();
+  }
+
+  function pilihFotoTambahKaryawan(input) {
+    const file = input && input.files && input.files[0];
+    if (!file) {
+      resetFotoTambahKaryawan();
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      const dataUrl = String((evt && evt.target && evt.target.result) || '');
+      const commaIdx = dataUrl.indexOf(',');
+      TK_STATE.fotoFileData = commaIdx >= 0 ? dataUrl.substring(commaIdx + 1) : dataUrl;
+      TK_STATE.fotoMimeType = file.type || 'image/jpeg';
+      TK_STATE.fotoFileName = file.name || 'foto_profil.jpg';
+      if ($('tkFotoPreview')) $('tkFotoPreview').src = dataUrl;
+      if ($('tkFotoName')) $('tkFotoName').textContent = file.name;
+      if ($('tkFotoPreviewWrap')) $('tkFotoPreviewWrap').classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function resetFotoTambahKaryawan() {
+    TK_STATE.fotoFileData = '';
+    TK_STATE.fotoMimeType = '';
+    TK_STATE.fotoFileName = '';
+    if ($('tkFoto')) $('tkFoto').value = '';
+    if ($('tkFotoPreview')) $('tkFotoPreview').src = '';
+    if ($('tkFotoName')) $('tkFotoName').textContent = '';
+    if ($('tkFotoPreviewWrap')) $('tkFotoPreviewWrap').classList.add('hidden');
   }
 
   function isiPasswordAcakTambahKaryawan() {
@@ -13580,6 +13735,13 @@
           if (curVal) sel.value = curVal;
         }
       }
+      if (Array.isArray(res.areaOptions)) {
+        TK_STATE.areaOptions = res.areaOptions;
+        const dl = $('tkAreaList');
+        if (dl) {
+          dl.innerHTML = TK_STATE.areaOptions.map(a => '<option value="' + esc(a) + '"></option>').join('');
+        }
+      }
       renderTabelKaryawanAdmin_();
     }).catch(err => {
       if ($('tkTableWrap')) {
@@ -13594,7 +13756,7 @@
     const all = TK_STATE.items || [];
     const q = String(TK_STATE.searchQuery || '').toLowerCase();
     const list = q
-      ? all.filter(it => (String(it.nama || '') + ' ' + String(it.jabatan || '') + ' ' + String(it.email || '')).toLowerCase().indexOf(q) >= 0)
+      ? all.filter(it => (String(it.nama || '') + ' ' + String(it.jabatan || '') + ' ' + String(it.area || '') + ' ' + String(it.email || '')).toLowerCase().indexOf(q) >= 0)
       : all;
 
     if ($('tkTotalLabel')) {
@@ -13613,6 +13775,8 @@
         '<td><span class="pic-badge">' + esc(it.jabatan || '-') + '</span></td>' +
         '<td style="font-family:\'JetBrains Mono\',monospace;font-size:12.5px">' + esc(it.password || '-') + '</td>' +
         '<td>' + esc(it.email || '-') + '</td>' +
+        '<td>' + (it.foto ? '<a href="' + esc(it.foto) + '" target="_blank" rel="noopener" style="color:var(--primary);font-weight:700;text-decoration:none">📷 Lihat Foto</a>' : '<span class="lk-sm">-</span>') + '</td>' +
+        '<td>' + esc(it.area || '-') + '</td>' +
         '<td class="c">' +
           '<button type="button" class="btn-hapus" data-row="' + esc(it.row) + '" data-nama="' + esc(it.nama || '') + '" onclick="hapusKaryawanAdmin(Number(this.dataset.row), this.dataset.nama)">🗑 Hapus</button>' +
         '</td>' +
@@ -13620,7 +13784,7 @@
     ).join('');
 
     wrap.innerHTML =
-      '<table class="pc" style="min-width:580px">' +
+      '<table class="pc" style="min-width:680px">' +
         '<thead>' +
           '<tr>' +
             '<th class="c" style="width:64px">Baris</th>' +
@@ -13628,6 +13792,8 @@
             '<th>Jabatan</th>' +
             '<th>Password</th>' +
             '<th>Email</th>' +
+            '<th>Foto (Kol E)</th>' +
+            '<th>Area (Kol F)</th>' +
             '<th class="c" style="width:90px">Aksi</th>' +
           '</tr>' +
         '</thead>' +
@@ -13655,11 +13821,13 @@
     const jabatan = ($('tkJabatan') ? $('tkJabatan').value : '').trim();
     const password = ($('tkPassword') ? $('tkPassword').value : '').trim();
     const email = ($('tkEmail') ? $('tkEmail').value : '').trim();
+    const area = ($('tkArea') ? $('tkArea').value : '').trim();
 
     if (!nama) return pesan('tkMsg', 'Nama wajib diisi.', 'err');
     if (!jabatan) return pesan('tkMsg', 'Jabatan wajib dipilih.', 'err');
     if (!password) return pesan('tkMsg', 'Password wajib diisi.', 'err');
     if (!email) return pesan('tkMsg', 'Email wajib diisi.', 'err');
+    if (!area) return pesan('tkMsg', 'Area (Kolom F) wajib diisi.', 'err');
 
     pesan('tkMsg', '', '');
     const btn = $('tkBtnSimpan');
@@ -13679,7 +13847,11 @@
       nama: nama,
       jabatan: jabatan,
       password: password,
-      email: email
+      email: email,
+      area: area,
+      fileData: TK_STATE.fotoFileData || '',
+      mimeType: TK_STATE.fotoMimeType || '',
+      fileName: TK_STATE.fotoFileName || ''
     }).then(res => {
       pulih();
       if (!res || !res.sukses) {
@@ -13691,6 +13863,8 @@
       if ($('tkJabatan')) $('tkJabatan').value = '';
       if ($('tkPassword')) $('tkPassword').value = '';
       if ($('tkEmail')) $('tkEmail').value = '';
+      if ($('tkArea')) $('tkArea').value = '';
+      resetFotoTambahKaryawan();
       segarkanDaftarKaryawanAdmin();
     }).catch(err => {
       pulih();
