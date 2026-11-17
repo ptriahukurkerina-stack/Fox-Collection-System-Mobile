@@ -4133,6 +4133,38 @@
     background: #f8fafc;
     transform: translateY(-1px);
   }
+  .eb-card.eb-gmail {
+    background: #dcfce7;
+    border: 1.5px solid #22c55e;
+  }
+  .eb-card.eb-gmail:hover {
+    background: #bbf7d0;
+    border-color: #16a34a;
+  }
+  .eb-card.eb-gmail .eb-avatar {
+    background: #16a34a;
+    color: #ffffff;
+    border-color: #15803d;
+  }
+  .eb-card.eb-gmail .eb-acc-tag {
+    color: #166534;
+  }
+  .eb-card.eb-non-gmail {
+    background: #e2e8f0;
+    border: 1.5px solid #94a3b8;
+  }
+  .eb-card.eb-non-gmail:hover {
+    background: #cbd5e1;
+    border-color: #64748b;
+  }
+  .eb-card.eb-non-gmail .eb-avatar {
+    background: #64748b;
+    color: #ffffff;
+    border-color: #475569;
+  }
+  .eb-card.eb-non-gmail .eb-acc-tag {
+    color: #334155;
+  }
   .eb-avatar {
     width: 38px;
     height: 38px;
@@ -8844,12 +8876,13 @@
   }
 
   function htmlProfilNasabah_(it) {
+    const isAkulaku = String(it.kategori || '').trim().toUpperCase() === 'AKULAKU';
     return '<div class="ns-card">' +
       '<div class="ns-tagihan-head">Tagihan : ' + esc(it.kategori || '-') + '</div>' +
       '<div class="ns-row"><div class="ns-lbl">User ID</div><div class="ns-val">' + esc(it.userId || '-') + '</div></div>' +
       '<div class="ns-row"><div class="ns-lbl">No. Telepon</div><div class="ns-val">' + esc(it.telp || '-') + '</div></div>' +
       '<div class="ns-row"><div class="ns-lbl">Nama Lengkap</div><div class="ns-val">' + esc(it.nama || '-') + '</div></div>' +
-      '<div class="ns-row"><div class="ns-lbl">Tanggal Lahir</div><div class="ns-val">' + esc(it.tglLahir || '-') + '</div></div>' +
+      '<div class="ns-row"><div class="ns-lbl">' + (isAkulaku ? 'Umur' : 'Tanggal Lahir') + '</div><div class="ns-val">' + esc(it.tglLahir || '-') + '</div></div>' +
       '<div class="ns-row" style="align-items:center">' +
         '<div class="ns-lbl">Alamat</div>' +
         '<div class="ns-val" style="display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;flex-wrap:wrap">' +
@@ -8863,6 +8896,17 @@
 
   function htmlTagihanNasabah_(it) {
     const katUpper = String(it.kategori || '').trim().toUpperCase();
+    if (katUpper === 'AKULAKU') {
+      return '<div class="diskon-box">' +
+        '<div class="d-lbl">🏷️ Program Diskon Pelunasan</div>' +
+        '<div class="d-val">(REQUEST BY SYSTEM AKULAKU)</div>' +
+      '</div>' +
+      '<div class="ns-card">' +
+        '<div class="ns-row"><div class="ns-lbl">Keterlambatan</div><div class="ns-val">' + esc(formatHari_(it.keterlambatan)) + '</div></div>' +
+        '<div class="ns-row"><div class="ns-lbl">Total Tagihan</div><div class="ns-val val-merah-bold">' + esc(rp(it.os || 0)) + '</div></div>' +
+        '<div class="ns-row"><div class="ns-lbl">JENIS LOAN</div><div class="ns-val">: ' + esc(it.loanType || '-') + '</div></div>' +
+      '</div>';
+    }
     const isKredivo = (katUpper === 'KREDIVO' || katUpper === 'KREDIVO OR');
     let extraKredivo = '';
     if (isKredivo) {
@@ -8885,7 +8929,9 @@
 
   function htmlVaNasabah_(it) {
     const katUpper = String(it.kategori || '').trim().toUpperCase();
-    if (katUpper === 'ALLO BANK') {
+    if (katUpper === 'AKULAKU') {
+      return '<div class="ns-card"><div class="ns-val" style="font-weight:800;text-align:center">REQUEST VA NUMBER BY SYSTEM/PEMBAYARAN LANGSUNG MELALUI APLIKASI AKULAKU</div></div>';
+    } else if (katUpper === 'ALLO BANK') {
       const noRek = formatRekAllo_(it.telp);
       return '<div class="ns-card va-allo-box">' +
         '<div class="va-allo-title">Cara Bayar Tagihan Allo Bank</div>' +
@@ -8907,6 +8953,12 @@
 
   function htmlKantorNasabah_(it) {
     const katUpper = String(it.kategori || '').trim().toUpperCase();
+    if (katUpper === 'AKULAKU') {
+      return '<div class="ns-card">' +
+        '<div class="ns-row"><div class="ns-lbl">NAMA KANTOR</div><div class="ns-val">: ' + esc(it.namaKantorAkulaku || '-') + '</div></div>' +
+        '<div class="ns-row"><div class="ns-lbl">NOMOR KANTOR</div><div class="ns-val">: ' + esc(it.nomorKantorAkulaku || '-') + '</div></div>' +
+      '</div>';
+    }
     if (katUpper !== 'ALLO BANK') {
       return '<div class="tg-empty">Informasi kantor hanya tersedia untuk produk <b>ALLO BANK</b>.</div>';
     }
@@ -8918,9 +8970,21 @@
     '</div>';
   }
 
-  function htmlTambahanHp_(rows) {
+  function htmlTambahanHp_(rows, it) {
     if (!rows || !rows.length) {
       return '<div class="tg-empty">Data tidak ditemukan.</div>';
+    }
+    const targetIt = it || TG_NASABAH_AKTIF;
+    const isAkulaku = String((targetIt && targetIt.kategori) || '').trim().toUpperCase() === 'AKULAKU';
+    if (isAkulaku) {
+      return rows.map((r, i) =>
+        '<div class="ns-card">' +
+          '<div style="font-weight:800;font-size:13.5px;color:var(--primary);margin-bottom:6px">' + (i + 1) + '.</div>' +
+          '<div class="ns-row"><div class="ns-lbl">Contact Type</div><div class="ns-val">: ' + esc(r.contactType || '-') + '</div></div>' +
+          '<div class="ns-row"><div class="ns-lbl">Contact Name</div><div class="ns-val">: ' + esc(r.contactName || '-') + '</div></div>' +
+          '<div class="ns-row"><div class="ns-lbl">Contact Phone</div><div class="ns-val">: ' + esc(r.contactPhone || '-') + '</div></div>' +
+        '</div>'
+      ).join('');
     }
     return rows.map((r, i) =>
       '<div class="ns-card">' +
@@ -8995,19 +9059,19 @@
 
   function muatDataTambahanHpNasabah_(it, cb) {
     if (it._tambahanHpRows) { cb(it._tambahanHpRows); return; }
-    apiSilent_('getDataTambahanHpByUserId', S.token, it.userId || '').then(r => {
+    apiSilent_('getDataTambahanHpByUserId', S.token, it.userId || '', it.kategori || '').then(r => {
       const rows = (r && r.sukses && Array.isArray(r.items)) ? r.items : [];
       if (rows.length > 0) {
         it._tambahanHpRows = rows;
         cb(it._tambahanHpRows);
         return;
       }
-      return lookupTambahanHpDirect_(it.userId || '').then(fallbackRows => {
+      return lookupTambahanHpDirect_(it.userId || '', it.kategori || '').then(fallbackRows => {
         it._tambahanHpRows = fallbackRows || [];
         cb(it._tambahanHpRows);
       });
     }).catch(() => {
-      lookupTambahanHpDirect_(it.userId || '').then(fallbackRows => {
+      lookupTambahanHpDirect_(it.userId || '', it.kategori || '').then(fallbackRows => {
         it._tambahanHpRows = fallbackRows || [];
         cb(it._tambahanHpRows);
       });
@@ -9032,7 +9096,7 @@
             '<div class="ns-desk-col"><div class="ns-desk-head">🏢 KANTOR</div><div class="ns-desk-content" id="mnDesk_kantor">' + htmlKantorNasabah_(it) + '</div></div>' +
           '</div>' +
           '<div class="ns-desk-row-bottom">' +
-            '<div class="ns-desk-col"><div class="ns-desk-head">📱 Tambahan No Hp</div><div class="ns-desk-content" id="mnDesk_tambahanhp">' + (it._tambahanHpRows ? htmlTambahanHp_(it._tambahanHpRows) : '<div class="placeholder">Memuat tambahan no hp...</div>') + '</div></div>' +
+            '<div class="ns-desk-col"><div class="ns-desk-head">📱 Tambahan No Hp</div><div class="ns-desk-content" id="mnDesk_tambahanhp">' + (it._tambahanHpRows ? htmlTambahanHp_(it._tambahanHpRows, it) : '<div class="placeholder">Memuat tambahan no hp...</div>') + '</div></div>' +
             '<div class="ns-desk-col"><div class="ns-desk-head">🧼 DATA CUCI : ' + esc(nikDesk) + '</div><div class="ns-desk-content" id="mnDesk_cuci">' + (it._cuciRows ? htmlTabelCuci_(it._cuciRows) : '<div class="placeholder">Memuat data cuci...</div>') + '</div></div>' +
             '<div class="ns-desk-col"><div class="ns-desk-head">🕒 RIWAYAT</div><div class="ns-desk-content" id="mnDesk_historis">' + (it._historisRows ? htmlTabelHistoris_(it._historisRows) : '<div class="placeholder">Memuat riwayat penanganan...</div>') + '</div></div>' +
           '</div>' +
@@ -9040,7 +9104,7 @@
       if (!it._tambahanHpRows) {
         muatDataTambahanHpNasabah_(it, rows => {
           const el = $('mnDesk_tambahanhp');
-          if (TG_NASABAH_AKTIF === it && el) el.innerHTML = htmlTambahanHp_(rows);
+          if (TG_NASABAH_AKTIF === it && el) el.innerHTML = htmlTambahanHp_(rows, it);
         });
       }
       if (!it._cuciRows) {
@@ -9081,13 +9145,14 @@
     ).join('');
 
     if (TG_TAB_NASABAH === 'nasabah') {
+      const isAkulaku = String(it.kategori || '').trim().toUpperCase() === 'AKULAKU';
       $('mnBody').innerHTML =
         '<div class="ns-card">' +
           '<div class="ns-tagihan-head">Tagihan : ' + esc(it.kategori || '-') + '</div>' +
           '<div class="ns-row"><div class="ns-lbl">User ID</div><div class="ns-val">' + esc(it.userId || '-') + '</div></div>' +
           '<div class="ns-row"><div class="ns-lbl">No. Telepon</div><div class="ns-val">' + esc(it.telp || '-') + '</div></div>' +
           '<div class="ns-row"><div class="ns-lbl">Nama Lengkap</div><div class="ns-val">' + esc(it.nama || '-') + '</div></div>' +
-          '<div class="ns-row"><div class="ns-lbl">Tanggal Lahir</div><div class="ns-val">' + esc(it.tglLahir || '-') + '</div></div>' +
+          '<div class="ns-row"><div class="ns-lbl">' + (isAkulaku ? 'Umur' : 'Tanggal Lahir') + '</div><div class="ns-val">' + esc(it.tglLahir || '-') + '</div></div>' +
           '<div class="ns-row" style="align-items:center">' +
             '<div class="ns-lbl">Alamat</div>' +
             '<div class="ns-val" style="display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;flex-wrap:wrap">' +
@@ -9099,6 +9164,19 @@
         '</div>';
     } else if (TG_TAB_NASABAH === 'tagihan') {
       const katUpper = String(it.kategori || '').trim().toUpperCase();
+      if (katUpper === 'AKULAKU') {
+        $('mnBody').innerHTML =
+          '<div class="diskon-box">' +
+            '<div class="d-lbl">🏷️ Program Diskon Pelunasan</div>' +
+            '<div class="d-val">(REQUEST BY SYSTEM AKULAKU)</div>' +
+          '</div>' +
+          '<div class="ns-card">' +
+            '<div class="ns-row"><div class="ns-lbl">Keterlambatan</div><div class="ns-val">' + esc(formatHari_(it.keterlambatan)) + '</div></div>' +
+            '<div class="ns-row"><div class="ns-lbl">Total Tagihan</div><div class="ns-val val-merah-bold">' + esc(rp(it.os || 0)) + '</div></div>' +
+            '<div class="ns-row"><div class="ns-lbl">JENIS LOAN</div><div class="ns-val">: ' + esc(it.loanType || '-') + '</div></div>' +
+          '</div>';
+        return;
+      }
       const isKredivo = (katUpper === 'KREDIVO' || katUpper === 'KREDIVO OR');
 
       let extraKredivo = '';
@@ -9122,7 +9200,9 @@
         '</div>';
     } else if (TG_TAB_NASABAH === 'vanumber') {
       const katUpper = String(it.kategori || '').trim().toUpperCase();
-      if (katUpper === 'ALLO BANK') {
+      if (katUpper === 'AKULAKU') {
+        $('mnBody').innerHTML = '<div class="ns-card"><div class="ns-val" style="font-weight:800;text-align:center">REQUEST VA NUMBER BY SYSTEM/PEMBAYARAN LANGSUNG MELALUI APLIKASI AKULAKU</div></div>';
+      } else if (katUpper === 'ALLO BANK') {
         const noRek = formatRekAllo_(it.telp);
         $('mnBody').innerHTML =
           '<div class="ns-card va-allo-box">' +
@@ -9144,6 +9224,14 @@
       }
     } else if (TG_TAB_NASABAH === 'kantor') {
       const katUpper = String(it.kategori || '').trim().toUpperCase();
+      if (katUpper === 'AKULAKU') {
+        $('mnBody').innerHTML =
+          '<div class="ns-card">' +
+            '<div class="ns-row"><div class="ns-lbl">NAMA KANTOR</div><div class="ns-val">: ' + esc(it.namaKantorAkulaku || '-') + '</div></div>' +
+            '<div class="ns-row"><div class="ns-lbl">NOMOR KANTOR</div><div class="ns-val">: ' + esc(it.nomorKantorAkulaku || '-') + '</div></div>' +
+          '</div>';
+        return;
+      }
       if (katUpper !== 'ALLO BANK') {
         $('mnBody').innerHTML =
           '<div class="tg-empty">Informasi kantor hanya tersedia untuk produk <b>ALLO BANK</b>.</div>';
@@ -9206,10 +9294,34 @@
     }
   }
 
-  function lookupTambahanHpDirect_(userId) {
+  function lookupTambahanHpDirect_(userId, kategori) {
     const uid = String(userId == null ? '' : userId).trim().replace(/^'+/, '');
     if (!uid) return Promise.resolve([]);
     const safeUid = uid.replace(/'/g, "\\'");
+    const isAkulaku = String(kategori == null ? '' : kategori).trim().toUpperCase() === 'AKULAKU';
+    if (isAkulaku) {
+      const tqAkulaku = "select A,B,C,D where A = '" + safeUid + "' or A = '" + safeUid.toUpperCase() + "' or A = '" + safeUid.toLowerCase() + "'";
+      const urlAkulaku = 'https://docs.google.com/spreadsheets/d/1Vvqcv_jT82ldkaH-aucMIC4G5oO8V4S5woDwuSLM2o8/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent('DATA TAMBAHAN AKULAKU') + '&tq=' + encodeURIComponent(tqAkulaku);
+      return fetch(urlAkulaku)
+        .then(res => res.text())
+        .then(txt => {
+          const start = txt.indexOf('{');
+          const end = txt.lastIndexOf('}');
+          if (start < 0 || end < 0) return [];
+          const json = JSON.parse(txt.slice(start, end + 1));
+          const rows = (json && json.table && Array.isArray(json.table.rows)) ? json.table.rows : [];
+          const cellVal = c => (c && (c.f != null ? c.f : c.v) != null) ? String(c.f != null ? c.f : c.v).trim() : '';
+          return rows.map(r => {
+            const c = (r && Array.isArray(r.c)) ? r.c : [];
+            return {
+              contactType: cellVal(c[1]),
+              contactName: cellVal(c[2]),
+              contactPhone: cellVal(c[3])
+            };
+          });
+        })
+        .catch(() => []);
+    }
     const tq = "select A,B,C,D,E,F where A = '" + safeUid + "' or A = '" + safeUid.toUpperCase() + "' or A = '" + safeUid.toLowerCase() + "'";
     const url = 'https://docs.google.com/spreadsheets/d/1Vvqcv_jT82ldkaH-aucMIC4G5oO8V4S5woDwuSLM2o8/gviz/tq?tqx=out:json&tq=' + encodeURIComponent(tq);
     return fetch(url)
@@ -9235,7 +9347,7 @@
   }
 
   function renderTambahanHp_(rows) {
-    $('mnBody').innerHTML = htmlTambahanHp_(rows);
+    $('mnBody').innerHTML = htmlTambahanHp_(rows, TG_NASABAH_AKTIF);
   }
 
   function renderTabelCuci_(rows) {
@@ -12588,6 +12700,14 @@
     return { name: cleanName || s, initials: initials || 'EM' };
   }
 
+  function ebIsFromGmail_(raw) {
+    const s = String(raw || '').trim().toLowerCase();
+    if (!s) return false;
+    const m = s.match(/<([^>]+)>/);
+    const email = (m ? m[1] : s).trim();
+    return /@gmail\.com$/i.test(email) || /@gmail\.com\b/i.test(s);
+  }
+
   function renderKontenEmailBlast() {
     const box = $('ebContentBox');
     if (!box) return;
@@ -12621,8 +12741,10 @@
         const cuplikan = String(r[3] || '-');
         const tglTarik = String(r[4] || '-');
         const info = ebParseSender_(pengirimRaw);
+        const isGmail = ebIsFromGmail_(pengirimRaw);
+        const cardColorClass = isGmail ? 'eb-gmail' : 'eb-non-gmail';
         return (
-          '<div class="eb-card" onclick="bukaDetailEmailBlast(' + idx + ')">' +
+          '<div class="eb-card ' + cardColorClass + '" onclick="bukaDetailEmailBlast(' + idx + ')">' +
             '<div class="eb-avatar">' + esc(info.initials) + '</div>' +
             '<div class="eb-card-body">' +
               '<div class="eb-card-top">' +
@@ -12633,7 +12755,7 @@
               '<div class="eb-snippet">' + esc(cuplikan) + '</div>' +
               '<div class="eb-card-foot">' +
                 '<span>Tarik: ' + esc(tglTarik) + '</span>' +
-                '<span style="color:var(--primary);font-weight:800">Detail ➔</span>' +
+                '<span style="color:' + (isGmail ? '#15803d' : '#475569') + ';font-weight:800">Detail ➔</span>' +
               '</div>' +
             '</div>' +
           '</div>'
@@ -12655,15 +12777,19 @@
           '</tr>' +
         '</thead>' +
         '<tbody>' +
-          EB_FILTERED_ROWS.map((r, idx) =>
-            '<tr style="cursor:pointer" onclick="bukaDetailEmailBlast(' + idx + ')">' +
-              '<td class="num">' + esc(r[0] || '-') + '</td>' +
-              '<td><span class="pic-badge">' + esc(r[1] || '-') + '</span></td>' +
-              '<td><b>' + esc(r[2] || '-') + '</b></td>' +
-              '<td style="max-width:320px;white-space:normal">' + esc(r[3] || '-') + '</td>' +
-              '<td class="num" style="color:var(--muted)">' + esc(r[4] || '-') + '</td>' +
-            '</tr>'
-          ).join('') +
+          EB_FILTERED_ROWS.map((r, idx) => {
+            const isGmail = ebIsFromGmail_(r[2]);
+            const rowBg = isGmail ? '#dcfce7' : '#e2e8f0';
+            return (
+              '<tr style="cursor:pointer;background:' + rowBg + '" onclick="bukaDetailEmailBlast(' + idx + ')">' +
+                '<td class="num">' + esc(r[0] || '-') + '</td>' +
+                '<td><span class="pic-badge">' + esc(r[1] || '-') + '</span></td>' +
+                '<td><b>' + esc(r[2] || '-') + '</b></td>' +
+                '<td style="max-width:320px;white-space:normal">' + esc(r[3] || '-') + '</td>' +
+                '<td class="num" style="color:var(--muted)">' + esc(r[4] || '-') + '</td>' +
+              '</tr>'
+            );
+          }).join('') +
         '</tbody>' +
       '</table>';
   }
