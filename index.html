@@ -1086,6 +1086,9 @@
     gap: 10px;
     margin: 4px 0 14px;
   }
+  .tg-filter-grid.with-pic {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
   .fbox {
     background: var(--surface-soft);
     border: 1px solid var(--line);
@@ -1185,6 +1188,9 @@
   }
 
   .tg-info { font-size: 12.5px; color: var(--muted); margin: 0 0 12px; font-weight: 600; line-height: 1.4; }
+  .tg-info-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 12px; }
+  .tg-info-bar .tg-info { margin: 0; }
+  .tg-info-bar .pf-btn-act { width: auto !important; min-height: 30px; padding: 5px 11px; font-size: 11.5px; }
   .tg-item {
     display: flex;
     align-items: center;
@@ -2667,7 +2673,7 @@
 
   /* ---------- RESPONSIVE ANDROID BREAKPOINTS ---------- */
   @media (max-width: 1100px) {
-    .tg-filter-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .tg-filter-grid, .tg-filter-grid.with-pic { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .by-grid, .lk-grid, .sg-grid, .ub-grid, .kr-grid { grid-template-columns: minmax(0, 1fr); }
     .by-grid .panel + .panel, .sg-grid .panel + .panel, .kr-grid .panel + .panel { margin-top: 0; }
   }
@@ -2691,7 +2697,7 @@
     .content { padding: 14px 12px calc(24px + env(safe-area-inset-bottom)); }
     .panel { padding: 16px 14px; border-radius: var(--radius-lg); }
     .lk-2col { grid-template-columns: minmax(0, 1fr); }
-    .tg-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .tg-filter-grid, .tg-filter-grid.with-pic { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
     .legend { min-width: 100%; }
     .kr-list, .ps-list { max-height: none; overflow-y: visible; }
   }
@@ -2783,7 +2789,7 @@
   @media (max-width: 290px) {
     .links { grid-template-columns: 1fr; }
     .lk-kpi { grid-template-columns: minmax(0, 1fr); }
-    .tg-filter-grid { grid-template-columns: minmax(0, 1fr); }
+    .tg-filter-grid, .tg-filter-grid.with-pic { grid-template-columns: minmax(0, 1fr); }
     .fbox .enum-drop { left: 0 !important; right: 0 !important; width: 100% !important; min-width: 0; }
   }
 
@@ -7920,10 +7926,16 @@
   let TG_KATEGORI_LIST = ['SEMUA'];
   let TG_KAT_AKTIF = 'SEMUA';
 
-  let TG_OPTS = { result: [], area: [], kecamatan: [], cuci: [], whatsapp: [] };
-  let TG_SEL  = { result: {}, area: {}, kecamatan: {}, cuci: {}, whatsapp: {} };
+  let TG_OPTS = { result: [], area: [], kecamatan: [], cuci: [], whatsapp: [], pic: [] };
+  let TG_SEL  = { result: {}, area: {}, kecamatan: {}, cuci: {}, whatsapp: {}, pic: {} };
   let TG_NASABAH_AKTIF = null;
   let TG_TAB_NASABAH = 'nasabah';
+  let TG_IS_REFRESHING = false;
+
+  function bolehFilterPicTagihan_() {
+    const jab = String((S && S.jabatan) || '').trim().toUpperCase();
+    return jab === 'ADMIN' || jab === 'TL' || jab === 'TEAM LEADER' || jab === 'DIREKTUR';
+  }
 
   const IKON_KAT = {
     'SEMUA': '🗂️',
@@ -7943,6 +7955,7 @@
   ];
 
   function muatHalamanTagihan() {
+    const tampilFilterPic = bolehFilterPicTagihan_();
     $('content').innerHTML =
       '<div class="panel">' +
         '<div class="tg-head">' +
@@ -7952,7 +7965,7 @@
 
         '<input type="text" id="cariTagihan" placeholder="Cari nama nasabah, User ID, NIK, atau telepon..." oninput="renderTagihan()" style="margin-bottom:10px">' +
 
-        '<div class="tg-filter-grid">' +
+        '<div class="tg-filter-grid' + (tampilFilterPic ? ' with-pic' : '') + '">' +
           '<div class="fbox" id="fbox_result">' +
             '<div class="fbox-title"><span>STATUS HASIL</span></div>' +
             '<button type="button" class="enum-btn" onclick="toggleEnumDrop(\'result\')">' +
@@ -7993,6 +8006,16 @@
             '<div class="enum-drop" id="dropEnum_whatsapp"></div>' +
           '</div>' +
 
+          (tampilFilterPic ? (
+            '<div class="fbox" id="fbox_pic">' +
+              '<div class="fbox-title"><span>PIC</span></div>' +
+              '<button type="button" class="enum-btn" onclick="toggleEnumDrop(\'pic\')">' +
+                '<span class="txt" id="lblEnum_pic">Memuat...</span><span>▾</span>' +
+              '</button>' +
+              '<div class="enum-drop" id="dropEnum_pic"></div>' +
+            '</div>'
+          ) : '') +
+
           '<div class="fbox">' +
             '<div class="fbox-title"><span>URUTAN NOMINAL</span></div>' +
             '<select id="urutTagihan" onchange="renderTagihan()">' +
@@ -8002,7 +8025,10 @@
           '</div>' +
         '</div>' +
 
-        '<div class="tg-info" id="tgInfo"></div>' +
+        '<div class="tg-info-bar">' +
+          '<div class="tg-info" id="tgInfo"></div>' +
+          '<button type="button" id="tgBtnRefreshData" class="pf-btn-act refresh" onclick="refreshDataTagihan()"><i class="fas fa-sync-alt" id="tgRefreshIcon"></i> Refresh Data</button>' +
+        '</div>' +
         '<div id="tagihanBox" class="placeholder">Memuat daftar tagihan...</div>' +
       '</div>';
 
@@ -8096,7 +8122,7 @@
   }
 
   function toggleEnumDrop(key) {
-    ['result', 'area', 'kecamatan', 'cuci', 'whatsapp'].forEach(k => {
+    ['result', 'area', 'kecamatan', 'cuci', 'whatsapp', 'pic'].forEach(k => {
       const el = $('dropEnum_' + k);
       if (!el) return;
       if (k === key) el.classList.toggle('open');
@@ -8105,7 +8131,7 @@
   }
 
   function tutupSemuaEnumDrop() {
-    ['result', 'area', 'kecamatan', 'cuci', 'whatsapp'].forEach(k => {
+    ['result', 'area', 'kecamatan', 'cuci', 'whatsapp', 'pic'].forEach(k => {
       const el = $('dropEnum_' + k);
       if (el) el.classList.remove('open');
     });
@@ -8137,53 +8163,115 @@
     renderTagihan();
   }
 
+  function terapkanDataTagihan_(r) {
+    const box = $('tagihanBox');
+    if (!box) return;
+    if (!r || !r.sukses) {
+      box.textContent = (r && r.pesan) || 'Gagal memuat data.';
+      return;
+    }
+    TAGIHAN = (r.items || []).map((it, idx) => Object.assign({ _idx: idx }, it));
+    const bhTagihanSet = {};
+    TAGIHAN.forEach(it => {
+      const k = String(it && it.kategori ? it.kategori : '').trim().toUpperCase();
+      if (k && k !== '(TANPA KATEGORI)') bhTagihanSet[k] = true;
+    });
+    const hasItemsBh = Object.keys(bhTagihanSet).length > 0;
+    const hasDashBh = Object.keys(VALID_BH_KATEGORI_SET).length > 0;
+    const prioritasKat = ['ALLO BANK', 'KREDIVO', 'KREDIVO OR'];
+    let filteredKat = [];
+    if (hasItemsBh) {
+      const allKeys = Object.keys(bhTagihanSet);
+      filteredKat = prioritasKat.filter(k => bhTagihanSet[k]).concat(
+        allKeys.filter(k => prioritasKat.indexOf(k) < 0).sort()
+      );
+    } else if (hasDashBh) {
+      const allKeys = Object.keys(VALID_BH_KATEGORI_SET);
+      filteredKat = prioritasKat.filter(k => VALID_BH_KATEGORI_SET[k]).concat(
+        allKeys.filter(k => prioritasKat.indexOf(k) < 0).sort()
+      );
+    } else if (Array.isArray(r.kategoriList)) {
+      filteredKat = r.kategoriList.filter(Boolean);
+    }
+    TG_KATEGORI_LIST = ['SEMUA'].concat(filteredKat);
+    if (TG_KATEGORI_LIST.indexOf(TG_KAT_AKTIF) < 0) TG_KAT_AKTIF = 'SEMUA';
+
+    const picMap = {};
+    const picCanon = {};
+    TAGIHAN.forEach(it => {
+      const rawP = String(it.picFilter || it.pic || '').trim();
+      if (!rawP || rawP === '0' || rawP === '-' || rawP === 'TIDAK ADA PIC') {
+        it.picFilter = 'TIDAK ADA PIC';
+        picMap['TIDAK ADA PIC'] = true;
+      } else {
+        const k = rawP.toLowerCase();
+        if (!picCanon[k]) picCanon[k] = rawP;
+        it.picFilter = picCanon[k];
+        picMap[picCanon[k]] = true;
+      }
+    });
+    const listPicItems = Object.keys(picMap).filter(k => k !== 'TIDAK ADA PIC').sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }))
+      .concat(picMap['TIDAK ADA PIC'] ? ['TIDAK ADA PIC'] : []);
+    const finalPicList = (Array.isArray(r.picList) && r.picList.length > 0)
+      ? r.picList.slice()
+      : (listPicItems.length ? listPicItems : ['TIDAK ADA PIC']);
+    const finalLookup = {};
+    finalPicList.forEach(p => { finalLookup[String(p).toLowerCase()] = p; });
+    TAGIHAN.forEach(it => {
+      const pKey = String(it.picFilter || '').toLowerCase();
+      if (finalLookup[pKey]) {
+        it.picFilter = finalLookup[pKey];
+      } else if (it.picFilter && finalPicList.indexOf(it.picFilter) < 0) {
+        finalPicList.push(it.picFilter);
+      }
+    });
+
+    renderKategoriBar_();
+    initEnumFilter_('result', r.resultList || ['BELUM DIKERJAKAN']);
+    initEnumFilter_('area', r.areaList || ['TIDAK ADA AREA']);
+    syncKecamatanByArea_(true);
+    initEnumFilter_('cuci', ['ADA', 'TIDAK']);
+    initEnumFilter_('whatsapp', r.whatsappList || ['AKTIF', 'TIDAK AKTIF']);
+    if (bolehFilterPicTagihan_()) {
+      initEnumFilter_('pic', finalPicList);
+    }
+
+    box.className = '';
+    renderTagihan();
+  }
+
   function muatTagihan() {
     api('getDataTagihan', S.token).then(r => {
-      const box = $('tagihanBox');
-      if (!box) return;
-      if (!r.sukses) {
-        box.textContent = r.pesan || 'Gagal memuat data.';
-        return;
-      }
-      TAGIHAN = (r.items || []).map((it, idx) => Object.assign({ _idx: idx }, it));
-      const bhTagihanSet = {};
-      TAGIHAN.forEach(it => {
-        const k = String(it && it.kategori ? it.kategori : '').trim().toUpperCase();
-        if (k && k !== '(TANPA KATEGORI)') bhTagihanSet[k] = true;
-      });
-      const hasItemsBh = Object.keys(bhTagihanSet).length > 0;
-      const hasDashBh = Object.keys(VALID_BH_KATEGORI_SET).length > 0;
-      const prioritasKat = ['ALLO BANK', 'KREDIVO', 'KREDIVO OR'];
-      let filteredKat = [];
-      if (hasItemsBh) {
-        const allKeys = Object.keys(bhTagihanSet);
-        filteredKat = prioritasKat.filter(k => bhTagihanSet[k]).concat(
-          allKeys.filter(k => prioritasKat.indexOf(k) < 0).sort()
-        );
-      } else if (hasDashBh) {
-        const allKeys = Object.keys(VALID_BH_KATEGORI_SET);
-        filteredKat = prioritasKat.filter(k => VALID_BH_KATEGORI_SET[k]).concat(
-          allKeys.filter(k => prioritasKat.indexOf(k) < 0).sort()
-        );
-      } else if (Array.isArray(r.kategoriList)) {
-        filteredKat = r.kategoriList.filter(Boolean);
-      }
-      TG_KATEGORI_LIST = ['SEMUA'].concat(filteredKat);
-      if (TG_KATEGORI_LIST.indexOf(TG_KAT_AKTIF) < 0) TG_KAT_AKTIF = 'SEMUA';
-
-      renderKategoriBar_();
-      initEnumFilter_('result', r.resultList || ['BELUM DIKERJAKAN']);
-      initEnumFilter_('area', r.areaList || ['TIDAK ADA AREA']);
-      syncKecamatanByArea_(true);
-      initEnumFilter_('cuci', ['ADA', 'TIDAK']);
-      initEnumFilter_('whatsapp', r.whatsappList || ['AKTIF', 'TIDAK AKTIF']);
-
-      box.className = '';
-      renderTagihan();
+      terapkanDataTagihan_(r);
     }).catch(e => {
       const b = $('tagihanBox');
       if (b) b.textContent = 'Gagal memuat: ' + e.message;
     });
+  }
+
+  function refreshDataTagihan() {
+    if (TG_IS_REFRESHING) return;
+    TG_IS_REFRESHING = true;
+    const btn = $('tgBtnRefreshData');
+    const ic = $('tgRefreshIcon') || (btn ? btn.querySelector('i') : null);
+    if (ic) ic.classList.add('fa-spin');
+    if (btn) btn.disabled = true;
+
+    api('refreshAndGetDataTagihan', S.token)
+      .catch(() => api('refreshAndGetData').then(() => api('getDataTagihan', S.token)))
+      .then(r => {
+        TG_IS_REFRESHING = false;
+        if (ic) ic.classList.remove('fa-spin');
+        if (btn) btn.disabled = false;
+        terapkanDataTagihan_(r);
+      })
+      .catch(e => {
+        TG_IS_REFRESHING = false;
+        if (ic) ic.classList.remove('fa-spin');
+        if (btn) btn.disabled = false;
+        const b = $('tagihanBox');
+        if (b) b.textContent = 'Gagal memuat: ' + (e && e.message ? e.message : String(e));
+      });
   }
 
   function renderTagihan() {
@@ -8201,6 +8289,10 @@
       if (!TG_SEL.cuci[t.dataCuci || 'TIDAK']) return false;
       const waStatus = t.whatsapp || (t.waAktif ? 'AKTIF' : 'TIDAK AKTIF');
       if (!TG_SEL.whatsapp[waStatus]) return false;
+      if (bolehFilterPicTagihan_() && TG_OPTS.pic && TG_OPTS.pic.length > 0) {
+        const pVal = t.picFilter || ((!t.pic || t.pic === '0' || t.pic === '-') ? 'TIDAK ADA PIC' : t.pic);
+        if (!TG_SEL.pic[pVal]) return false;
+      }
       if (q) {
         const gab = (t.userId + ' ' + t.nama + ' ' + t.telp + ' ' + t.nik).toLowerCase();
         if (gab.indexOf(q) < 0) return false;
