@@ -4888,8 +4888,802 @@
     font-weight: 800;
     color: var(--primary-hover);
   }
+
+  /* ==========================================================================
+     3D SKEUOMORPHISM TACTILE DESIGN SYSTEM (FULL VISUAL OVERHAUL)
+     Elemen Desain 3D, Tekstur Nyata (Brushed Metal, Molded Chassis, Recessed LCD),
+     Bevel Specular, Tombol Fisik 3D Push-Key, dan Bayangan Mendalam.
+     ========================================================================== */
+  :root {
+    --box: #d8e0ea;
+    --bg: #d9e2ec;
+    --surface: #edf2f8;
+    --surface-soft: #e2eaf3;
+    --primary: #0284c7;
+    --primary-hover: #0369a1;
+    --primary-soft: #d5ecfb;
+    --accent: #0ea5e9;
+    --dark: #0f172a;
+    --line: #bcccdc;
+    --line-strong: #9fb3c8;
+    --text: #102a43;
+    --muted: #486581;
+    --skeuo-chassis: linear-gradient(145deg, #e3eaf2 0%, #cfd9e6 50%, #c3d0e0 100%);
+    --skeuo-panel: linear-gradient(180deg, #f8fafd 0%, #eaeff6 55%, #dfe7f1 100%);
+    --skeuo-panel-soft: linear-gradient(180deg, #f2f6fb 0%, #e3ebf4 100%);
+    --skeuo-metal-dark: linear-gradient(180deg, #243b53 0%, #102a43 52%, #0a1c2e 100%);
+    --skeuo-well-bg: linear-gradient(180deg, #d7e1ec 0%, #e8eff7 45%, #f3f7fb 100%);
+    --skeuo-well-shadow:
+      inset 0 3px 6px rgba(15, 23, 42, 0.24),
+      inset 0 1px 2px rgba(15, 23, 42, 0.28),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.85),
+      0 1px 0 rgba(255, 255, 255, 0.95);
+    --skeuo-card-shadow:
+      0 12px 26px -6px rgba(15, 23, 42, 0.26),
+      0 4px 10px -2px rgba(15, 23, 42, 0.16),
+      inset 0 2px 1px rgba(255, 255, 255, 0.96),
+      inset 0 -2px 3px rgba(15, 23, 42, 0.12);
+    --skeuo-subcard-shadow:
+      0 6px 14px -3px rgba(15, 23, 42, 0.18),
+      0 2px 5px -1px rgba(15, 23, 42, 0.12),
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.95),
+      inset 0 -1.5px 2px rgba(15, 23, 42, 0.09);
+  }
+
+  /* Tekstur Chassis Brushed Aluminum & Tactile Grain */
+  body,
+  body.dash,
+  #app {
+    background-color: #d5dfe9;
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.14) 0px,
+        rgba(255, 255, 255, 0.14) 1px,
+        transparent 1px,
+        transparent 3px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(15, 23, 42, 0.025) 0px,
+        rgba(15, 23, 42, 0.025) 1px,
+        transparent 1px,
+        transparent 4px
+      ),
+      radial-gradient(circle at 20% 10%, #eef4fa 0%, #d8e2ed 48%, #c5d2e1 100%);
+    color: var(--text);
+  }
+
+  #auth {
+    background-color: #cbd6e3;
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.12) 0px,
+        rgba(255, 255, 255, 0.12) 1px,
+        transparent 1px,
+        transparent 6px
+      ),
+      radial-gradient(circle at 25% 20%, #e9f2fb 0%, #cfdbe8 52%, #b6c6d9 100%);
+  }
+
+  /* ---------- TOMBOL FISIK 3D (TACTILE PUSH BUTTONS) ---------- */
+  button,
+  .btn-primary-gradient,
+  .btn-kartu-tagihan,
+  .btn-abs-cam {
+    position: relative;
+    background: linear-gradient(180deg, #38bdf8 0%, #0284c7 48%, #0369a1 100%);
+    color: #ffffff;
+    border: 1px solid #075985;
+    border-top-color: #7dd3fc;
+    text-shadow: 0 -1px 1px rgba(7, 42, 68, 0.65);
+    box-shadow:
+      0 4px 0 #064c73,
+      0 8px 16px rgba(15, 23, 42, 0.34),
+      inset 0 1.5px 1px rgba(255, 255, 255, 0.68),
+      inset 0 -1px 2px rgba(7, 89, 133, 0.5);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.14s ease;
+  }
+  button:hover:not(:disabled),
+  .btn-primary-gradient:hover:not(:disabled),
+  .btn-kartu-tagihan:hover:not(:disabled) {
+    filter: brightness(1.06);
+    box-shadow:
+      0 4px 0 #064c73,
+      0 10px 20px rgba(2, 132, 199, 0.42),
+      inset 0 1.5px 1.5px rgba(255, 255, 255, 0.78),
+      inset 0 -1px 2px rgba(7, 89, 133, 0.5);
+  }
+  button:active:not(:disabled),
+  .btn-primary-gradient:active:not(:disabled),
+  .btn-kartu-tagihan:active:not(:disabled),
+  .btn-abs-cam:active:not(:disabled) {
+    transform: translateY(3px) !important;
+    box-shadow:
+      0 1px 0 #064c73,
+      0 3px 6px rgba(15, 23, 42, 0.28),
+      inset 0 2px 5px rgba(7, 42, 68, 0.55) !important;
+  }
+  button:disabled {
+    background: linear-gradient(180deg, #d5dee8 0%, #BCC9D8 100%) !important;
+    color: #627d98 !important;
+    border: 1px solid #9fb3c8 !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+    box-shadow:
+      0 2px 0 #829ab1,
+      inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  }
+
+  /* Tombol Silver / Ivory Keycap (Outline, Refresh, Enum, Filter Chip) */
+  button.outline,
+  .btn-refresh,
+  .enum-btn,
+  .chip,
+  .pf-cat-btn,
+  .eb-acc-chip,
+  .ns-tab,
+  .mclose {
+    background: linear-gradient(180deg, #ffffff 0%, #edf2f8 55%, #d9e3ee 100%);
+    color: #102a43;
+    border: 1px solid #9fb3c8;
+    border-top-color: #ffffff;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.92);
+    box-shadow:
+      0 3px 0 #8da2b8,
+      0 6px 12px rgba(15, 23, 42, 0.16),
+      inset 0 1.5px 0 #ffffff,
+      inset 0 -1px 1px rgba(15, 23, 42, 0.08);
+  }
+  button.outline:hover:not(:disabled),
+  .btn-refresh:hover:not(:disabled),
+  .enum-btn:hover:not(:disabled),
+  .chip:hover:not(:disabled),
+  .pf-cat-btn:hover:not(:disabled),
+  .eb-acc-chip:hover:not(:disabled),
+  .ns-tab:hover:not(:disabled) {
+    background: linear-gradient(180deg, #ffffff 0%, #e3f2fd 55%, #cce5f8 100%);
+    color: #0369a1;
+    border-color: #62b0e8;
+    box-shadow:
+      0 3px 0 #5294c4,
+      0 7px 14px rgba(2, 132, 199, 0.2),
+      inset 0 1.5px 0 #ffffff;
+  }
+  button.outline:active:not(:disabled),
+  .btn-refresh:active:not(:disabled),
+  .enum-btn:active:not(:disabled),
+  .chip:active:not(:disabled),
+  .pf-cat-btn:active:not(:disabled),
+  .eb-acc-chip:active:not(:disabled),
+  .ns-tab:active:not(:disabled),
+  .mclose:active:not(:disabled) {
+    transform: translateY(2px) !important;
+    box-shadow:
+      0 1px 0 #8da2b8,
+      0 2px 4px rgba(15, 23, 42, 0.16),
+      inset 0 2px 4px rgba(15, 23, 42, 0.22) !important;
+  }
+
+  /* Tombol Aktif / Tertekan dengan Lampu Indikator LED (Chip / Tab On) */
+  .chip.on,
+  .pf-cat-btn.active,
+  .pf-cat-btn.active:hover,
+  .eb-acc-chip.active,
+  .eb-acc-chip.active:hover,
+  .ns-tab.on {
+    background: linear-gradient(180deg, #0284c7 0%, #0369a1 60%, #075985 100%);
+    color: #ffffff;
+    border: 1px solid #044e78;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.55);
+    box-shadow:
+      inset 0 2px 5px rgba(7, 25, 43, 0.55),
+      inset 0 -1px 1px rgba(125, 211, 252, 0.4),
+      0 1px 0 rgba(255, 255, 255, 0.85),
+      0 0 10px rgba(14, 165, 233, 0.35);
+    transform: translateY(1px);
+  }
+
+  /* Tombol Hijau Emerald 3D (OK, Refresh Performance, Download, Approve, Maps) */
+  button.btn-ok,
+  .pf-btn-act.refresh,
+  .pf-btn-download,
+  .btn-plus-hist,
+  .eb-btn-tarik,
+  .btn-approve,
+  .btn-abs-submit,
+  .btn-gmaps-ujung,
+  .lk-close button {
+    background: linear-gradient(180deg, #34d399 0%, #10b981 48%, #059669 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #065f46 !important;
+    border-top-color: #6ee7b7 !important;
+    text-shadow: 0 -1px 1px rgba(6, 78, 59, 0.7) !important;
+    box-shadow:
+      0 4px 0 #065f46,
+      0 8px 15px rgba(5, 150, 105, 0.34),
+      inset 0 1.5px 1px rgba(255, 255, 255, 0.65),
+      inset 0 -1px 2px rgba(6, 78, 59, 0.45) !important;
+  }
+  button.btn-ok:active:not(:disabled),
+  .pf-btn-act.refresh:active:not(:disabled),
+  .pf-btn-download:active:not(:disabled),
+  .btn-plus-hist:active:not(:disabled),
+  .eb-btn-tarik:active:not(:disabled),
+  .btn-approve:active:not(:disabled),
+  .btn-abs-submit:active:not(:disabled),
+  .btn-gmaps-ujung:active:not(:disabled) {
+    transform: translateY(3px) !important;
+    box-shadow:
+      0 1px 0 #065f46,
+      0 3px 6px rgba(5, 150, 105, 0.25),
+      inset 0 2px 5px rgba(6, 78, 59, 0.6) !important;
+  }
+
+  /* Tombol Merah / Amber 3D */
+  button.btn-no,
+  .btn-hapus {
+    background: linear-gradient(180deg, #fb7185 0%, #e11d48 52%, #be123c 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #881337 !important;
+    border-top-color: #fda4af !important;
+    text-shadow: 0 -1px 1px rgba(136, 19, 55, 0.7) !important;
+    box-shadow:
+      0 4px 0 #881337,
+      0 8px 15px rgba(225, 29, 72, 0.32),
+      inset 0 1.5px 1px rgba(255, 255, 255, 0.6) !important;
+  }
+  .pf-btn-act.rank {
+    background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%) !important;
+    border: 1px solid #92400e !important;
+    border-top-color: #fde68a !important;
+    text-shadow: 0 -1px 1px rgba(120, 53, 15, 0.7) !important;
+    box-shadow:
+      0 4px 0 #92400e,
+      0 8px 15px rgba(217, 119, 6, 0.34),
+      inset 0 1.5px 1px rgba(255, 255, 255, 0.68) !important;
+  }
+  .pf-btn-act.acctype {
+    background: linear-gradient(180deg, #38bdf8 0%, #0284c7 50%, #0369a1 100%) !important;
+    border: 1px solid #075985 !important;
+    border-top-color: #bae6fd !important;
+    box-shadow:
+      0 4px 0 #075985,
+      0 8px 15px rgba(2, 132, 199, 0.34),
+      inset 0 1.5px 1px rgba(255, 255, 255, 0.68) !important;
+  }
+  .pf-btn-act.listpay {
+    background: linear-gradient(180deg, #475569 0%, #334155 55%, #1e293b 100%) !important;
+    color: #f8fafc !important;
+    border: 1px solid #0f172a !important;
+    border-top-color: #94a3b8 !important;
+    box-shadow:
+      0 4px 0 #0f172a,
+      0 7px 14px rgba(15, 23, 42, 0.4),
+      inset 0 1px 1px rgba(255, 255, 255, 0.32) !important;
+  }
+
+  button.ghost {
+    background: linear-gradient(180deg, #edf2f8 0%, #dce5f0 100%);
+    color: #334e68;
+    border: 1px solid #b0c2d4;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+    box-shadow:
+      0 2px 0 #93a8be,
+      0 4px 8px rgba(15, 23, 42, 0.1),
+      inset 0 1px 0 #ffffff;
+  }
+
+  /* ---------- INPUT, SELECT & TEXTAREA (RECESSED / CARVED 3D WELLS) ---------- */
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea,
+  .filter-input,
+  .dh-filter-box select,
+  .dh-filter-box input,
+  .eb-search-wrap input {
+    background: var(--skeuo-well-bg);
+    border: 1.5px solid #9fb3c8;
+    border-top-color: #7b93ab;
+    border-bottom-color: #ffffff;
+    color: #102a43;
+    font-weight: 600;
+    box-shadow: var(--skeuo-well-shadow);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+  input:not([type="checkbox"]):not([type="radio"]):focus,
+  select:focus,
+  textarea:focus {
+    background: linear-gradient(180deg, #e8f2fc 0%, #ffffff 100%);
+    border-color: #0284c7;
+    box-shadow:
+      inset 0 3px 6px rgba(2, 132, 199, 0.18),
+      0 0 0 3px rgba(14, 165, 233, 0.28),
+      0 1px 0 #ffffff;
+  }
+  label {
+    color: #243b53;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+    font-weight: 800;
+  }
+
+  /* ---------- PANEL, CARD & MODAL 3D MOLDED CASING ---------- */
+  .card,
+  .panel,
+  .card-panel,
+  .mbox,
+  .loader-box,
+  .lh-section-box {
+    background: var(--skeuo-panel);
+    border: 1.5px solid #b6c6d8;
+    border-top-color: #ffffff;
+    border-bottom-color: #8da2b8;
+    box-shadow: var(--skeuo-card-shadow);
+  }
+
+  .panel h3.pt,
+  .card h2,
+  .mhead h3,
+  .lk-title h3 {
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.92);
+    color: #102a43;
+  }
+
+  /* Sub-panels & Recessed Group Containers */
+  .fbox,
+  .dh-filter-box,
+  .by-box,
+  .ns-card,
+  .ps-compose,
+  .abs-cam-box,
+  .eb-detail-item,
+  .per-legend,
+  .foto-kunjungan-box {
+    background: var(--skeuo-panel-soft);
+    border: 1.5px solid #b8c8da;
+    border-top-color: #ffffff;
+    border-bottom-color: #93a8be;
+    box-shadow: var(--skeuo-subcard-shadow);
+  }
+
+  /* ---------- SIDEBAR & TOPBAR (3D CONTROL DECK) ---------- */
+  .sidebar {
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.15) 0px,
+        rgba(255, 255, 255, 0.15) 1px,
+        transparent 1px,
+        transparent 3px
+      ),
+      linear-gradient(90deg, #e7eef6 0%, #dce6f1 88%, #cdd9e7 100%);
+    border-right: 2px solid #8da2b8;
+    box-shadow:
+      6px 0 20px rgba(15, 23, 42, 0.18),
+      inset -1px 0 0 rgba(255, 255, 255, 0.85);
+  }
+  .side-logo {
+    background: linear-gradient(180deg, #f5f9fd 0%, #dfe9f3 100%);
+    border-bottom: 2px solid #aebfd2;
+    box-shadow:
+      0 2px 6px rgba(15, 23, 42, 0.08),
+      inset 0 1px 0 #ffffff,
+      inset 0 -1px 0 rgba(15, 23, 42, 0.08);
+  }
+  .side-logo .foto {
+    border: 4px solid #eef3f8;
+    box-shadow:
+      0 6px 14px rgba(15, 23, 42, 0.3),
+      0 0 0 1.5px #8da2b8,
+      inset 0 2px 4px rgba(15, 23, 42, 0.25);
+  }
+  .side-logo .fnama {
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+  .side-foot {
+    background: linear-gradient(180deg, #e3ebf4 0%, #d2deeb 100%);
+    border-top: 2px solid #aebfd2;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  /* Kategori Menu & Item Navigasi 3D */
+  .menu-cat-group {
+    background: linear-gradient(180deg, #eff4fa 0%, #e1eaf3 100%);
+    border: 1.5px solid #aebfd2;
+    border-top-color: #ffffff;
+    box-shadow:
+      0 4px 9px rgba(15, 23, 42, 0.12),
+      inset 0 1px 0 #ffffff;
+  }
+  .menu-cat-group.has-active {
+    border-color: #5294c4;
+    background: linear-gradient(180deg, #f3f9ff 0%, #e1effa 100%);
+    box-shadow:
+      0 5px 12px rgba(2, 132, 199, 0.16),
+      inset 0 1px 0 #ffffff;
+  }
+  .menu-cat-head {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    color: #102a43 !important;
+  }
+  .menu-cat-head:active {
+    transform: none !important;
+  }
+  .menu-cat-dot {
+    width: 9px;
+    height: 9px;
+    background: radial-gradient(circle at 35% 35%, #7dd3fc 0%, #0284c7 65%, #075985 100%);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.35), 0 0 6px rgba(14, 165, 233, 0.45);
+  }
+  .menu-cat-items {
+    background: linear-gradient(180deg, #d3deeb 0%, #dde6f1 100%);
+    border-top: 1.5px solid #9fb3c8;
+    box-shadow: inset 0 3px 6px rgba(15, 23, 42, 0.16);
+    padding: 8px;
+  }
+  .menu a {
+    background: linear-gradient(180deg, #f8fafd 0%, #e6eef7 100%);
+    border: 1px solid #b0c2d4;
+    border-top-color: #ffffff;
+    color: #243b53;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+    box-shadow:
+      0 2px 0 #97acc1,
+      0 4px 7px rgba(15, 23, 42, 0.1),
+      inset 0 1px 0 #ffffff;
+    margin-bottom: 6px;
+  }
+  .menu a:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #e1f0fc 100%);
+    color: #0369a1;
+    border-color: #7cc4fa;
+  }
+  .menu a.active {
+    background: linear-gradient(180deg, #0284c7 0%, #0369a1 55%, #075985 100%);
+    color: #ffffff;
+    border: 1px solid #054468;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.55);
+    box-shadow:
+      inset 0 2px 5px rgba(6, 24, 44, 0.55),
+      inset 0 -1px 1px rgba(125, 211, 252, 0.4),
+      0 1px 0 rgba(255, 255, 255, 0.8);
+    transform: translateY(1px);
+  }
+
+  .topbar {
+    background: linear-gradient(180deg, #f7fafd 0%, #e4ecf5 55%, #d6e1ee 100%);
+    border-bottom: 2px solid #8da2b8;
+    box-shadow:
+      0 6px 16px rgba(15, 23, 42, 0.16),
+      inset 0 1.5px 0 #ffffff,
+      inset 0 -1px 0 rgba(15, 23, 42, 0.08);
+  }
+  .topbar h1 {
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.95);
+    color: #102a43;
+  }
+  .burger {
+    background: linear-gradient(180deg, #ffffff 0%, #e2ebf5 100%);
+    color: #0369a1;
+    border: 1px solid #9fb3c8;
+    box-shadow:
+      0 3px 0 #8da2b8,
+      0 5px 10px rgba(15, 23, 42, 0.16),
+      inset 0 1px 0 #ffffff;
+  }
+
+  /* ---------- RECESSED SEGMENTED SWITCHES & PROGRESS TRACKS ---------- */
+  .lk-tabs,
+  .pf-view-switch,
+  .ns-tabs,
+  .mfilter {
+    background: linear-gradient(180deg, #c6d3e1 0%, #d8e2ee 100%);
+    border: 1.5px solid #97acc1;
+    box-shadow:
+      inset 0 3px 6px rgba(15, 23, 42, 0.24),
+      inset 0 1px 2px rgba(15, 23, 42, 0.2),
+      0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+  .lk-tab,
+  .pf-view-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    box-shadow: none;
+    color: #334e68;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+  }
+  .lk-tab.on,
+  .lk-tab.on:hover,
+  .pf-view-btn.active,
+  .pf-view-btn.active:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #eaf1f8 100%);
+    color: #0369a1;
+    border: 1px solid #8da2b8;
+    border-top-color: #ffffff;
+    text-shadow: 0 1px 0 #ffffff;
+    box-shadow:
+      0 2px 0 #7b93ab,
+      0 4px 8px rgba(15, 23, 42, 0.18),
+      inset 0 1px 0 #ffffff;
+  }
+
+  .ht {
+    height: 16px;
+    background: linear-gradient(180deg, #bdcad9 0%, #d5e0ec 100%);
+    border: 1px solid #8da2b8;
+    box-shadow:
+      inset 0 2px 5px rgba(15, 23, 42, 0.3),
+      0 1px 0 rgba(255, 255, 255, 0.9);
+    padding: 2px;
+  }
+  .hf,
+  .hf-seg {
+    box-shadow:
+      inset 0 1.5px 1px rgba(255, 255, 255, 0.55),
+      inset 0 -1px 2px rgba(0, 0, 0, 0.25),
+      0 1px 2px rgba(15, 23, 42, 0.2);
+  }
+  .hf-plan { background: linear-gradient(180deg, #38bdf8 0%, #0284c7 60%, #0369a1 100%); }
+  .hf-kurang { background: linear-gradient(180deg, #f87171 0%, #ef4444 60%, #b91c1c 100%); }
+  .hf-lebih { background: linear-gradient(180deg, #34d399 0%, #10b981 60%, #047857 100%); }
+
+  /* ---------- KPI CARDS, PERFORMANCE & INSTRUMENT READOUTS ---------- */
+  .pf-hero {
+    background:
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03) 0px,
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      ),
+      linear-gradient(180deg, #1e3a5f 0%, #0f2744 52%, #09192e 100%);
+    border: 1.5px solid #061221;
+    border-top-color: #486581;
+    box-shadow:
+      0 10px 22px rgba(15, 23, 42, 0.34),
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.28),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+  }
+  .pf-clock-badge {
+    background: linear-gradient(180deg, #061423 0%, #0c2138 100%);
+    border: 1px solid #1e4976;
+    color: #38bdf8;
+    text-shadow: 0 0 8px rgba(56, 189, 248, 0.65);
+    box-shadow:
+      inset 0 2px 5px rgba(0, 0, 0, 0.75),
+      0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  .kpi,
+  .pf-kpi-card,
+  .dh-stat-pill,
+  .kr-stat {
+    background: linear-gradient(180deg, #ffffff 0%, #edf2f8 58%, #dde6f0 100%);
+    border: 1.5px solid #aebfd2;
+    border-top-color: #ffffff;
+    border-bottom-color: #829ab1;
+    box-shadow:
+      0 8px 16px -4px rgba(15, 23, 42, 0.2),
+      0 2px 5px rgba(15, 23, 42, 0.12),
+      inset 0 1.5px 0 #ffffff,
+      inset 0 -1.5px 2px rgba(15, 23, 42, 0.1);
+  }
+  .kpi .v,
+  .pf-kpi-val,
+  .dh-stat-pill .num {
+    background: linear-gradient(180deg, #d7e2ee 0%, #e9f0f8 100%);
+    border: 1px solid #9fb3c8;
+    border-radius: 7px;
+    padding: 4px 8px;
+    margin-top: 5px;
+    box-shadow:
+      inset 0 2px 4px rgba(15, 23, 42, 0.2),
+      0 1px 0 rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .pf-team-block {
+    background: linear-gradient(180deg, #e5edf6 0%, #d6e1ee 100%);
+    border: 1.5px solid #9fb3c8;
+    box-shadow:
+      inset 0 2px 5px rgba(15, 23, 42, 0.14),
+      0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+  .pf-team-banner,
+  .ns-desk-head,
+  .pf-acctype-head,
+  .lh-sec-head {
+    box-shadow:
+      0 4px 8px rgba(15, 23, 42, 0.24),
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.35),
+      inset 0 -1.5px 2px rgba(0, 0, 0, 0.35);
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.55);
+  }
+  .pf-dc-card,
+  .pf-acctype-card,
+  .dh-card,
+  .eb-card,
+  .tg-item,
+  .hist-item,
+  .kr-item,
+  .ps-group,
+  .ns-desk-col {
+    background: linear-gradient(180deg, #ffffff 0%, #eef3f9 60%, #e1eaf4 100%);
+    border: 1.5px solid #aebfd2;
+    border-top-color: #ffffff;
+    border-bottom-color: #8da2b8;
+    box-shadow:
+      0 6px 14px -3px rgba(15, 23, 42, 0.18),
+      0 2px 4px rgba(15, 23, 42, 0.1),
+      inset 0 1.5px 0 #ffffff,
+      inset 0 -1px 2px rgba(15, 23, 42, 0.08);
+  }
+  .pf-dc-card.is-tl {
+    background: linear-gradient(180deg, #fffdf5 0%, #fef3c7 65%, #fde68a 100%);
+    border-color: #f59e0b;
+    border-left: 4px solid #d97706;
+  }
+  .pf-dc-metric {
+    background: linear-gradient(180deg, #dce5f0 0%, #edf2f8 100%);
+    border: 1px solid #9fb3c8;
+    box-shadow:
+      inset 0 2px 4px rgba(15, 23, 42, 0.18),
+      0 1px 0 rgba(255, 255, 255, 0.95);
+  }
+  .pf-dc-metric.m-plan {
+    background: linear-gradient(180deg, #d1fae5 0%, #ecfdf5 100%);
+    border-color: #6ee7b7;
+  }
+  .pf-team-subtotal-card,
+  .pp-summary-bar,
+  .diskon-box {
+    background: linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%);
+    border: 1.5px solid #38bdf8;
+    border-top-color: #f0f9ff;
+    box-shadow:
+      0 5px 12px rgba(2, 132, 199, 0.18),
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.9);
+  }
+  .diskon-box {
+    background: linear-gradient(180deg, #d1fae5 0%, #a7f3d0 100%);
+    border-color: #10b981;
+  }
+
+  /* ---------- TABEL DATA 3D LEDGER & RECESSED SCROLL CONTAINERS ---------- */
+  .twrap,
+  .tbl-wrap,
+  .table-container,
+  .lh-act-table-wrap {
+    background: #eef3f9;
+    border: 1.5px solid #8da2b8;
+    box-shadow:
+      inset 0 3px 7px rgba(15, 23, 42, 0.2),
+      0 1px 0 rgba(255, 255, 255, 0.95);
+  }
+  table.pc th,
+  .data-table thead th {
+    background: linear-gradient(180deg, #f0f5fa 0%, #dce5f0 100%);
+    color: #102a43;
+    border-bottom: 2px solid #9fb3c8;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+    box-shadow: inset 0 1px 0 #ffffff;
+  }
+  table.tbl thead th,
+  .lh-act-table thead th {
+    background: linear-gradient(180deg, #243b53 0%, #102a43 100%);
+    color: #f0f4f8;
+    border-bottom: 2px solid #061423;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.7);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+  table.pc td,
+  table.tbl tbody td,
+  .data-table tbody td,
+  .lh-act-table td {
+    background: rgba(255, 255, 255, 0.72);
+    border-top: 1px solid #d9e2ec;
+    border-bottom: 1px solid #c8d5e3;
+  }
+  table.pc tbody tr:nth-child(even) td,
+  table.tbl tbody tr:nth-child(even) td,
+  .data-table tbody tr:nth-child(even) td {
+    background: rgba(235, 242, 250, 0.85);
+  }
+  table.pc tbody tr:hover td,
+  table.tbl tbody tr:hover td,
+  .data-table tbody tr:hover td {
+    background: #d5ecfb !important;
+  }
+
+  /* ---------- BADGES, PILLS & LED INDICATORS ---------- */
+  .tg-pill,
+  .wa-badge,
+  .status-badge,
+  .st-hijau,
+  .st-wait,
+  .st-dir,
+  .st-tolak,
+  .pf-ach-badge,
+  .lk-st,
+  .pic-badge {
+    border: 1px solid rgba(15, 23, 42, 0.16);
+    box-shadow:
+      0 2px 4px rgba(15, 23, 42, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+  }
+
+  /* ---------- MODAL HEADER & DROPDOWN 3D ---------- */
+  .mhead,
+  .card-panel .panel-head {
+    background: linear-gradient(180deg, #f8fafd 0%, #e1eaf4 100%);
+    border-bottom: 2px solid #9fb3c8;
+    box-shadow:
+      0 3px 8px rgba(15, 23, 42, 0.1),
+      inset 0 1.5px 0 #ffffff;
+  }
+  .enum-drop,
+  .lh-dc-dropdown,
+  #searchResults {
+    background: linear-gradient(180deg, #f8fafd 0%, #e8eff7 100%);
+    border: 1.5px solid #829ab1;
+    box-shadow:
+      0 18px 36px rgba(15, 23, 42, 0.34),
+      0 4px 10px rgba(15, 23, 42, 0.2),
+      inset 0 1.5px 0 #ffffff;
+  }
+
+  /* ---------- SLIP GAJI EMBOSSED PAPER & CHAT BUBBLES 3D ---------- */
+  .sg-paper {
+    background: linear-gradient(180deg, #ffffff 0%, #f5f8fc 100%);
+    border: 1.5px solid #aebfd2;
+    box-shadow:
+      0 10px 24px rgba(15, 23, 42, 0.18),
+      inset 0 1px 0 #ffffff,
+      inset 0 0 0 4px #e6eef7;
+  }
+  .sg-total-box,
+  .lk-row.tot,
+  .lk-cta {
+    box-shadow:
+      0 8px 18px rgba(15, 23, 42, 0.28),
+      inset 0 1.5px 1px rgba(255, 255, 255, 0.45),
+      inset 0 -2px 3px rgba(0, 0, 0, 0.35);
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.45);
+  }
+  .ps-bubble-row.in .ps-bubble {
+    background: linear-gradient(180deg, #ffffff 0%, #eaf1f8 100%);
+    border: 1px solid #aebfd2;
+    box-shadow:
+      0 4px 8px rgba(15, 23, 42, 0.12),
+      inset 0 1px 0 #ffffff;
+  }
+  .ps-bubble-row.out .ps-bubble {
+    background: linear-gradient(180deg, #38bdf8 0%, #0284c7 60%, #0369a1 100%);
+    border: 1px solid #075985;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.35);
+    box-shadow:
+      0 4px 10px rgba(2, 132, 199, 0.28),
+      inset 0 1px 1px rgba(255, 255, 255, 0.55);
+  }
+
+  /* ---------- ASSISTIVE TOUCH ORB 3D ---------- */
+  .assistive-touch-btn {
+    background: radial-gradient(circle at 32% 28%, #475569 0%, #1e293b 58%, #0f172a 100%);
+    border: 2px solid #94a3b8;
+    box-shadow:
+      0 10px 24px rgba(15, 23, 42, 0.48),
+      0 3px 6px rgba(15, 23, 42, 0.35),
+      inset 0 2px 3px rgba(255, 255, 255, 0.45),
+      inset 0 -3px 5px rgba(0, 0, 0, 0.6);
+  }
+
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+</head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
