@@ -5682,8 +5682,456 @@
       inset 0 -3px 5px rgba(0, 0, 0, 0.6);
   }
 
+  /* ---------- MENU HIBURAN: SPIN WHEELS & SETTING ---------- */
+  .sw-page-wrap {
+    position: relative;
+    width: 100%;
+    min-height: calc(100dvh - 105px);
+    background: radial-gradient(circle at 50% 42%, #123142 0%, #0B192C 48%, #060D18 100%);
+    color: #f1f5f9;
+    border-radius: 20px;
+    padding: 14px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(6, 13, 24, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .sw-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    z-index: 10;
+  }
+  .sw-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .sw-brand-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 55%, #ea580c 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #060D18;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+    border: 1px solid rgba(253, 230, 138, 0.5);
+    flex-shrink: 0;
+  }
+  .sw-brand-title {
+    font-size: 17px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #fde68a, #fcd34d, #5eead4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+    line-height: 1.2;
+  }
+  .sw-brand-sub {
+    font-size: 11.5px;
+    color: rgba(153, 246, 228, 0.78);
+    margin: 2px 0 0;
+  }
+  .sw-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .sw-ticket-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 12px;
+    border-radius: 12px;
+    background: rgba(15, 118, 110, 0.35);
+    border: 1px solid rgba(45, 212, 191, 0.4);
+    font-size: 12px;
+    font-weight: 700;
+    color: #ccfbf1;
+  }
+  .sw-ticket-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 7px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 100%);
+    color: #060D18;
+    font-weight: 900;
+    font-size: 13px;
+  }
+  .sw-icon-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    padding: 0;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #e2e8f0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: none;
+  }
+  .sw-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+    transform: translateY(-1px);
+  }
+  .sw-badge-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: #10b981;
+    color: #060D18;
+    font-size: 10px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+  }
+  .sw-stage-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 0;
+    position: relative;
+  }
+  .sw-wheel-box {
+    width: min(88vw, 60dvh, 520px);
+    height: min(88vw, 60dvh, 520px);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+  }
+  .sw-ambient-glow {
+    position: absolute;
+    inset: -14px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(20, 184, 166, 0.24) 0%, rgba(245, 158, 11, 0.14) 46%, transparent 72%);
+    filter: blur(20px);
+    pointer-events: none;
+  }
+  .sw-pointer {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.75));
+  }
+  @keyframes swPointerTick {
+    0% { transform: translateX(-50%) rotate(0deg); }
+    35% { transform: translateX(-50%) rotate(-18deg); }
+    75% { transform: translateX(-50%) rotate(4deg); }
+    100% { transform: translateX(-50%) rotate(0deg); }
+  }
+  .sw-pointer.pointer-bounce {
+    transform-origin: 50% 16%;
+    animation: swPointerTick 0.11s ease-out;
+  }
+  @keyframes swWorkShake {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    15% { transform: translate3d(-8px, 0, 0) rotate(-1.2deg); }
+    30% { transform: translate3d(8px, 0, 0) rotate(1.2deg); }
+    45% { transform: translate3d(-6px, 0, 0) rotate(-0.9deg); }
+    60% { transform: translate3d(6px, 0, 0) rotate(0.9deg); }
+    75% { transform: translate3d(-3px, 0, 0) rotate(-0.4deg); }
+    90% { transform: translate3d(3px, 0, 0) rotate(0.4deg); }
+  }
+  .sw-wheel-box.animate-work-shake {
+    animation: swWorkShake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+  .sw-hub-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    width: clamp(52px, 14%, 74px);
+    height: clamp(52px, 14%, 74px);
+    min-height: 0;
+    padding: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #FDE68A 0%, #F59E0B 56%, #B45309 100%);
+    color: #060D18;
+    font-weight: 900;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    border: none;
+    box-shadow:
+      0 0 0 3px #0B1626,
+      0 0 0 5.5px rgba(251, 191, 36, 0.85),
+      0 6px 16px rgba(0, 0, 0, 0.6),
+      inset 0 2px 4px rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.14s ease, filter 0.2s ease;
+  }
+  .sw-hub-btn:hover:not(:disabled) {
+    transform: translate(-50%, -50%) scale(1.07);
+    filter: brightness(1.07);
+  }
+  .sw-hub-btn:disabled {
+    cursor: not-allowed;
+    filter: brightness(0.75) grayscale(0.35);
+  }
+  .sw-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    z-index: 10;
+  }
+  .sw-quota-bar {
+    width: 100%;
+    max-width: 460px;
+    border-radius: 12px;
+    background: rgba(11, 22, 38, 0.85);
+    border: 1px solid rgba(45, 212, 191, 0.3);
+    padding: 7px 13px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+  .sw-live-banner {
+    width: 100%;
+    max-width: 460px;
+    border-radius: 12px;
+    background: rgba(11, 22, 38, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 8px 14px;
+    text-align: center;
+    font-size: 13px;
+    color: #ccfbf1;
+  }
+  .sw-cta-btn {
+    width: 100%;
+    max-width: 460px;
+    padding: 13px 22px;
+    min-height: 48px;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #FCD34D 0%, #F59E0B 55%, #D97706 100%);
+    color: #060D18;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 0.4px;
+    border: none;
+    box-shadow:
+      0 5px 0 #92400E,
+      0 10px 24px rgba(245, 158, 11, 0.38),
+      inset 0 2px 1px rgba(255, 255, 255, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.2s ease;
+  }
+  .sw-cta-btn:hover:not(:disabled) {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+  }
+  .sw-cta-btn:disabled,
+  .sw-cta-btn.sw-cta-empty {
+    background: linear-gradient(180deg, #475569 0%, #334155 58%, #1e293b 100%);
+    color: #cbd5e1;
+    box-shadow: 0 3px 0 #0f172a;
+    cursor: not-allowed;
+  }
+  .sw-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9990;
+    background: rgba(6, 13, 24, 0.84);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+  }
+  .sw-modal-overlay.hidden {
+    display: none !important;
+  }
+  .sw-modal-card {
+    width: 100%;
+    max-width: 420px;
+    background: #0B1626;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 24px;
+    padding: 24px 20px 20px;
+    text-align: center;
+    color: #f8fafc;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+    position: relative;
+    overflow: hidden;
+  }
+  .sw-modal-card.sw-history-card {
+    max-width: 660px;
+    max-height: 88dvh;
+    padding: 0;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+  }
+  .sw-hist-head {
+    padding: 15px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(6, 13, 24, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .sw-hist-tabs {
+    padding: 10px 18px;
+    background: rgba(6, 13, 24, 0.35);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .sw-hist-body {
+    padding: 14px 18px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sw-hist-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 11px 13px;
+    border-radius: 14px;
+    background: rgba(6, 13, 24, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .sw-hist-row.latest {
+    background: rgba(20, 184, 166, 0.13);
+    border-color: rgba(251, 191, 36, 0.42);
+  }
+  .sw-hist-format {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.2px;
+    font-weight: 700;
+    color: #fde68a;
+    line-height: 1.45;
+    word-break: break-word;
+  }
+  .sw-setting-wrap {
+    background: #0B1626;
+    color: #f1f5f9;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 16px 40px rgba(6, 13, 24, 0.35);
+    overflow: hidden;
+  }
+  .sw-setting-head {
+    padding: 16px 20px;
+    background: rgba(6, 13, 24, 0.72);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .sw-setting-body {
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .sw-mode-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px;
+  }
+  .sw-mode-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 13px 14px;
+    border-radius: 14px;
+    background: rgba(6, 13, 24, 0.55);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .sw-mode-card.active {
+    background: rgba(20, 184, 166, 0.16);
+    border-color: rgba(251, 191, 36, 0.65);
+  }
+  .sw-quota-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .sw-quota-table th {
+    background: rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .sw-quota-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    vertical-align: middle;
+  }
+  .sw-quota-input {
+    width: 78px !important;
+    margin: 0 !important;
+    padding: 6px 8px !important;
+    border-radius: 8px !important;
+    background: #060D18 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 13px !important;
+    text-align: center !important;
+  }
+  .sw-quota-input:focus {
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25) !important;
+  }
+
 </style>
-</head>
+<script src="/_aistudio-iframe.js?v=29045eb3"></script></head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -6585,7 +7033,9 @@
     emailblast:  { judul:'Inbox Inbox Email Blast Resmi',    ikon:'✉️' },
     laporanharian: { judul:'Laporan Harian',     ikon:'📅' },
     daftarhadir: { judul:'Daftar Hadir',         ikon:'📋' },
-    tambahkaryawan: { judul:'Tambahkan Karyawan', ikon:'➕' }
+    tambahkaryawan: { judul:'Tambahkan Karyawan', ikon:'➕' },
+    spinwheels:  { judul:'SPIN WHEELS',          ikon:'🎡' },
+    spinsetting: { judul:'SETTING',              ikon:'⚙️' }
   };
 
   const DEFAULT_MENU_CATEGORIES = [
@@ -6624,6 +7074,13 @@
       ]
     },
     {
+      judul: 'HIBURAN',
+      items: [
+        { key: 'spinwheels', judul: 'SPIN WHEELS' },
+        { key: 'spinsetting', judul: 'SETTING' }
+      ]
+    },
+    {
       judul: 'PUSAT KOMUNIKASI',
       items: [
         { key: 'daftarhadir', judul: 'Daftar Hadir' }
@@ -6656,9 +7113,26 @@
     return jab === 'DIREKTUR' || jab === 'ADMIN' || jab === 'TL' || jab === 'TEAM LEADER';
   }
 
+  function bolehAksesSpinWheels_() {
+    const jab = String((S && S.jabatan) || '').trim().toUpperCase();
+    return jab === 'DC' || jab === 'FC';
+  }
+
+  function bolehAksesSpinSetting_() {
+    const jab = String((S && S.jabatan) || '').trim().toUpperCase();
+    return jab === 'DIREKTUR';
+  }
+
   function terapkanMenuAkses(allowedMenus, customCategories) {
     const bolehTambahKaryawan = bolehAksesTambahKaryawan_();
-    const list = (Array.isArray(allowedMenus) ? allowedMenus.slice() : []).filter(k => k !== 'tambahkaryawan' || bolehTambahKaryawan);
+    const bolehSpinWheels = bolehAksesSpinWheels_();
+    const bolehSpinSetting = bolehAksesSpinSetting_();
+    const list = (Array.isArray(allowedMenus) ? allowedMenus.slice() : []).filter(k => {
+      if (k === 'tambahkaryawan' && !bolehTambahKaryawan) return false;
+      if (k === 'spinwheels' && !bolehSpinWheels) return false;
+      if (k === 'spinsetting' && !bolehSpinSetting) return false;
+      return true;
+    });
     if (list.length > 0 && list.indexOf('absensi') < 0) {
       list.push('absensi');
     }
@@ -6676,6 +7150,12 @@
     }
     if (bolehTambahKaryawan && list.length > 0 && list.indexOf('tambahkaryawan') < 0) {
       list.push('tambahkaryawan');
+    }
+    if (bolehSpinWheels && list.length > 0 && list.indexOf('spinwheels') < 0) {
+      list.push('spinwheels');
+    }
+    if (bolehSpinSetting && list.length > 0 && list.indexOf('spinsetting') < 0) {
+      list.push('spinsetting');
     }
     const rawCats = (Array.isArray(customCategories) && customCategories.length > 0)
       ? customCategories
@@ -6733,6 +7213,35 @@
       } else {
         cats.push({ judul: 'GOOGLE EMAIL', items: [{ key: 'emailblast', judul: 'Inbox Inbox Email Blast Resmi' }] });
       }
+    }
+    // Pastikan kategori HIBURAN (SPIN WHEELS & SETTING) selalu berada tepat di bawah GOOGLE EMAIL
+    let hibCatIdx = cats.findIndex(c => String(c.judul || '').trim().toUpperCase().indexOf('HIBURAN') >= 0);
+    if (hibCatIdx < 0) {
+      const googleEmailIdx = cats.findIndex(c => {
+        const ju = String(c.judul || '').trim().toUpperCase();
+        return ju.indexOf('GOOGLE EMAIL') >= 0 || ju.indexOf('EMAIL') >= 0;
+      });
+      const hibCatObj = {
+        judul: 'HIBURAN',
+        items: [
+          { key: 'spinwheels', judul: 'SPIN WHEELS' },
+          { key: 'spinsetting', judul: 'SETTING' }
+        ]
+      };
+      if (googleEmailIdx >= 0) {
+        cats.splice(googleEmailIdx + 1, 0, hibCatObj);
+      } else {
+        cats.push(hibCatObj);
+      }
+    } else {
+      const hibItems = cats[hibCatIdx].items || [];
+      if (!hibItems.some(it => it && it.key === 'spinwheels')) {
+        hibItems.push({ key: 'spinwheels', judul: 'SPIN WHEELS' });
+      }
+      if (!hibItems.some(it => it && it.key === 'spinsetting')) {
+        hibItems.push({ key: 'spinsetting', judul: 'SETTING' });
+      }
+      cats[hibCatIdx].items = hibItems;
     }
     const adaDaftarHadirDiCats = cats.some(c => c.items.some(it => it && it.key === 'daftarhadir'));
     if (!adaDaftarHadirDiCats) {
@@ -8789,7 +9298,7 @@
           '<div class="tg-kat-bar" id="tgKatBar"></div>' +
         '</div>' +
 
-        '<input type="text" id="cariTagihan" placeholder="Cari nama nasabah, User ID, NIK, atau telepon..." oninput="renderTagihan()" style="margin-bottom:10px">' +
+        '<input type="text" id="cariTagihan" placeholder="Cari nama nasabah, User ID, NIK, telepon, atau email..." oninput="renderTagihan()" style="margin-bottom:10px">' +
 
         '<div class="tg-filter-grid' + (tampilFilterPic ? ' with-pic' : '') + '">' +
           '<div class="fbox" id="fbox_result">' +
@@ -9120,8 +9629,13 @@
         if (!TG_SEL.pic[pVal]) return false;
       }
       if (q) {
-        const gab = (t.userId + ' ' + t.nama + ' ' + t.telp + ' ' + t.nik).toLowerCase();
-        if (gab.indexOf(q) < 0) return false;
+        const emailVal = String(t.email || '').trim().toLowerCase();
+        if (q.indexOf('@') >= 0) {
+          if (emailVal.indexOf(q) < 0) return false;
+        } else {
+          const gab = (t.userId + ' ' + t.nama + ' ' + t.telp + ' ' + t.nik + ' ' + emailVal).toLowerCase();
+          if (gab.indexOf(q) < 0) return false;
+        }
       }
       return true;
     });
@@ -14884,6 +15398,1217 @@
     });
   }
 
+  // ============================================================================
+  // MENU HIBURAN -> SUB MENU: SPIN WHEELS (DC & FC) & SETTING (DIREKTUR)
+  // ============================================================================
+  const SW_PRIZES = [
+    { id: 'yuk_kerja', fullText: 'Yuk mulai kerja,yang rajin ya,besok hadir dikantor,kita akan coba lagi!!', wheelLabel: 'Yuk Mulai Kerja!', emoji: '💼', isWin: false, isJackpot: false, defaultQuota: 134, color: '#1E293B', textColor: '#FDE68A' },
+    { id: 'cash_20', fullText: 'Cash 20 rb', wheelLabel: 'Cash 20 rb', emoji: '💵', isWin: true, isJackpot: false, defaultQuota: 12, color: '#0D9488', textColor: '#FFFFFF' },
+    { id: 'cash_50', fullText: 'Cash 50 rb', wheelLabel: 'Cash 50 rb', emoji: '💰', isWin: true, isJackpot: false, defaultQuota: 5, color: '#10B981', textColor: '#061512' },
+    { id: 'cash_100', fullText: 'Cash 100 rb', wheelLabel: 'Cash 100 rb', emoji: '🏆', isWin: true, isJackpot: true, defaultQuota: 2, color: '#F59E0B', textColor: '#0B1626' },
+    { id: 'pulsa_20', fullText: 'Pulsa 20 rb', wheelLabel: 'Pulsa 20 rb', emoji: '📱', isWin: true, isJackpot: false, defaultQuota: 10, color: '#0284C7', textColor: '#FFFFFF' },
+    { id: 'wa_1', fullText: 'Dapat 1 no wa virtual', wheelLabel: '1 No WA Virtual', emoji: '📲', isWin: true, isJackpot: false, defaultQuota: 8, color: '#047857', textColor: '#FFFFFF' },
+    { id: 'wa_2', fullText: 'Dapat 2 no wa virtual', wheelLabel: '2 No WA Virtual', emoji: '📞', isWin: true, isJackpot: false, defaultQuota: 4, color: '#FBBF24', textColor: '#0B1626' },
+    { id: 'kopi_kenangan', fullText: 'Kopi kenangan', wheelLabel: 'Kopi Kenangan', emoji: '☕', isWin: true, isJackpot: false, defaultQuota: 10, color: '#0F766E', textColor: '#FFFFFF' },
+    { id: 'kfc', fullText: 'KFC ayam nasi', wheelLabel: 'KFC Ayam Nasi', emoji: '🍗', isWin: true, isJackpot: false, defaultQuota: 5, color: '#EA580C', textColor: '#FFFFFF' },
+    { id: 'mcd', fullText: 'MCD ayam nasi', wheelLabel: 'MCD Ayam Nasi', emoji: '🍟', isWin: true, isJackpot: false, defaultQuota: 5, color: '#FACC15', textColor: '#0B1626' },
+    { id: 'gacoan', fullText: 'Mie Gacoan 1', wheelLabel: 'Mie Gacoan 1', emoji: '🍜', isWin: true, isJackpot: false, defaultQuota: 8, color: '#1D4ED8', textColor: '#FFFFFF' },
+    { id: 'basreng', fullText: 'Basreng', wheelLabel: 'Basreng', emoji: '🌶️', isWin: true, isJackpot: false, defaultQuota: 10, color: '#DC2626', textColor: '#FFFFFF' },
+    { id: 'mixsue', fullText: 'Es krim Mixsue', wheelLabel: 'Es Krim Mixsue', emoji: '🍦', isWin: true, isJackpot: false, defaultQuota: 8, color: '#2DD4BF', textColor: '#061512' },
+    { id: 'momoyo', fullText: 'Es krim Momoyo', wheelLabel: 'Es Krim Momoyo', emoji: '🍨', isWin: true, isJackpot: false, defaultQuota: 8, color: '#0369A1', textColor: '#FFFFFF' },
+    { id: 'seblak', fullText: 'Seblak', wheelLabel: 'Seblak', emoji: '🍲', isWin: true, isJackpot: false, defaultQuota: 6, color: '#D97706', textColor: '#FFFFFF' },
+    { id: 'bangor', fullText: 'Burger Bangor', wheelLabel: 'Burger Bangor', emoji: '🍔', isWin: true, isJackpot: false, defaultQuota: 3, color: '#15803D', textColor: '#FFFFFF' },
+    { id: 'haus', fullText: 'Haus', wheelLabel: 'Haus', emoji: '🧋', isWin: true, isJackpot: false, defaultQuota: 6, color: '#34D399', textColor: '#061512' },
+    { id: 'hokben', fullText: 'Hokben Hemat', wheelLabel: 'Hokben Hemat', emoji: '🍱', isWin: true, isJackpot: false, defaultQuota: 3, color: '#0F172A', textColor: '#FBBF24' },
+    { id: 'dominos_kecil', fullText: 'Dominos kecil', wheelLabel: 'Dominos Kecil', emoji: '🍕', isWin: true, isJackpot: false, defaultQuota: 2, color: '#0E7490', textColor: '#FFFFFF' },
+    { id: 'dominos_1m', fullText: 'Dominos 1 meter', wheelLabel: 'Dominos 1 Meter', emoji: '🍕', isWin: true, isJackpot: true, defaultQuota: 1, color: '#FB923C', textColor: '#0B1626' }
+  ];
+
+  const SW_INTERLEAVED_IDS = [
+    'yuk_kerja', 'cash_100', 'kopi_kenangan', 'mixsue', 'kfc',
+    'wa_1', 'mcd', 'gacoan', 'haus', 'basreng',
+    'pulsa_20', 'dominos_1m', 'hokben', 'cash_50', 'seblak',
+    'momoyo', 'wa_2', 'bangor', 'cash_20', 'dominos_kecil'
+  ];
+
+  const SW_PRIZE_MAP = {};
+  SW_PRIZES.forEach(p => { SW_PRIZE_MAP[p.id] = p; });
+
+  const SW_WHEEL_SEGMENTS = SW_INTERLEAVED_IDS.map(id => SW_PRIZE_MAP[id])
+    .concat(SW_INTERLEAVED_IDS.map(id => SW_PRIZE_MAP[id]));
+
+  const SW_NUM_SEGMENTS = SW_WHEEL_SEGMENTS.length; // 40
+  const SW_TWO_PI = Math.PI * 2;
+  const SW_SLICE_ANGLE = SW_TWO_PI / SW_NUM_SEGMENTS;
+  const SW_POINTER_ANGLE = -Math.PI / 2;
+  const SW_MAX_JITTER_RAD = (2.2 * Math.PI) / 180;
+
+  function swCreateDefaultQuotas_() {
+    const m = {};
+    SW_PRIZES.forEach(p => { m[p.id] = p.defaultQuota; });
+    return m;
+  }
+
+  let SW_STATE = {
+    drawMode: 'exact',
+    showRemainingOnMain: false,
+    initialQuotas: swCreateDefaultQuotas_(),
+    remainingQuotas: swCreateDefaultQuotas_(),
+    totalKesempatan: 0,
+    terpakaiKesempatan: 0,
+    sisaKesempatan: 0,
+    tanggalAbsenKantor: [],
+    rekapUsers: [],
+    spinHistory: [],
+    totalSpinCounter: 0
+  };
+
+  let SW_DRAFT_QUOTAS = swCreateDefaultQuotas_();
+  let SW_CURRENT_ANGLE = SW_POINTER_ANGLE - SW_SLICE_ANGLE / 2;
+  let SW_IS_SPINNING = false;
+  let SW_WHEEL_SIZE = 380;
+  let SW_LIGHT_PHASE = 0;
+  let SW_LAST_LIGHT_TOGGLE = 0;
+  let SW_LIGHT_RAF_ID = null;
+  let SW_LAST_TICK_TIME = 0;
+
+  const SW_SOUND = {
+    ctx: null,
+    muted: false,
+    init() {
+      try {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+      } catch (e) {}
+    },
+    toggleMute() {
+      this.muted = !this.muted;
+      return this.muted;
+    },
+    playTick(speedRatio = 1) {
+      if (this.muted) return;
+      this.init();
+      if (!this.ctx) return;
+      try {
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(820 + Math.min(speedRatio, 1) * 380, now);
+        osc.frequency.exponentialRampToValueAtTime(220, now + 0.024);
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.16, now + 0.003);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.028);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.032);
+      } catch (e) {}
+    },
+    playStartClick() {
+      if (this.muted) return;
+      this.init();
+      if (!this.ctx) return;
+      try {
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(380, now);
+        osc.frequency.exponentialRampToValueAtTime(760, now + 0.085);
+        gain.gain.setValueAtTime(0.17, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.11);
+      } catch (e) {}
+    },
+    playWin(isJackpot = false) {
+      if (this.muted) return;
+      this.init();
+      if (!this.ctx) return;
+      try {
+        const now = this.ctx.currentTime;
+        const notes = isJackpot
+          ? [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5, 1318.51]
+          : [523.25, 659.25, 783.99, 1046.5];
+        notes.forEach((freq, idx) => {
+          const start = now + idx * (isJackpot ? 0.085 : 0.095);
+          const dur = idx === notes.length - 1 ? 0.55 : 0.21;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = idx === notes.length - 1 ? 'triangle' : 'sine';
+          osc.frequency.setValueAtTime(freq, start);
+          gain.gain.setValueAtTime(0.001, start);
+          gain.gain.linearRampToValueAtTime(0.2, start + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(start);
+          osc.stop(start + dur + 0.02);
+        });
+      } catch (e) {}
+    },
+    playWorkMotivation() {
+      if (this.muted) return;
+      this.init();
+      if (!this.ctx) return;
+      try {
+        const now = this.ctx.currentTime;
+        const steps = [
+          { f1: 329.63, f2: 315, t: 0.00, d: 0.22 },
+          { f1: 311.13, f2: 296, t: 0.23, d: 0.22 },
+          { f1: 293.66, f2: 280, t: 0.46, d: 0.22 },
+          { f1: 277.18, f2: 230, t: 0.69, d: 0.52 }
+        ];
+        steps.forEach(step => {
+          const start = now + step.t;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(step.f1, start);
+          osc.frequency.linearRampToValueAtTime(step.f2, start + step.d);
+          gain.gain.setValueAtTime(0.001, start);
+          gain.gain.linearRampToValueAtTime(0.18, start + 0.025);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + step.d);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(start);
+          osc.stop(start + step.d + 0.02);
+        });
+      } catch (e) {}
+    }
+  };
+
+  function hentikanAnimasiSpinWheels_() {
+    if (SW_LIGHT_RAF_ID) {
+      cancelAnimationFrame(SW_LIGHT_RAF_ID);
+      SW_LIGHT_RAF_ID = null;
+    }
+  }
+
+  function swSumQuota_(map) {
+    return SW_PRIZES.reduce((acc, p) => acc + (Number(map && map[p.id]) || 0), 0);
+  }
+
+  function swFormatPercent_(part, total) {
+    if (!total || total <= 0) return '0%';
+    const pct = (part / total) * 100;
+    if (pct > 0 && pct < 0.1) return '<0.1%';
+    return Number.isInteger(pct) ? (pct + '%') : (pct.toFixed(1).replace(/\.0$/, '') + '%');
+  }
+
+  function swApplyServerData_(res) {
+    if (!res || !res.sukses) return;
+    if (res.drawMode === 'exact' || res.drawMode === 'probability') {
+      SW_STATE.drawMode = res.drawMode;
+    }
+    if (typeof res.showRemainingOnMain === 'boolean') {
+      SW_STATE.showRemainingOnMain = res.showRemainingOnMain;
+    }
+    SW_PRIZES.forEach(p => {
+      if (res.initialQuotas && res.initialQuotas[p.id] != null) {
+        SW_STATE.initialQuotas[p.id] = Math.max(0, Math.floor(Number(res.initialQuotas[p.id]) || 0));
+      }
+      if (res.remainingQuotas && res.remainingQuotas[p.id] != null) {
+        SW_STATE.remainingQuotas[p.id] = Math.max(0, Math.floor(Number(res.remainingQuotas[p.id]) || 0));
+      }
+    });
+    if (res.totalKesempatan != null) SW_STATE.totalKesempatan = Math.max(0, Number(res.totalKesempatan) || 0);
+    if (res.terpakaiKesempatan != null) SW_STATE.terpakaiKesempatan = Math.max(0, Number(res.terpakaiKesempatan) || 0);
+    if (res.sisaKesempatan != null) SW_STATE.sisaKesempatan = Math.max(0, Number(res.sisaKesempatan) || 0);
+    if (Array.isArray(res.tanggalAbsenKantor)) SW_STATE.tanggalAbsenKantor = res.tanggalAbsenKantor;
+    if (Array.isArray(res.rekapUsers)) SW_STATE.rekapUsers = res.rekapUsers;
+    if (Array.isArray(res.spinHistory)) SW_STATE.spinHistory = res.spinHistory;
+    if (res.totalSpinCounter != null) SW_STATE.totalSpinCounter = Number(res.totalSpinCounter) || SW_STATE.spinHistory.length;
+  }
+
+  function muatHalamanSpinWheels() {
+    if (!bolehAksesSpinWheels_()) {
+      $('content').innerHTML =
+        '<div class="panel placeholder"><div class="big">🔒</div><h3>Akses Terbatas</h3><p>Submenu SPIN WHEELS hanya ditampilkan untuk Userlogin dengan jabatan DC dan FC.</p></div>';
+      return;
+    }
+
+    hentikanAnimasiSpinWheels_();
+
+    $('content').innerHTML =
+      '<div class="sw-page-wrap" id="swPageWrap">' +
+        '<canvas id="swConfettiCanvas" style="position:fixed;inset:0;z-index:9995;pointer-events:none;width:100%;height:100%"></canvas>' +
+
+        '<header class="sw-header">' +
+          '<div class="sw-brand">' +
+            '<div class="sw-brand-icon">★</div>' +
+            '<div>' +
+              '<h2 class="sw-brand-title">Mesin Putar Berhadiah</h2>' +
+              '<p class="sw-brand-sub">20 Pilihan Spesial • 40 Segmen • Khusus DC &amp; FC</p>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="sw-header-right">' +
+            '<div class="sw-ticket-pill" title="1 Hari Absen di KANTOR = 1 Kesempatan Putar (Akumulasi)">' +
+              '<span>🎟️ Sisa Kesempatan:</span>' +
+              '<span class="sw-ticket-count" id="swSisaKesempatanBadge">' + SW_STATE.sisaKesempatan + '</span>' +
+            '</div>' +
+
+            '<button type="button" class="sw-icon-btn" id="swRefreshBtn" title="Segarkan Kesempatan &amp; Historis" onclick="segarkanDataSpinWheels()">' +
+              '🔄' +
+            '</button>' +
+
+            '<button type="button" class="sw-icon-btn" id="muteToggleBtn" title="Suara On/Off" onclick="toggleMuteSpinWheels()">' +
+              '<span id="swSoundIcon">' + (SW_SOUND.muted ? '🔇' : '🔊') + '</span>' +
+            '</button>' +
+
+            '<button type="button" class="sw-icon-btn" id="openHistoryBtn" title="Historis Hadiah" onclick="bukaModalHistorisSpin()">' +
+              '📋' +
+              '<span id="historyCountBadge" class="sw-badge-count' + (SW_STATE.spinHistory.length > 0 ? '' : ' hidden') + '">' +
+                (SW_STATE.spinHistory.length > 99 ? '99+' : SW_STATE.spinHistory.length) +
+              '</span>' +
+            '</button>' +
+          '</div>' +
+        '</header>' +
+
+        '<div style="display:flex;justify-content:center;margin-top:6px">' +
+          '<div id="swAbsenSummaryPill" style="font-size:11.5px;color:#99f6e4;background:rgba(6,13,24,0.55);border:1px solid rgba(45,212,191,0.25);padding:4px 12px;border-radius:999px;text-align:center">' +
+            'Memuat data absensi KANTOR untuk <strong>' + esc(S.nama) + '</strong>...' +
+          '</div>' +
+        '</div>' +
+
+        '<main class="sw-stage-main">' +
+          '<div id="wheelWrapper" class="sw-wheel-box">' +
+            '<div class="sw-ambient-glow"></div>' +
+            '<div id="wheelPointer" class="sw-pointer">' +
+              '<svg width="38" height="46" viewBox="0 0 48 58" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                '<circle cx="24" cy="12" r="9.5" fill="#F59E0B" stroke="#0B1626" stroke-width="2.5"/>' +
+                '<path d="M13 15L24 54L35 15H13Z" fill="#EA580C" stroke="#FFFBEB" stroke-width="2.2" stroke-linejoin="round"/>' +
+                '<circle cx="24" cy="12" r="3.8" fill="#FEF3C7"/>' +
+              '</svg>' +
+            '</div>' +
+            '<canvas id="wheelCanvas" style="width:100%;height:100%;display:block;position:relative;z-index:10"></canvas>' +
+            '<button type="button" id="centerSpinBtn" class="sw-hub-btn" onclick="mulaiPutarSpinWheels()">' +
+              '<span id="hubSpinLabel">PUTAR</span>' +
+            '</button>' +
+          '</div>' +
+        '</main>' +
+
+        '<footer class="sw-footer">' +
+          '<div id="mainQuotaInfoBar" class="sw-quota-bar hidden">' +
+            '<span id="mainQuotaModeLabel" style="color:#99f6e4;font-weight:700">Mode: Kuota Pasti</span>' +
+            '<span id="mainQuotaRemainingText" style="color:#fcd34d;font-weight:800">Sisa: 250 / 250</span>' +
+          '</div>' +
+
+          '<div id="liveBanner" class="sw-live-banner">' +
+            '<span id="liveBannerText">🎯 Tekan <strong style="color:#fcd34d">PUTAR SEKARANG</strong> untuk mulai mengundi!</span>' +
+          '</div>' +
+
+          '<button type="button" id="mainSpinBtn" class="sw-cta-btn" onclick="mulaiPutarSpinWheels()">' +
+            '<span id="spinBtnIcon">🎡</span>' +
+            '<span id="spinBtnText">PUTAR SEKARANG</span>' +
+          '</button>' +
+        '</footer>' +
+
+        '<!-- POP UP HASIL PUTARAN -->' +
+        '<div id="resultModal" class="sw-modal-overlay hidden" onclick="if(event.target===this)tutupModalHasilSpin()">' +
+          '<div class="sw-modal-card">' +
+            '<div id="modalEmojiWrap" style="width:72px;height:72px;margin:0 auto 14px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:40px;background:rgba(245,158,11,0.2);border:1px solid rgba(251,191,36,0.45)">🎉</div>' +
+            '<div id="modalSubtitle" style="font-size:11.5px;font-weight:800;letter-spacing:1px;color:#fcd34d;text-transform:uppercase">SELAMAT! ANDA MENDAPATKAN</div>' +
+            '<h3 id="modalTitle" style="font-size:24px;font-weight:900;color:#ffffff;margin:8px 0;line-height:1.3">Cash 100 rb</h3>' +
+            '<p id="modalDesc" style="font-size:13px;color:#cbd5e1;margin:0 0 18px;line-height:1.5">Selamat! Keberuntungan berpihak padamu hari ini.</p>' +
+            '<div style="display:flex;gap:10px;justify-content:center">' +
+              '<button type="button" id="modalSpinAgainBtn" class="sw-cta-btn" style="flex:1;min-height:42px;padding:10px 16px;font-size:14px" onclick="tutupModalHasilSpin();mulaiPutarSpinWheels()">Putar Lagi</button>' +
+              '<button type="button" style="padding:10px 18px;min-height:42px;border-radius:14px;background:rgba(255,255,255,0.12);color:#e2e8f0;border:1px solid rgba(255,255,255,0.15);font-weight:700" onclick="tutupModalHasilSpin()">Tutup</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<!-- POP UP HISTORIS HADIAH -->' +
+        '<div id="historyModal" class="sw-modal-overlay hidden" onclick="if(event.target===this)tutupModalHistorisSpin()">' +
+          '<div class="sw-modal-card sw-history-card">' +
+            '<div class="sw-hist-head">' +
+              '<div>' +
+                '<h3 style="margin:0;font-size:16.5px;font-weight:800;color:#ffffff">📋 Historis Hadiah Spin Wheels</h3>' +
+                '<div id="historySummarySubtitle" style="font-size:11.5px;color:#99f6e4;margin-top:2px">Format: TANGGAL DAN JAM / USERLOGIN / MENDAPATKAN HADIAH</div>' +
+              '</div>' +
+              '<button type="button" class="sw-icon-btn" style="width:34px;height:34px;min-height:34px" onclick="tutupModalHistorisSpin()">✕</button>' +
+            '</div>' +
+            '<div class="sw-hist-tabs">' +
+              '<div style="display:inline-flex;gap:6px;background:rgba(6,13,24,0.8);padding:4px;border-radius:10px;border:1px solid rgba(255,255,255,0.1)">' +
+                '<button type="button" id="tabBtnLog" style="padding:6px 12px;min-height:30px;border-radius:8px;font-size:12px;font-weight:800;background:#14b8a6;color:#060D18;border:none;box-shadow:none" onclick="gantiTabHistorisSpin(\'log\')">List Historis Putaran</button>' +
+                '<button type="button" id="tabBtnRecap" style="padding:6px 12px;min-height:30px;border-radius:8px;font-size:12px;font-weight:700;background:transparent;color:#cbd5e1;border:none;box-shadow:none" onclick="gantiTabHistorisSpin(\'recap\')">Rekap 20 Hadiah</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="sw-hist-body">' +
+              '<div id="historyTabLog"></div>' +
+              '<div id="historyTabRecap" class="hidden"></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    swResizeAndDrawWheel_();
+    swUpdateMainSpinUI_();
+    swLoopLights_();
+    segarkanDataSpinWheels();
+  }
+
+  function segarkanDataSpinWheels() {
+    if (!S || !S.token) return;
+    apiSilent_('getSpinWheelData', S.token).then(res => {
+      if (res && res.sukses) {
+        swApplyServerData_(res);
+        swUpdateMainSpinUI_();
+      }
+    }).catch(() => {});
+  }
+
+  function toggleMuteSpinWheels() {
+    const muted = SW_SOUND.toggleMute();
+    if ($('swSoundIcon')) $('swSoundIcon').textContent = muted ? '🔇' : '🔊';
+    if (!muted) SW_SOUND.playStartClick();
+  }
+
+  function swUpdateMainSpinUI_() {
+    if ($('swSisaKesempatanBadge')) {
+      $('swSisaKesempatanBadge').textContent = SW_STATE.sisaKesempatan;
+    }
+    if ($('swAbsenSummaryPill')) {
+      $('swAbsenSummaryPill').innerHTML =
+        'Userlogin: <strong>' + esc(S.nama) + '</strong> (' + esc(S.jabatan) + ') • ' +
+        'Total Hari Absen KANTOR: <strong>' + SW_STATE.totalKesempatan + '</strong> • ' +
+        'Terpakai: <strong>' + SW_STATE.terpakaiKesempatan + '</strong> • ' +
+        'Sisa Kesempatan: <strong style="color:#fcd34d">' + SW_STATE.sisaKesempatan + 'x Putar</strong>';
+    }
+    if ($('historyCountBadge')) {
+      const cnt = SW_STATE.spinHistory.length;
+      $('historyCountBadge').textContent = cnt > 99 ? '99+' : cnt;
+      $('historyCountBadge').classList.toggle('hidden', cnt === 0);
+    }
+
+    if ($('mainQuotaInfoBar')) {
+      if (!SW_STATE.showRemainingOnMain) {
+        $('mainQuotaInfoBar').classList.add('hidden');
+      } else {
+        $('mainQuotaInfoBar').classList.remove('hidden');
+        if (SW_STATE.drawMode === 'exact') {
+          const rem = swSumQuota_(SW_STATE.remainingQuotas);
+          const init = swSumQuota_(SW_STATE.initialQuotas);
+          if ($('mainQuotaModeLabel')) $('mainQuotaModeLabel').textContent = 'Mode: Kuota Pasti';
+          if ($('mainQuotaRemainingText')) $('mainQuotaRemainingText').textContent = 'Sisa Kuota Hadiah: ' + rem + ' / ' + init;
+        } else {
+          if ($('mainQuotaModeLabel')) $('mainQuotaModeLabel').textContent = 'Mode: Probabilitas Tetap';
+          if ($('mainQuotaRemainingText')) $('mainQuotaRemainingText').textContent = 'Putaran: Tak Terbatas (∞)';
+        }
+      }
+    }
+
+    const centerBtn = $('centerSpinBtn');
+    const mainBtn = $('mainSpinBtn');
+    const btnText = $('spinBtnText');
+    const hubLbl = $('hubSpinLabel');
+    if (!centerBtn || !mainBtn || !btnText || !hubLbl) return;
+
+    const outOfStock = (SW_STATE.drawMode === 'exact' && swSumQuota_(SW_STATE.remainingQuotas) <= 0);
+    const noTicket = SW_STATE.sisaKesempatan <= 0;
+
+    if (SW_IS_SPINNING) {
+      centerBtn.disabled = true;
+      mainBtn.disabled = true;
+      mainBtn.classList.remove('sw-cta-empty');
+      btnText.textContent = 'RODA SEDANG BERPUTAR...';
+      hubLbl.textContent = '...';
+    } else if (noTicket) {
+      centerBtn.disabled = true;
+      mainBtn.disabled = true;
+      mainBtn.classList.add('sw-cta-empty');
+      btnText.textContent = 'KESEMPATAN PUTAR 0 (ABSEN DI KANTOR DULU)';
+      hubLbl.textContent = '0x';
+    } else if (outOfStock) {
+      centerBtn.disabled = true;
+      mainBtn.disabled = true;
+      mainBtn.classList.add('sw-cta-empty');
+      btnText.textContent = 'STOK KUOTA HADIAH HABIS';
+      hubLbl.textContent = 'HABIS';
+    } else {
+      centerBtn.disabled = false;
+      mainBtn.disabled = false;
+      mainBtn.classList.remove('sw-cta-empty');
+      btnText.textContent = 'PUTAR SEKARANG (' + SW_STATE.sisaKesempatan + ' KESEMPATAN)';
+      hubLbl.textContent = 'PUTAR';
+    }
+  }
+
+  function swResizeAndDrawWheel_() {
+    const wrap = $('wheelWrapper');
+    const canvas = $('wheelCanvas');
+    if (!wrap || !canvas) return;
+    const rect = wrap.getBoundingClientRect();
+    const size = Math.max(250, Math.floor(Math.min(rect.width || 360, rect.height || 360)));
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    SW_WHEEL_SIZE = size;
+    canvas.width = Math.round(size * dpr);
+    canvas.height = Math.round(size * dpr);
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    swDrawWheel_();
+  }
+
+  function swDrawWheel_() {
+    const canvas = $('wheelCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const wheelSize = SW_WHEEL_SIZE;
+    const cx = wheelSize / 2;
+    const cy = wheelSize / 2;
+    const outerRadius = wheelSize * 0.492;
+    const rimThickness = Math.max(10, wheelSize * 0.038);
+    const wheelRadius = outerRadius - rimThickness;
+
+    ctx.clearRect(0, 0, wheelSize, wheelSize);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerRadius, 0, SW_TWO_PI);
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.65)';
+    ctx.shadowBlur = 18;
+    ctx.shadowOffsetY = 6;
+    ctx.fillStyle = '#0B1626';
+    ctx.fill();
+    ctx.restore();
+
+    const rimGrad = ctx.createLinearGradient(0, 0, wheelSize, wheelSize);
+    rimGrad.addColorStop(0, '#163547');
+    rimGrad.addColorStop(0.5, '#0B1D2E');
+    rimGrad.addColorStop(1, '#07111E');
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerRadius, 0, SW_TWO_PI);
+    ctx.fillStyle = rimGrad;
+    ctx.fill();
+
+    ctx.lineWidth = Math.max(2, wheelSize * 0.006);
+    ctx.strokeStyle = '#F59E0B';
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, wheelRadius + 1, 0, SW_TWO_PI);
+    ctx.lineWidth = Math.max(1.5, wheelSize * 0.004);
+    ctx.strokeStyle = 'rgba(253, 224, 71, 0.85)';
+    ctx.stroke();
+
+    const numLights = 40;
+    const lightRingRadius = wheelRadius + rimThickness * 0.52;
+    const lightRadius = Math.max(2.1, rimThickness * 0.24);
+    for (let i = 0; i < numLights; i++) {
+      const angle = (i / numLights) * SW_TWO_PI;
+      const lx = cx + Math.cos(angle) * lightRingRadius;
+      const ly = cy + Math.sin(angle) * lightRingRadius;
+      const isLit = (i + SW_LIGHT_PHASE) % 2 === 0;
+      ctx.beginPath();
+      ctx.arc(lx, ly, lightRadius, 0, SW_TWO_PI);
+      ctx.fillStyle = isLit ? (i % 4 === 0 ? '#5EEAD4' : '#FEF08A') : '#334155';
+      ctx.fill();
+    }
+
+    const baseFontSize = Math.max(8.5, Math.min(15, wheelRadius * 0.068));
+    const textOuterRadius = wheelRadius - Math.max(8, wheelRadius * 0.048);
+    const hubSafeRadius = wheelRadius * 0.21;
+    const maxRadialTextWidth = textOuterRadius - hubSafeRadius;
+
+    for (let i = 0; i < SW_NUM_SEGMENTS; i++) {
+      const seg = SW_WHEEL_SEGMENTS[i];
+      const startAngle = SW_CURRENT_ANGLE + i * SW_SLICE_ANGLE;
+      const endAngle = startAngle + SW_SLICE_ANGLE;
+      const midAngle = startAngle + SW_SLICE_ANGLE / 2;
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, wheelRadius, startAngle, endAngle);
+      ctx.closePath();
+      ctx.fillStyle = seg.color;
+      ctx.fill();
+
+      ctx.lineWidth = Math.max(0.9, wheelSize * 0.0024);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+      ctx.stroke();
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(midAngle);
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = seg.textColor;
+
+      let fontSize = baseFontSize;
+      ctx.font = '800 ' + fontSize + 'px "Plus Jakarta Sans", system-ui, sans-serif';
+      const measured = ctx.measureText(seg.wheelLabel).width;
+      if (measured > maxRadialTextWidth) {
+        fontSize = Math.max(7.2, fontSize * (maxRadialTextWidth / measured));
+        ctx.font = '800 ' + fontSize + 'px "Plus Jakarta Sans", system-ui, sans-serif';
+      }
+      if (seg.textColor === '#FFFFFF' || seg.textColor === '#FDE68A') {
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.48)';
+        ctx.shadowBlur = 2.5;
+      }
+      ctx.fillText(seg.wheelLabel, textOuterRadius, 0.5);
+      ctx.restore();
+    }
+
+    const pegRadius = Math.max(1.8, wheelSize * 0.0055);
+    for (let i = 0; i < SW_NUM_SEGMENTS; i++) {
+      const pegAngle = SW_CURRENT_ANGLE + i * SW_SLICE_ANGLE;
+      const px = cx + Math.cos(pegAngle) * (wheelRadius - 2.5);
+      const py = cy + Math.sin(pegAngle) * (wheelRadius - 2.5);
+      ctx.beginPath();
+      ctx.arc(px, py, pegRadius, 0, SW_TWO_PI);
+      ctx.fillStyle = '#FEF08A';
+      ctx.fill();
+    }
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, wheelRadius * 0.175, 0, SW_TWO_PI);
+    ctx.fillStyle = '#0B1626';
+    ctx.fill();
+  }
+
+  function swLoopLights_(timestamp) {
+    if (typeof CUR !== 'undefined' && CUR !== 'spinwheels') {
+      SW_LIGHT_RAF_ID = null;
+      return;
+    }
+    const interval = SW_IS_SPINNING ? 120 : 480;
+    if (!timestamp || timestamp - SW_LAST_LIGHT_TOGGLE >= interval) {
+      SW_LIGHT_PHASE = (SW_LIGHT_PHASE + 1) % 2;
+      SW_LAST_LIGHT_TOGGLE = timestamp || performance.now();
+      if (!SW_IS_SPINNING) swDrawWheel_();
+    }
+    SW_LIGHT_RAF_ID = requestAnimationFrame(swLoopLights_);
+  }
+
+  function swPickWinningPrize_() {
+    const source = SW_STATE.drawMode === 'exact' ? SW_STATE.remainingQuotas : SW_STATE.initialQuotas;
+    const totalWeight = swSumQuota_(source);
+    if (totalWeight <= 0) return null;
+    let rand = Math.random() * totalWeight;
+    for (let i = 0; i < SW_PRIZES.length; i++) {
+      const w = Number(source[SW_PRIZES[i].id]) || 0;
+      if (w <= 0) continue;
+      if (rand < w) return SW_PRIZES[i];
+      rand -= w;
+    }
+    for (let i = SW_PRIZES.length - 1; i >= 0; i--) {
+      if ((Number(source[SW_PRIZES[i].id]) || 0) > 0) return SW_PRIZES[i];
+    }
+    return null;
+  }
+
+  function swPickRandomSegIndex_(prizeId) {
+    const indices = [];
+    for (let i = 0; i < SW_WHEEL_SEGMENTS.length; i++) {
+      if (SW_WHEEL_SEGMENTS[i].id === prizeId) indices.push(i);
+    }
+    if (!indices.length) return 0;
+    return indices[Math.floor(Math.random() * indices.length)];
+  }
+
+  function swBurstConfetti_(isJackpot) {
+    const canvas = $('swConfettiCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const colors = isJackpot
+      ? ['#FDE047', '#F59E0B', '#FB923C', '#34D399', '#2DD4BF', '#FFFFFF']
+      : ['#34D399', '#2DD4BF', '#FBBF24', '#FB923C', '#60A5FA', '#FFFFFF'];
+    const count = isJackpot ? 150 : 95;
+    const particles = [];
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * SW_TWO_PI;
+      const speed = (isJackpot ? 5 : 4) + Math.random() * 10;
+      particles.push({
+        x: w / 2 + (Math.random() - 0.5) * 40,
+        y: h * 0.42 + (Math.random() - 0.5) * 30,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - (4 + Math.random() * 4),
+        size: 5 + Math.random() * 5,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rot: Math.random() * SW_TWO_PI,
+        rotSpeed: (Math.random() - 0.5) * 0.25,
+        life: 1,
+        decay: 0.009 + Math.random() * 0.008
+      });
+    }
+    function stepConfetti() {
+      ctx.clearRect(0, 0, w, h);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.vx *= 0.985;
+        p.vy = p.vy * 0.985 + 0.28;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.rotSpeed;
+        p.life -= p.decay;
+        if (p.life <= 0 || p.y > h + 20) {
+          particles.splice(i, 1);
+          continue;
+        }
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+        ctx.restore();
+      }
+      if (particles.length > 0) requestAnimationFrame(stepConfetti);
+    }
+    requestAnimationFrame(stepConfetti);
+  }
+
+  function mulaiPutarSpinWheels() {
+    if (SW_IS_SPINNING) return;
+    if (SW_STATE.sisaKesempatan <= 0) {
+      if ($('liveBannerText')) {
+        $('liveBannerText').innerHTML = '⚠️ <strong style="color:#fda4af">Kesempatan putar Anda 0.</strong> Silakan absen di <strong>KANTOR</strong> terlebih dahulu!';
+      }
+      return;
+    }
+
+    const winningPrize = swPickWinningPrize_();
+    if (!winningPrize) {
+      if ($('liveBannerText')) {
+        $('liveBannerText').innerHTML = '📦 <strong style="color:#fda4af">Stok kuota hadiah habis.</strong> Hubungi Direktur untuk isi ulang stok.';
+      }
+      return;
+    }
+
+    const targetSegIndex = swPickRandomSegIndex_(winningPrize.id);
+    tutupModalHasilSpin();
+
+    SW_SOUND.init();
+    SW_SOUND.playStartClick();
+
+    SW_IS_SPINNING = true;
+    SW_STATE.sisaKesempatan = Math.max(0, SW_STATE.sisaKesempatan - 1);
+    SW_STATE.terpakaiKesempatan += 1;
+    swUpdateMainSpinUI_();
+
+    if ($('liveBannerText')) {
+      $('liveBannerText').innerHTML = '✨ <strong style="color:#fcd34d">Roda sedang berputar...</strong> Semoga beruntung!';
+    }
+
+    // Simpan ke spreadsheet 1z1DUUWeyIpPuQDinYDSNb_N69ZNJFWxiguVGhDd0uyA di background
+    apiSilent_('putarSpinWheel', S.token, winningPrize.id).then(res => {
+      if (res && res.sukses) {
+        swApplyServerData_(res);
+      }
+    }).catch(() => {});
+
+    const centerOfTargetSlice = targetSegIndex * SW_SLICE_ANGLE + SW_SLICE_ANGLE / 2;
+    const safeJitter = (Math.random() * 2 - 1) * SW_MAX_JITTER_RAD;
+    const desiredRelativeAngle = centerOfTargetSlice + safeJitter;
+    const desiredFinalMod = (((SW_POINTER_ANGLE - desiredRelativeAngle) % SW_TWO_PI) + SW_TWO_PI) % SW_TWO_PI;
+    const currentMod = ((SW_CURRENT_ANGLE % SW_TWO_PI) + SW_TWO_PI) % SW_TWO_PI;
+    const deltaForward = ((desiredFinalMod - currentMod) % SW_TWO_PI + SW_TWO_PI) % SW_TWO_PI;
+
+    const extraFullSpins = (6 + Math.floor(Math.random() * 3)) * SW_TWO_PI;
+    const startAngle = SW_CURRENT_ANGLE;
+    const totalRotation = extraFullSpins + deltaForward;
+    const targetAngle = startAngle + totalRotation;
+    const duration = 4600;
+    const startTime = performance.now();
+    let lastStep = Math.floor((SW_POINTER_ANGLE - startAngle) / SW_SLICE_ANGLE);
+
+    function stepAnim(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      SW_CURRENT_ANGLE = startAngle + totalRotation * eased;
+
+      const curStep = Math.floor((SW_POINTER_ANGLE - SW_CURRENT_ANGLE) / SW_SLICE_ANGLE);
+      if (curStep !== lastStep) {
+        if (now - SW_LAST_TICK_TIME > 28) {
+          SW_SOUND.playTick(1 - progress);
+          const ptr = $('wheelPointer');
+          if (ptr) {
+            ptr.classList.remove('pointer-bounce');
+            void ptr.offsetWidth;
+            ptr.classList.add('pointer-bounce');
+          }
+          SW_LAST_TICK_TIME = now;
+        }
+        lastStep = curStep;
+      }
+
+      swDrawWheel_();
+
+      if (progress < 1) {
+        requestAnimationFrame(stepAnim);
+      } else {
+        SW_CURRENT_ANGLE = targetAngle;
+        swDrawWheel_();
+        selesaiPutarSpinWheels_(winningPrize);
+      }
+    }
+
+    requestAnimationFrame(stepAnim);
+  }
+
+  function selesaiPutarSpinWheels_(prize) {
+    SW_IS_SPINNING = false;
+
+    if (SW_STATE.drawMode === 'exact') {
+      SW_STATE.remainingQuotas[prize.id] = Math.max(0, (Number(SW_STATE.remainingQuotas[prize.id]) || 0) - 1);
+    }
+
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const waktuStr = pad(now.getDate()) + '/' + pad(now.getMonth() + 1) + '/' + now.getFullYear() + ' ' +
+                     pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+    const uLogin = (S && S.nama) ? S.nama : 'USER';
+    const formatDisp = waktuStr + ' / ' + uLogin + ' / MENDAPATKAN HADIAH ' + prize.fullText;
+
+    // Tambahkan ke local state jika belum ter-update dari server
+    if (!SW_STATE.spinHistory.length || SW_STATE.spinHistory[0].formatDisplay !== formatDisp) {
+      SW_STATE.totalSpinCounter += 1;
+      SW_STATE.spinHistory.unshift({
+        spinNumber: SW_STATE.totalSpinCounter,
+        waktu: waktuStr,
+        userLogin: uLogin,
+        hadiah: prize.fullText,
+        formatDisplay: formatDisp,
+        prizeId: prize.id,
+        fullText: prize.fullText,
+        wheelLabel: prize.wheelLabel,
+        emoji: prize.emoji,
+        isWin: prize.isWin,
+        color: prize.color
+      });
+    }
+
+    swUpdateMainSpinUI_();
+
+    if (prize.isWin) {
+      if ($('liveBannerText')) {
+        $('liveBannerText').innerHTML = prize.emoji + ' Hasil: <strong style="color:#fcd34d">' + esc(prize.fullText) + '</strong>';
+      }
+      SW_SOUND.playWin(prize.isJackpot);
+      swBurstConfetti_(prize.isJackpot);
+    } else {
+      if ($('liveBannerText')) {
+        $('liveBannerText').innerHTML = prize.emoji + ' <strong style="color:#fde68a">' + esc(prize.wheelLabel) + '</strong> Tetap semangat!';
+      }
+      SW_SOUND.playWorkMotivation();
+      const wrap = $('wheelWrapper');
+      if (wrap) {
+        wrap.classList.remove('animate-work-shake');
+        void wrap.offsetWidth;
+        wrap.classList.add('animate-work-shake');
+      }
+    }
+
+    setTimeout(() => {
+      bukaModalHasilSpin_(prize);
+    }, 320);
+  }
+
+  function bukaModalHasilSpin_(prize) {
+    const modal = $('resultModal');
+    if (!modal) return;
+    if ($('modalEmojiWrap')) $('modalEmojiWrap').textContent = prize.emoji;
+    if ($('modalSubtitle')) {
+      $('modalSubtitle').textContent = prize.isWin
+        ? (prize.isJackpot ? 'JACKPOT SPESIAL!' : 'SELAMAT! ANDA MENDAPATKAN')
+        : 'SEMANGAT TERUS YA!';
+    }
+    if ($('modalTitle')) $('modalTitle').textContent = prize.fullText;
+    if ($('modalDesc')) {
+      $('modalDesc').textContent = prize.isWin
+        ? 'Hasil putaran telah otomatis tercatat pada Historis Hadiah.'
+        : 'Tetap semangat bekerja, hadir di kantor besok untuk kesempatan putar berikutnya!';
+    }
+    if ($('modalSpinAgainBtn')) {
+      $('modalSpinAgainBtn').disabled = SW_STATE.sisaKesempatan <= 0;
+      $('modalSpinAgainBtn').textContent = SW_STATE.sisaKesempatan > 0
+        ? ('Putar Lagi (Sisa ' + SW_STATE.sisaKesempatan + ')')
+        : 'Kesempatan Habis (0)';
+    }
+    modal.classList.remove('hidden');
+  }
+
+  function tutupModalHasilSpin() {
+    const modal = $('resultModal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function bukaModalHistorisSpin() {
+    renderKontenModalHistorisSpin_();
+    const modal = $('historyModal');
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function tutupModalHistorisSpin() {
+    const modal = $('historyModal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function gantiTabHistorisSpin(tab) {
+    const isLog = tab === 'log';
+    if ($('tabBtnLog')) {
+      $('tabBtnLog').style.background = isLog ? '#14b8a6' : 'transparent';
+      $('tabBtnLog').style.color = isLog ? '#060D18' : '#cbd5e1';
+    }
+    if ($('tabBtnRecap')) {
+      $('tabBtnRecap').style.background = !isLog ? '#14b8a6' : 'transparent';
+      $('tabBtnRecap').style.color = !isLog ? '#060D18' : '#cbd5e1';
+    }
+    if ($('historyTabLog')) $('historyTabLog').classList.toggle('hidden', !isLog);
+    if ($('historyTabRecap')) $('historyTabRecap').classList.toggle('hidden', isLog);
+  }
+
+  function renderKontenModalHistorisSpin_() {
+    const list = SW_STATE.spinHistory || [];
+    const logBox = $('historyTabLog');
+    const recapBox = $('historyTabRecap');
+    if ($('historySummarySubtitle')) {
+      $('historySummarySubtitle').textContent = 'Total ' + list.length + ' putaran tercatat (TANGGAL DAN JAM / USERLOGIN / MENDAPATKAN HADIAH)';
+    }
+
+    if (logBox) {
+      if (!list.length) {
+        logBox.innerHTML =
+          '<div style="text-align:center;padding:32px 14px;color:#94a3b8;border:1px dashed rgba(255,255,255,0.14);border-radius:16px">' +
+            '<div style="font-size:30px;margin-bottom:8px">🎡</div>' +
+            '<div style="font-weight:700;color:#e2e8f0">Belum ada historis putaran hadiah</div>' +
+          '</div>';
+      } else {
+        logBox.innerHTML = list.map((item, idx) => {
+          const waktu = item.waktu || item.time || '-';
+          const user = item.userLogin || (S && S.nama) || '-';
+          const hadiah = item.hadiah || item.fullText || '-';
+          const formattedLine = waktu + ' / ' + user + ' / MENDAPATKAN HADIAH ' + hadiah;
+          return '<div class="sw-hist-row' + (idx === 0 ? ' latest' : '') + '">' +
+            '<div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;background:rgba(255,255,255,0.07);flex-shrink:0">' +
+              esc(item.emoji || '🎁') +
+            '</div>' +
+            '<div style="min-width:0;flex:1">' +
+              '<div class="sw-hist-format">' + esc(formattedLine) + '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+    }
+
+    if (recapBox) {
+      const counts = {};
+      SW_PRIZES.forEach(p => { counts[p.id] = 0; });
+      list.forEach(it => {
+        if (it.prizeId && counts[it.prizeId] !== undefined) counts[it.prizeId] += 1;
+      });
+      recapBox.innerHTML = SW_PRIZES.map(p => {
+        const c = counts[p.id] || 0;
+        return '<div class="sw-hist-row" style="align-items:center;justify-content:space-between">' +
+          '<div style="display:flex;align-items:center;gap:10px;min-width:0">' +
+            '<span style="width:12px;height:12px;border-radius:50%;background:' + p.color + ';display:inline-block;border:1px solid rgba(255,255,255,0.3)"></span>' +
+            '<span>' + p.emoji + '</span>' +
+            '<span style="font-size:13px;font-weight:700;color:#f1f5f9">' + esc(p.fullText) + '</span>' +
+          '</div>' +
+          '<span style="padding:3px 10px;border-radius:8px;font-size:12px;font-weight:800;background:' + (c > 0 ? 'rgba(16,185,129,0.22)' : 'rgba(255,255,255,0.06)') + ';color:' + (c > 0 ? '#6ee7b7' : '#94a3b8') + '">' + c + 'x</span>' +
+        '</div>';
+      }).join('');
+    }
+  }
+
+  // ---------- SUB MENU: SETTING (KHUSUS JABATAN DIREKTUR) ----------
+  function muatHalamanSpinSetting() {
+    if (!bolehAksesSpinSetting_()) {
+      $('content').innerHTML =
+        '<div class="panel placeholder"><div class="big">🔒</div><h3>Akses Terbatas</h3><p>Submenu SETTING hanya ditampilkan untuk Userlogin dengan jabatan DIREKTUR.</p></div>';
+      return;
+    }
+
+    SW_PRIZES.forEach(p => {
+      SW_DRAFT_QUOTAS[p.id] = SW_STATE.initialQuotas[p.id];
+    });
+
+    $('content').innerHTML =
+      '<div class="sw-setting-wrap">' +
+        '<div class="sw-setting-head">' +
+          '<div>' +
+            '<h3 style="margin:0;font-size:18px;font-weight:800;color:#fcd34d">⚙️ Pengaturan Kuota Spin Wheels (20 Pilihan)</h3>' +
+            '<div style="font-size:12px;color:#99f6e4;margin-top:3px">Khusus Jabatan DIREKTUR • Tersimpan di Spreadsheet 1z1DUUWeyIpPuQDinYDSNb_N69ZNJFWxiguVGhDd0uyA</div>' +
+          '</div>' +
+          '<button type="button" class="sw-icon-btn" style="width:auto;padding:0 14px;font-size:12.5px;font-weight:700;gap:6px" onclick="muatDataSpinSettingDariServer_()">' +
+            '🔄 Refresh Data' +
+          '</button>' +
+        '</div>' +
+
+        '<div class="sw-setting-body">' +
+          '<div id="swSettingMsg" class="msg"></div>' +
+
+          '<div>' +
+            '<div style="font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:#5eead4;margin-bottom:8px">1. Mode Undian</div>' +
+            '<div class="sw-mode-grid">' +
+              '<label id="swModeCardExact" class="sw-mode-card ' + (SW_STATE.drawMode === 'exact' ? 'active' : '') + '" onclick="pilihModeSpinSetting_(\'exact\')">' +
+                '<input type="radio" name="swDrawMode" value="exact" ' + (SW_STATE.drawMode === 'exact' ? 'checked' : '') + ' style="width:auto;margin:3px 0 0">' +
+                '<div>' +
+                  '<div style="font-weight:800;font-size:13.5px;color:#ffffff">Kuota Pasti (Stok Berkurang)</div>' +
+                  '<div style="font-size:11.5px;color:#cbd5e1;margin-top:3px">Stok berkurang 1 tiap keluar. Dijamin keluar persis sesuai jumlah kuota.</div>' +
+                '</div>' +
+              '</label>' +
+
+              '<label id="swModeCardProb" class="sw-mode-card ' + (SW_STATE.drawMode === 'probability' ? 'active' : '') + '" onclick="pilihModeSpinSetting_(\'probability\')">' +
+                '<input type="radio" name="swDrawMode" value="probability" ' + (SW_STATE.drawMode === 'probability' ? 'checked' : '') + ' style="width:auto;margin:3px 0 0">' +
+                '<div>' +
+                  '<div style="font-weight:800;font-size:13.5px;color:#ffffff">Probabilitas Tetap (Tak Terbatas)</div>' +
+                  '<div style="font-size:11.5px;color:#cbd5e1;margin-top:3px">Kuota dipakai sebagai rasio peluang tetap tanpa mengurangi stok.</div>' +
+                '</div>' +
+              '</label>' +
+            '</div>' +
+          '</div>' +
+
+          '<div>' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px">' +
+              '<div style="font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:#5eead4">2. Atur Kuota Manual (20 Pilihan Hadiah)</div>' +
+              '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
+                '<button type="button" style="padding:6px 11px;min-height:32px;border-radius:8px;font-size:11.5px;font-weight:700;background:rgba(255,255,255,0.1);color:#e2e8f0;border:1px solid rgba(255,255,255,0.15)" onclick="setBatchKuotaSpin_(\'zero\')">Nolkan Semua</button>' +
+                '<button type="button" style="padding:6px 11px;min-height:32px;border-radius:8px;font-size:11.5px;font-weight:700;background:rgba(20,184,166,0.22);color:#99f6e4;border:1px solid rgba(45,212,191,0.35)" onclick="setBatchKuotaSpin_(\'one\')">Set Semua = 1</button>' +
+                '<button type="button" style="padding:6px 11px;min-height:32px;border-radius:8px;font-size:11.5px;font-weight:700;background:rgba(245,158,11,0.22);color:#fde68a;border:1px solid rgba(251,191,36,0.35)" onclick="setBatchKuotaSpin_(\'default\')">Reset Default (250)</button>' +
+              '</div>' +
+            '</div>' +
+
+            '<div style="border:1px solid rgba(255,255,255,0.12);border-radius:14px;overflow:hidden;background:rgba(6,13,24,0.6)">' +
+              '<table class="sw-quota-table">' +
+                '<thead>' +
+                  '<tr>' +
+                    '<th>Pilihan Hadiah</th>' +
+                    '<th style="text-align:center">Kuota</th>' +
+                    '<th style="text-align:center">Sisa</th>' +
+                    '<th style="text-align:right">Peluang</th>' +
+                  '</tr>' +
+                '</thead>' +
+                '<tbody id="swQuotaTableBody"></tbody>' +
+                '<tfoot>' +
+                  '<tr style="background:rgba(15,118,110,0.25);font-weight:800">' +
+                    '<td style="padding:11px 12px;color:#ffffff">Total (20 Pilihan)</td>' +
+                    '<td id="swTotalInitCell" style="padding:11px 12px;text-align:center;color:#fcd34d;font-size:15px">250</td>' +
+                    '<td id="swTotalRemCell" style="padding:11px 12px;text-align:center;color:#6ee7b7;font-size:15px">250</td>' +
+                    '<td id="swTotalPctCell" style="padding:11px 12px;text-align:right;color:#99f6e4">100%</td>' +
+                  '</tr>' +
+                '</tfoot>' +
+              '</table>' +
+            '</div>' +
+          '</div>' +
+
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(6,13,24,0.55);border:1px solid rgba(255,255,255,0.12)">' +
+            '<div>' +
+              '<div style="font-size:13.5px;font-weight:700;color:#ffffff">Tampilkan sisa kuota hadiah di layar Spin Wheels</div>' +
+              '<div style="font-size:11.5px;color:#94a3b8;margin-top:2px">Jika dimatikan, DC &amp; FC hanya melihat sisa kesempatan putar milik mereka.</div>' +
+            '</div>' +
+            '<input type="checkbox" id="swShowRemainingChk" ' + (SW_STATE.showRemainingOnMain ? 'checked' : '') + ' style="width:20px;height:20px;margin:0;accent-color:#f59e0b">' +
+          '</div>' +
+
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">' +
+            '<button type="button" id="swBtnRefill" style="padding:11px 18px;border-radius:14px;font-size:13.5px;font-weight:800;background:rgba(20,184,166,0.22);color:#99f6e4;border:1px solid rgba(45,212,191,0.4)" onclick="isiUlangStokSpinSetting_()">🔄 Isi Ulang Stok</button>' +
+            '<button type="button" id="swBtnSaveSetting" class="sw-cta-btn" style="max-width:260px;min-height:44px;font-size:14.5px" onclick="simpanKuotaSpinSetting_()">💾 Simpan &amp; Terapkan</button>' +
+          '</div>' +
+
+          '<div>' +
+            '<div style="font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:#5eead4;margin-bottom:8px">3. Rekap Kesempatan Putar Userlogin (Berdasarkan Absen "KANTOR")</div>' +
+            '<div style="border:1px solid rgba(255,255,255,0.12);border-radius:14px;overflow:auto;max-height:320px;background:rgba(6,13,24,0.6)">' +
+              '<table class="sw-quota-table">' +
+                '<thead>' +
+                  '<tr>' +
+                    '<th>Userlogin</th>' +
+                    '<th>Jabatan</th>' +
+                    '<th style="text-align:center">Total Absen Kantor</th>' +
+                    '<th style="text-align:center">Terpakai</th>' +
+                    '<th style="text-align:center">Sisa Kesempatan</th>' +
+                  '</tr>' +
+                '</thead>' +
+                '<tbody id="swRekapUsersBody">' +
+                  '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:18px">Memuat data kesempatan user...</td></tr>' +
+                '</tbody>' +
+              '</table>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    renderTabelKuotaSpinSetting_();
+    renderRekapUsersSpinSetting_();
+    muatDataSpinSettingDariServer_();
+  }
+
+  function muatDataSpinSettingDariServer_() {
+    if (!S || !S.token) return;
+    api('getSpinWheelData', S.token).then(res => {
+      if (!res || !res.sukses) {
+        pesan('swSettingMsg', (res && res.pesan) || 'Gagal memuat data setting.', 'err');
+        return;
+      }
+      swApplyServerData_(res);
+      SW_PRIZES.forEach(p => {
+        SW_DRAFT_QUOTAS[p.id] = SW_STATE.initialQuotas[p.id];
+      });
+      if ($('swShowRemainingChk')) $('swShowRemainingChk').checked = SW_STATE.showRemainingOnMain;
+      pilihModeSpinSetting_(SW_STATE.drawMode);
+      renderTabelKuotaSpinSetting_();
+      renderRekapUsersSpinSetting_();
+    }).catch(err => {
+      pesan('swSettingMsg', 'Gagal memuat: ' + (err.message || String(err)), 'err');
+    });
+  }
+
+  function pilihModeSpinSetting_(mode) {
+    SW_STATE.drawMode = (mode === 'probability') ? 'probability' : 'exact';
+    if ($('swModeCardExact')) $('swModeCardExact').classList.toggle('active', SW_STATE.drawMode === 'exact');
+    if ($('swModeCardProb')) $('swModeCardProb').classList.toggle('active', SW_STATE.drawMode === 'probability');
+    updateMetrikTabelKuotaSpin_();
+  }
+
+  function setBatchKuotaSpin_(aksi) {
+    SW_PRIZES.forEach(p => {
+      if (aksi === 'zero') SW_DRAFT_QUOTAS[p.id] = 0;
+      else if (aksi === 'one') SW_DRAFT_QUOTAS[p.id] = 1;
+      else SW_DRAFT_QUOTAS[p.id] = p.defaultQuota;
+    });
+    renderTabelKuotaSpinSetting_();
+  }
+
+  function renderTabelKuotaSpinSetting_() {
+    const tbody = $('swQuotaTableBody');
+    if (!tbody) return;
+    const isExact = SW_STATE.drawMode === 'exact';
+    const totalDraft = swSumQuota_(SW_DRAFT_QUOTAS);
+
+    tbody.innerHTML = SW_PRIZES.map((p, idx) => {
+      const draftVal = SW_DRAFT_QUOTAS[p.id] || 0;
+      const remVal = SW_STATE.remainingQuotas[p.id] || 0;
+      const pctStr = swFormatPercent_(draftVal, totalDraft);
+      const displayName = p.id === 'yuk_kerja' ? (p.wheelLabel + ' (Motivasi Kerja)') : p.fullText;
+
+      return '<tr>' +
+        '<td>' +
+          '<div style="display:flex;align-items:center;gap:8px">' +
+            '<span style="width:11px;height:11px;border-radius:50%;background:' + p.color + ';display:inline-block;border:1px solid rgba(255,255,255,0.3);flex-shrink:0"></span>' +
+            '<span style="font-weight:700;color:#ffffff">' + (idx + 1) + '. ' + esc(displayName) + '</span>' +
+          '</div>' +
+        '</td>' +
+        '<td style="text-align:center">' +
+          '<input type="number" min="0" step="1" class="sw-quota-input" data-qid="' + p.id + '" value="' + draftVal + '" oninput="ubahInputKuotaSpin_(this)">' +
+        '</td>' +
+        '<td style="text-align:center;font-weight:800;color:' + (isExact ? (remVal > 0 ? '#6ee7b7' : '#fda4af') : '#5eead4') + '" id="swRemCell_' + p.id + '">' +
+          (isExact ? remVal : '∞') +
+        '</td>' +
+        '<td style="text-align:right;font-weight:800;color:#99f6e4" id="swPctCell_' + p.id + '">' + pctStr + '</td>' +
+      '</tr>';
+    }).join('');
+
+    updateMetrikTabelKuotaSpin_();
+  }
+
+  function ubahInputKuotaSpin_(el) {
+    if (!el) return;
+    const id = el.getAttribute('data-qid');
+    if (!id) return;
+    SW_DRAFT_QUOTAS[id] = el.value === '' ? 0 : Math.max(0, Math.floor(Number(el.value) || 0));
+    updateMetrikTabelKuotaSpin_();
+  }
+
+  function updateMetrikTabelKuotaSpin_() {
+    const totalDraft = swSumQuota_(SW_DRAFT_QUOTAS);
+    const totalRem = swSumQuota_(SW_STATE.remainingQuotas);
+    const isExact = SW_STATE.drawMode === 'exact';
+
+    SW_PRIZES.forEach(p => {
+      const pctEl = $('swPctCell_' + p.id);
+      const remEl = $('swRemCell_' + p.id);
+      if (pctEl) pctEl.textContent = swFormatPercent_(SW_DRAFT_QUOTAS[p.id] || 0, totalDraft);
+      if (remEl) {
+        const rv = SW_STATE.remainingQuotas[p.id] || 0;
+        remEl.textContent = isExact ? rv : '∞';
+        remEl.style.color = isExact ? (rv > 0 ? '#6ee7b7' : '#fda4af') : '#5eead4';
+      }
+    });
+
+    if ($('swTotalInitCell')) $('swTotalInitCell').textContent = totalDraft;
+    if ($('swTotalRemCell')) $('swTotalRemCell').textContent = isExact ? totalRem : '∞';
+    if ($('swTotalPctCell')) $('swTotalPctCell').textContent = totalDraft > 0 ? '100%' : '0%';
+  }
+
+  function renderRekapUsersSpinSetting_() {
+    const tbody = $('swRekapUsersBody');
+    if (!tbody) return;
+    const list = SW_STATE.rekapUsers || [];
+    if (!list.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:18px">Belum ada data rekap user.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.map(u =>
+      '<tr>' +
+        '<td style="font-weight:700;color:#ffffff">' + esc(u.nama) + '</td>' +
+        '<td style="color:#99f6e4;font-weight:700">' + esc(u.jabatan) + '</td>' +
+        '<td style="text-align:center;font-weight:800;color:#e2e8f0">' + (u.totalKesempatan || 0) + ' hari</td>' +
+        '<td style="text-align:center;font-weight:700;color:#cbd5e1">' + (u.terpakai || 0) + 'x</td>' +
+        '<td style="text-align:center;font-weight:900;color:' + ((u.sisaKesempatan || 0) > 0 ? '#fcd34d' : '#94a3b8') + '">' + (u.sisaKesempatan || 0) + 'x</td>' +
+      '</tr>'
+    ).join('');
+  }
+
+  function simpanKuotaSpinSetting_() {
+    const totalDraft = swSumQuota_(SW_DRAFT_QUOTAS);
+    if (totalDraft <= 0) {
+      pesan('swSettingMsg', 'Total kuota minimal harus lebih dari 0 agar roda bisa diputar!', 'err');
+      return;
+    }
+    const payload = {
+      drawMode: SW_STATE.drawMode,
+      showRemainingOnMain: Boolean($('swShowRemainingChk') && $('swShowRemainingChk').checked),
+      initialQuotas: Object.assign({}, SW_DRAFT_QUOTAS)
+    };
+    loading('swBtnSaveSetting', true, '💾 Simpan & Terapkan');
+    api('simpanSettingSpinWheel', S.token, payload).then(res => {
+      loading('swBtnSaveSetting', false, '💾 Simpan & Terapkan');
+      if (!res || !res.sukses) {
+        pesan('swSettingMsg', (res && res.pesan) || 'Gagal menyimpan pengaturan.', 'err');
+        return;
+      }
+      swApplyServerData_(res);
+      renderTabelKuotaSpinSetting_();
+      renderRekapUsersSpinSetting_();
+      pesan('swSettingMsg', res.pesan || 'Pengaturan kuota berhasil disimpan.', 'ok');
+    }).catch(err => {
+      loading('swBtnSaveSetting', false, '💾 Simpan & Terapkan');
+      pesan('swSettingMsg', 'Gagal: ' + (err.message || String(err)), 'err');
+    });
+  }
+
+  function isiUlangStokSpinSetting_() {
+    loading('swBtnRefill', true, '🔄 Isi Ulang Stok');
+    api('isiUlangStokSpinWheel', S.token).then(res => {
+      loading('swBtnRefill', false, '🔄 Isi Ulang Stok');
+      if (!res || !res.sukses) {
+        pesan('swSettingMsg', (res && res.pesan) || 'Gagal mengisi ulang stok.', 'err');
+        return;
+      }
+      swApplyServerData_(res);
+      renderTabelKuotaSpinSetting_();
+      pesan('swSettingMsg', res.pesan || 'Stok berhasil diisi ulang.', 'ok');
+    }).catch(err => {
+      loading('swBtnRefill', false, '🔄 Isi Ulang Stok');
+      pesan('swSettingMsg', 'Gagal: ' + (err.message || String(err)), 'err');
+    });
+  }
+
   // ---------- NAVIGASI ----------
   function nav(m) {
     if (typeof CUR !== 'undefined' && CUR === 'absensi' && m !== 'absensi') {
@@ -14893,6 +16618,9 @@
     if (typeof CUR !== 'undefined' && CUR === 'performance' && m !== 'performance') {
       hentikanJamPerformance_();
       hentikanAutoRefreshPerformance_();
+    }
+    if (typeof CUR !== 'undefined' && CUR === 'spinwheels' && m !== 'spinwheels') {
+      hentikanAnimasiSpinWheels_();
     }
     document.querySelectorAll('.menu a[data-m]').forEach(a => a.classList.toggle('active', a.dataset.m===m));
     syncActiveCategoryHighlight_(m);
@@ -14941,6 +16669,10 @@
       muatHalamanDaftarHadir();
     } else if (m === 'tambahkaryawan') {
       muatHalamanTambahKaryawan();
+    } else if (m === 'spinwheels') {
+      muatHalamanSpinWheels();
+    } else if (m === 'spinsetting') {
+      muatHalamanSpinSetting();
     } else {
       $('content').innerHTML =
         '<div class="panel placeholder"><div class="big">' + MENU[m].ikon + '</div>' +
