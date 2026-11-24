@@ -4814,7 +4814,6 @@
     border-color: #7dd3fc;
     box-shadow: var(--shadow-md);
   }
-  /* Urutan 1: Nama dari Kolom B */
   .dh-card-nama {
     width: 100%;
     font-size: 11px;
@@ -4830,7 +4829,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  /* Urutan 2: Foto dari Kolom D (Ukuran Dikecilkan & Disesuaikan) */
   .dh-card-foto-wrap {
     position: relative;
     width: 100%;
@@ -4864,7 +4862,6 @@
     text-align: center;
     padding: 8px;
   }
-  /* Urutan 3: Jam Masuk dari Kolom C */
   .dh-card-jam {
     width: 100%;
     display: flex;
@@ -6131,7 +6128,7 @@
   }
 
 </style>
-<script src="/_aistudio-iframe.js?v=29045eb3"></script></head>
+</head>
 <body>
 
 <!-- ================= GLOBAL LOADING SCREEN ================= -->
@@ -6339,7 +6336,6 @@
       <button type="button" class="outline" onclick="tutupModalHistoriRotasi()">Tutup ✕</button>
     </div>
     <div class="mbody">
-      <div class="tg-info" style="margin:0 0 10px">Catatan aktivitas rotasi assignment:</div>
       <div id="historyContainer" class="rot-hist-list">
         <div class="tg-empty">Belum ada histori rotasi.</div>
       </div>
@@ -6372,7 +6368,6 @@
       </div>
     </div>
     <div class="mbody">
-      <div class="pf-scroll-hint"><span>↔ Geser tabel ke kiri / kanan untuk melihat detail kolom</span><span>8 Kolom</span></div>
       <div class="tbl-wrap">
         <table class="tbl" style="min-width:760px">
           <thead>
@@ -6406,7 +6401,6 @@
       </div>
     </div>
     <div class="mbody">
-      <div class="pf-scroll-hint"><span>↔ Geser tabel ke kiri / kanan untuk melihat detail kolom</span><span>10 Kolom</span></div>
       <div class="tbl-wrap">
         <table class="tbl" style="min-width:880px">
           <thead>
@@ -6441,7 +6435,6 @@
       </div>
     </div>
     <div class="mbody">
-      <div class="pf-scroll-hint"><span>↔ Geser tabel ke kiri / kanan untuk melihat detail kolom</span><span>7 Kolom</span></div>
       <div class="tbl-wrap">
         <table class="tbl" style="min-width:680px">
           <thead>
@@ -6629,9 +6622,6 @@
 </div>
 
 <script>
-  // ============================================================================
-  // KONFIGURASI BACKEND GOOGLE APPS SCRIPT (UNTUK HOSTING GITHUB PAGES & APK)
-  // ============================================================================
   const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxT0W1f5ndPwZqbPTLznW037GvzMdABjt-gB8GTBdcKvozRmyIAYoRFqNGWAJtzvSAiWw/exec';
 
   (function initGitHubPagesBridge_() {
@@ -6641,7 +6631,7 @@
     function unwrapRpcPayload_(payload) {
       if (payload && typeof payload === 'object' && ('ok' in payload) && ('result' in payload || 'error' in payload)) {
         if (!payload.ok) {
-          throw new Error(payload.error || 'Terjadi kesalahan pada server Google Script.');
+          throw new Error(payload.error || 'Terjadi kesalahan pada server.');
         }
         return payload.result;
       }
@@ -6690,7 +6680,7 @@
           }
           return function(...args) {
             if (!GAS_WEBAPP_URL || GAS_WEBAPP_URL.indexOf('PASTE_URL') >= 0) {
-              const errCfg = new Error('Silakan isi variabel GAS_WEBAPP_URL di Index.html dengan URL /exec Google Apps Script Anda.');
+              const errCfg = new Error('Konfigurasi koneksi server belum tersedia.');
               if (typeof onFailure === 'function') onFailure(errCfg);
               return;
             }
@@ -6701,7 +6691,7 @@
               .catch(function(err) {
                 const msg = String(err && err.message ? err.message : err);
                 const customErr = (msg.indexOf('Failed to fetch') >= 0 || msg.indexOf('NetworkError') >= 0)
-                  ? new Error('Gagal terhubung ke server. Pastikan koneksi internet stabil dan izin akses Web App sudah aktif.')
+                  ? new Error('Gagal terhubung ke server. Pastikan koneksi internet stabil.')
                   : err;
                 if (typeof onFailure === 'function') onFailure(customErr);
               });
@@ -7558,13 +7548,9 @@
   const jmlHari = n => Math.round(Number(n) || 0).toLocaleString('id-ID') + ' hari';
 
   let VALID_BH_KATEGORI_SET = {};
-
-  const PROGRESS_PAYMENT_SS_ID = '13l33Gn_FCnRmG0ridMTMFB0OOK2cymDmiavzxQl340w';
-  const PROGRESS_PAYMENT_SHEET_NAME = 'PAYMENT KREDIVO FIELD';
   const NAMA_BULAN_INDO = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
   function muatDashboard() {
-    muatProgressPaymentDashboard_();
     api('getDataDashboard', S.token).then(r => {
       const box = $('chartBox'), bar = $('barBox'), perBox = $('periodeChartBox'), ppBox = $('progressPaymentBox'); if (!box) return;
       if (!r.sukses) {
@@ -7602,132 +7588,10 @@
             setTimeout(sinkronGarisTrenPeriode_, 350);
           });
         } else {
-          perBox.textContent = 'Belum ada data periode pada Kolom BH.';
+          perBox.textContent = 'Belum ada data periode.';
         }
       }
     }).catch(e => { ['chartBox','barBox','periodeChartBox'].forEach(i => { const b=$(i); if (b) b.textContent = 'Gagal memuat: ' + e.message; }); });
-  }
-
-  function parseNominalProgressPayment_(raw) {
-    if (typeof raw === 'number') return isFinite(raw) ? raw : 0;
-    if (raw == null) return 0;
-    let s = String(raw).trim();
-    if (!s) return 0;
-    s = s.replace(/^[Rr][Pp]\.?\s*/, '').trim();
-    if (s.indexOf('.') >= 0 && s.indexOf(',') >= 0) {
-      if (s.lastIndexOf(',') > s.lastIndexOf('.')) s = s.replace(/\./g, '').replace(',', '.');
-      else s = s.replace(/,/g, '');
-    } else if (s.indexOf('.') >= 0) {
-      const pts = s.split('.');
-      if (pts.length > 2 || (pts.length === 2 && pts[1].length === 3)) s = s.replace(/\./g, '');
-    } else if (s.indexOf(',') >= 0) {
-      const pts = s.split(',');
-      if (pts.length > 2 || (pts.length === 2 && pts[1].length === 3)) s = s.replace(/,/g, '');
-      else s = s.replace(',', '.');
-    }
-    s = s.replace(/[^0-9.-]/g, '');
-    const n = Number(s);
-    return isFinite(n) ? n : 0;
-  }
-
-  function parseTanggalProgressPaymentClient_(rawVal, fmtVal) {
-    const candidates = [fmtVal, rawVal];
-    for (let idx = 0; idx < candidates.length; idx++) {
-      const c = candidates[idx];
-      if (!c) continue;
-      if (c instanceof Date && !isNaN(c.getTime())) {
-        return { day: c.getDate(), month: c.getMonth() + 1, year: c.getFullYear() };
-      }
-      const s = String(c).trim();
-      if (!s) continue;
-      const gviz = s.match(/^Date\(\s*(\d{4})\s*,\s*(\d{1,2})\s*,\s*(\d{1,2})/i);
-      if (gviz) {
-        return { year: parseInt(gviz[1], 10), month: parseInt(gviz[2], 10) + 1, day: parseInt(gviz[3], 10) };
-      }
-      const dmy = s.match(/^(\d{1,2})[\/\-.\s](\d{1,2})[\/\-.\s](\d{2,4})/);
-      if (dmy) {
-        const p1 = parseInt(dmy[1], 10), p2 = parseInt(dmy[2], 10);
-        let y = parseInt(dmy[3], 10);
-        if (y < 100) y += 2000;
-        if (p2 >= 1 && p2 <= 12 && p1 >= 1 && p1 <= 31) return { day: p1, month: p2, year: y };
-        if (p1 >= 1 && p1 <= 12 && p2 >= 1 && p2 <= 31) return { day: p2, month: p1, year: y };
-      }
-      const ymd = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
-      if (ymd) {
-        return { year: parseInt(ymd[1], 10), month: parseInt(ymd[2], 10), day: parseInt(ymd[3], 10) };
-      }
-    }
-    return null;
-  }
-
-  function muatProgressPaymentDashboard_() {
-    const url = 'https://docs.google.com/spreadsheets/d/' + PROGRESS_PAYMENT_SS_ID + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(PROGRESS_PAYMENT_SHEET_NAME);
-    fetch(url).then(res => res.text()).then(txt => {
-      const start = txt.indexOf('{');
-      const end = txt.lastIndexOf('}');
-      if (start < 0 || end <= start) return;
-      const json = JSON.parse(txt.substring(start, end + 1));
-      const rows = (json && json.table && Array.isArray(json.table.rows)) ? json.table.rows : [];
-
-      const now = new Date();
-      const curYear = now.getFullYear();
-      const curMonth = now.getMonth() + 1; // 1..12
-      const daysInMonth = new Date(curYear, curMonth, 0).getDate();
-
-      const dailyMap = {};
-      const countMap = {};
-      for (let d = 1; d <= daysInMonth; d++) {
-        dailyMap[d] = 0;
-        countMap[d] = 0;
-      }
-
-      let totalTransaksi = 0;
-      rows.forEach(r => {
-        const cells = (r && Array.isArray(r.c)) ? r.c : [];
-        const cellE = cells[4]; // Kolom E = Pencapaian Payment
-        const cellF = cells[5]; // Kolom F = Tanggal Pembayaran
-        if (!cellE || !cellF) return;
-        const nominal = parseNominalProgressPayment_(cellE.v != null ? cellE.v : cellE.f);
-        if (!nominal || nominal <= 0) return;
-        const tgl = parseTanggalProgressPaymentClient_(cellF.v, cellF.f);
-        if (!tgl) return;
-        if (tgl.year === curYear && tgl.month === curMonth && tgl.day >= 1 && tgl.day <= daysInMonth) {
-          dailyMap[tgl.day] = (dailyMap[tgl.day] || 0) + nominal;
-          countMap[tgl.day] = (countMap[tgl.day] || 0) + 1;
-          totalTransaksi++;
-        }
-      });
-
-      const days = [];
-      let runningTotal = 0;
-      const mmStr = curMonth < 10 ? '0' + curMonth : String(curMonth);
-      for (let d = 1; d <= daysInMonth; d++) {
-        const dailyVal = Math.round(dailyMap[d] || 0);
-        const cnt = countMap[d] || 0;
-        const hasPay = dailyVal > 0;
-        if (hasPay) runningTotal += dailyVal;
-        const ddStr = d < 10 ? '0' + d : String(d);
-        days.push({
-          day: d,
-          dateStr: ddStr + '/' + mmStr + '/' + curYear,
-          daily: dailyVal,
-          cumulative: runningTotal,
-          count: cnt,
-          hasPayment: hasPay
-        });
-      }
-
-      const ppData = {
-        bulan: curMonth,
-        tahun: curYear,
-        namaBulan: (NAMA_BULAN_INDO[curMonth - 1] || '') + ' ' + curYear,
-        daysInMonth: daysInMonth,
-        totalAkumulasi: runningTotal,
-        totalTransaksi: totalTransaksi,
-        days: days
-      };
-      terapkanProgressPaymentKeDom_(ppData);
-    }).catch(() => {});
   }
 
   function terapkanProgressPaymentKeDom_(pp) {
@@ -7860,7 +7724,6 @@
 
   function gambarDiagramPeriode(pc, bhSetOverride) {
     const rawSeries = Array.isArray(pc && pc.series) ? pc.series : [];
-    // Urutkan periode arsip (1Uc3t1J80coRzYsSpIvhm8Y1Rl-anZSZgOUCNa10hdBU) di kiri dan periode berjalan (16Cqr8mUwvM2Hd8HrNSgzoOF_NvDPmlxLMi0ik9GiGzc) di paling kanan
     const archList = rawSeries.filter(s => s && !s.isBerjalan);
     const runList = rawSeries.filter(s => s && s.isBerjalan);
     const series = archList.concat(runList);
@@ -7883,7 +7746,6 @@
       );
     };
 
-    // Tentukan produk yang benar-benar ada di Kolom BH untuk masing-masing periode
     const seriesWithProds = series.map((s, idx) => {
       const isRun = Boolean(s && s.isBerjalan) || (archList.length === 0 && idx === series.length - 1);
       const vals = (s && s.values) ? s.values : {};
@@ -7891,7 +7753,6 @@
         ? s.activeProds
         : Object.keys(vals);
 
-      // Pada periode berjalan (16Cqr8mUwvM2Hd8HrNSgzoOF_NvDPmlxLMi0ik9GiGzc), pastikan hanya produk yang ada di Kolom BH saat ini yang ditampilkan
       if (isRun && hasBhFilter && (!Array.isArray(s && s.activeProds) || s.activeProds.length === 0)) {
         rawProds = rawProds.filter(p => Boolean(bhAllowed[String(p || '').trim().toUpperCase()]));
       }
@@ -7912,7 +7773,7 @@
     const produkList = urutProduk_(allProdsUnion);
 
     if (!seriesWithProds.length || !produkList.length) {
-      return '<div class="tg-empty">Belum ada data diagram periode pada Kolom BH.</div>';
+      return '<div class="tg-empty">Belum ada data diagram periode.</div>';
     }
 
     const warnaMap = {
@@ -8352,8 +8213,7 @@
       kpi('Total Pendapatan', rpN(rev), 'var(--primary)', 'Penerimaan Berjalan') +
       kpi('Total Beban', rpN(exp), 'var(--danger-dark)', 'Pengeluaran Operasional') +
       kpi('Estimasi Laba Bersih', rpN(rev - exp), 'var(--success-dark)', 'Periode Berjalan') + '</div>' +
-      '<div class="lk-cta"><div><b style="font-size:15.5px">Pencatatan Jurnal Terintegrasi</b>' +
-      '<p>Laba Rugi, Arus Kas, dan Neraca diperbarui otomatis.</p></div>' +
+      '<div class="lk-cta"><div><b style="font-size:15.5px">Jurnal Transaksi</b></div>' +
       '<button onclick="lkTab(\'jurnal\')">+ Catat Transaksi</button></div>';
   }
 
@@ -8466,8 +8326,8 @@
     });
     const net = inn - out;
     return lkHead('Laporan Arus Kas', 'Periode ' + ap) + '<div class="panel">' +
-      lkRow('<b>Arus Kas Masuk</b><div class="lk-sm" style="color:inherit">Penerimaan kas &amp; bank</div>', rp(inn), 'in') +
-      lkRow('<b>Arus Kas Keluar</b><div class="lk-sm" style="color:inherit">Pengeluaran operasional &amp; bagi hasil</div>', rp(out), 'out') +
+      lkRow('<b>Arus Kas Masuk</b>', rp(inn), 'in') +
+      lkRow('<b>Arus Kas Keluar</b>', rp(out), 'out') +
       lkRow('Arus Kas Bersih', rpN(net), 'tot ' + (net >= 0 ? 'pos' : 'neg')) + '</div>';
   }
 
@@ -8618,7 +8478,6 @@
         '<div class="lk-sm" style="margin:6px 0 20px">' + esc(f.createdAt) + ' • ' + esc(f.sizeKb) + ' KB</div>' +
         '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
           '<button type="button" id="btnUnduhPdf" onclick="unduhPdfLangsung(\'' + esc(f.id) + '\',\'' + esc(f.downloadUrl) + '\')">⬇ Unduh PDF</button>' +
-          '<a href="' + esc(f.viewUrl) + '" target="_blank" style="display:inline-flex;align-items:center;padding:10px 16px;border:1.5px solid #bae6fd;color:var(--primary);border-radius:12px;text-decoration:none;font-weight:700;font-size:13.5px">↗ Buka di Drive</a>' +
         '</div>' +
       '</div>';
     $('modalFile').classList.add('show');
@@ -9241,12 +9100,10 @@
       }
       if (r.tipe === 'image' && r.dataUrl) {
         $('mfBody').innerHTML =
-          '<img src="' + r.dataUrl + '" alt="' + esc(r.nama) + '" style="max-width:100%;max-height:70vh;border-radius:12px;border:1px solid var(--line)">' +
-          '<div style="margin-top:12px"><a href="' + esc(r.url) + '" target="_blank" style="color:var(--primary);font-weight:700;font-size:13.5px">Buka di Google Drive ↗</a></div>';
+          '<img src="' + r.dataUrl + '" alt="' + esc(r.nama) + '" style="max-width:100%;max-height:70vh;border-radius:12px;border:1px solid var(--line)">';
       } else {
         $('mfBody').innerHTML =
-          '<div style="padding:24px"><p style="margin-bottom:14px;font-weight:700">' + esc(r.nama || 'Dokumen Lampiran') + '</p>' +
-          '<a href="' + esc(r.url) + '" target="_blank" style="display:inline-block;padding:12px 20px;background:var(--primary);color:#fff;border-radius:12px;text-decoration:none;font-weight:700">Buka di Google Drive ↗</a></div>';
+          '<div style="padding:24px"><p style="margin-bottom:14px;font-weight:700">' + esc(r.nama || 'Dokumen Lampiran') + '</p></div>';
       }
     }).catch(e => {
       $('mfBody').innerHTML = '<div class="placeholder">Gagal memuat: ' + esc(e.message) + '</div>';
@@ -10369,20 +10226,11 @@
     if (it._tambahanHpRows) { cb(it._tambahanHpRows); return; }
     apiSilent_('getDataTambahanHpByUserId', S.token, it.userId || '', it.kategori || '').then(r => {
       const rows = (r && r.sukses && Array.isArray(r.items)) ? r.items : [];
-      if (rows.length > 0) {
-        it._tambahanHpRows = rows;
-        cb(it._tambahanHpRows);
-        return;
-      }
-      return lookupTambahanHpDirect_(it.userId || '', it.kategori || '').then(fallbackRows => {
-        it._tambahanHpRows = fallbackRows || [];
-        cb(it._tambahanHpRows);
-      });
+      it._tambahanHpRows = rows;
+      cb(it._tambahanHpRows);
     }).catch(() => {
-      lookupTambahanHpDirect_(it.userId || '', it.kategori || '').then(fallbackRows => {
-        it._tambahanHpRows = fallbackRows || [];
-        cb(it._tambahanHpRows);
-      });
+      it._tambahanHpRows = [];
+      cb(it._tambahanHpRows);
     });
   }
 
@@ -10602,58 +10450,6 @@
     }
   }
 
-  function lookupTambahanHpDirect_(userId, kategori) {
-    const uid = String(userId == null ? '' : userId).trim().replace(/^'+/, '');
-    if (!uid) return Promise.resolve([]);
-    const safeUid = uid.replace(/'/g, "\\'");
-    const isAkulaku = String(kategori == null ? '' : kategori).trim().toUpperCase() === 'AKULAKU';
-    if (isAkulaku) {
-      const tqAkulaku = "select A,B,C,D where A = '" + safeUid + "' or A = '" + safeUid.toUpperCase() + "' or A = '" + safeUid.toLowerCase() + "'";
-      const urlAkulaku = 'https://docs.google.com/spreadsheets/d/1Vvqcv_jT82ldkaH-aucMIC4G5oO8V4S5woDwuSLM2o8/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent('DATA TAMBAHAN AKULAKU') + '&tq=' + encodeURIComponent(tqAkulaku);
-      return fetch(urlAkulaku)
-        .then(res => res.text())
-        .then(txt => {
-          const start = txt.indexOf('{');
-          const end = txt.lastIndexOf('}');
-          if (start < 0 || end < 0) return [];
-          const json = JSON.parse(txt.slice(start, end + 1));
-          const rows = (json && json.table && Array.isArray(json.table.rows)) ? json.table.rows : [];
-          const cellVal = c => (c && (c.f != null ? c.f : c.v) != null) ? String(c.f != null ? c.f : c.v).trim() : '';
-          return rows.map(r => {
-            const c = (r && Array.isArray(r.c)) ? r.c : [];
-            return {
-              contactType: cellVal(c[1]),
-              contactName: cellVal(c[2]),
-              contactPhone: cellVal(c[3])
-            };
-          });
-        })
-        .catch(() => []);
-    }
-    const tq = "select A,B,C,D,E,F where A = '" + safeUid + "' or A = '" + safeUid.toUpperCase() + "' or A = '" + safeUid.toLowerCase() + "'";
-    const url = 'https://docs.google.com/spreadsheets/d/1Vvqcv_jT82ldkaH-aucMIC4G5oO8V4S5woDwuSLM2o8/gviz/tq?tqx=out:json&tq=' + encodeURIComponent(tq);
-    return fetch(url)
-      .then(res => res.text())
-      .then(txt => {
-        const start = txt.indexOf('{');
-        const end = txt.lastIndexOf('}');
-        if (start < 0 || end < 0) return [];
-        const json = JSON.parse(txt.slice(start, end + 1));
-        const rows = (json && json.table && Array.isArray(json.table.rows)) ? json.table.rows : [];
-        const cellVal = c => (c && (c.f != null ? c.f : c.v) != null) ? String(c.f != null ? c.f : c.v).trim() : '';
-        return rows.map(r => {
-          const c = (r && Array.isArray(r.c)) ? r.c : [];
-          return {
-            sumberData: cellVal(c[2]),
-            namaSumber: cellVal(c[4]),
-            noHp: cellVal(c[3]),
-            jenisSumber: cellVal(c[5])
-          };
-        });
-      })
-      .catch(() => []);
-  }
-
   function renderTambahanHp_(rows) {
     $('mnBody').innerHTML = htmlTambahanHp_(rows, TG_NASABAH_AKTIF);
   }
@@ -10726,36 +10522,11 @@
     $('modalNasabah').classList.remove('show');
   }
 
-  // ---------- POP UP KARTU TAGIHAN (SHEET HTML_KARTU_TAGIHAN KOLOM B - FULL 1 LAYAR ANDROID) ----------
+  // ---------- POP UP KARTU TAGIHAN ----------
   const KARTU_TAGIHAN_CACHE = {};
-  const KARTU_TAGIHAN_SHEET_ID = '16Cqr8mUwvM2Hd8HrNSgzoOF_NvDPmlxLMi0ik9GiGzc';
-  const KARTU_TAGIHAN_SHEET_NAME = 'HTML_KARTU_TAGIHAN';
 
   function normUserIdKartu_(v) {
     return String(v == null ? '' : v).trim().replace(/^'+/, '').replace(/\.0+$/, '').trim().toLowerCase();
-  }
-
-  function fetchKartuTagihanGvizFallback_(userId) {
-    const targetId = normUserIdKartu_(userId);
-    if (!targetId) return Promise.reject(new Error('User ID kosong.'));
-    const url = 'https://docs.google.com/spreadsheets/d/' + KARTU_TAGIHAN_SHEET_ID + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(KARTU_TAGIHAN_SHEET_NAME);
-    return fetch(url).then(r => r.text()).then(txt => {
-      const m = txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\);?/);
-      if (!m) throw new Error('Format respon sheet HTML_KARTU_TAGIHAN tidak dikenali.');
-      const json = JSON.parse(m[1]);
-      const rows = (json && json.table && json.table.rows) ? json.table.rows : [];
-      for (let i = 0; i < rows.length; i++) {
-        const c = rows[i] && rows[i].c ? rows[i].c : [];
-        const c0 = c[0] ? (c[0].f != null ? c[0].f : c[0].v) : '';
-        const c0Raw = c[0] && c[0].v != null ? c[0].v : '';
-        if (normUserIdKartu_(c0) === targetId || normUserIdKartu_(c0Raw) === targetId) {
-          const c1 = c[1] ? (c[1].v != null ? String(c[1].v) : (c[1].f != null ? String(c[1].f) : '')) : '';
-          if (!c1.trim()) throw new Error('Kolom B pada sheet HTML_KARTU_TAGIHAN kosong untuk User ID ' + userId + '.');
-          return { sukses: true, userId: String(userId).trim(), row: i + 1, html: c1 };
-        }
-      }
-      throw new Error('Kartu Tagihan untuk User ID ' + userId + ' tidak ditemukan di sheet HTML_KARTU_TAGIHAN.');
-    });
   }
 
   function renderHtmlKartuTagihanToModal_(htmlContent) {
@@ -10843,7 +10614,7 @@
     modal.classList.add('show');
 
     if (!userId) {
-      body.innerHTML = '<div class="tg-empty" style="padding:36px 16px">User ID nasabah kosong pada sheet BA KREDIVO FIELD.</div>';
+      body.innerHTML = '<div class="tg-empty" style="padding:36px 16px">User ID nasabah kosong.</div>';
       return;
     }
 
@@ -10862,21 +10633,11 @@
           renderHtmlKartuTagihanToModal_(r.html);
           return;
         }
-        return fetchKartuTagihanGvizFallback_(userId).then(fb => {
-          KARTU_TAGIHAN_CACHE[cacheKey] = fb.html;
-          renderHtmlKartuTagihanToModal_(fb.html);
-        }).catch(() => {
-          const msg = (r && r.pesan) ? r.pesan : ('Kartu Tagihan untuk User ID ' + userId + ' tidak ditemukan.');
-          body.innerHTML = '<div class="tg-empty" style="padding:36px 16px">' + esc(msg) + '</div>';
-        });
+        const msg = (r && r.pesan) ? r.pesan : 'Kartu Tagihan tidak ditemukan.';
+        body.innerHTML = '<div class="tg-empty" style="padding:36px 16px">' + esc(msg) + '</div>';
       })
       .catch(err => {
-        fetchKartuTagihanGvizFallback_(userId).then(fb => {
-          KARTU_TAGIHAN_CACHE[cacheKey] = fb.html;
-          renderHtmlKartuTagihanToModal_(fb.html);
-        }).catch(errFb => {
-          body.innerHTML = '<div class="tg-empty" style="padding:36px 16px">Gagal memuat Kartu Tagihan: ' + esc((errFb && errFb.message) || (err && err.message) || 'Terjadi kesalahan') + '</div>';
-        });
+        body.innerHTML = '<div class="tg-empty" style="padding:36px 16px">Gagal memuat Kartu Tagihan: ' + esc((err && err.message) || 'Terjadi kesalahan') + '</div>';
       });
   }
 
@@ -10969,7 +10730,6 @@
         '<div class="lk-sm" style="margin:6px 0 20px">' + esc(f.createdAt) + ' • ' + esc(f.sizeKb) + ' KB</div>' +
         '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
           '<button type="button" id="btnUnduhPdf" onclick="unduhPdfLangsung(\'' + esc(f.id) + '\',\'' + esc(f.downloadUrl) + '\')">⬇ Unduh PDF</button>' +
-          '<a href="' + esc(f.viewUrl) + '" target="_blank" style="display:inline-flex;align-items:center;padding:10px 16px;border:1.5px solid #bae6fd;color:var(--primary);border-radius:12px;text-decoration:none;font-weight:700;font-size:13.5px">↗ Buka di Drive</a>' +
         '</div>' +
       '</div>';
     $('modalFile').classList.add('show');
@@ -11262,8 +11022,7 @@
           img.src = res.dataUrl;
           img.style.display = 'inline-block';
         } else {
-          errBox.innerHTML = 'Gagal memuat gambar: ' + esc(res.message) +
-            '<br><a style="color:#38bdf8" target="_blank" href="' + esc(item.imageUrl) + '">Buka tautan asli</a>';
+          errBox.innerHTML = 'Gagal memuat gambar: ' + esc(res.message);
           errBox.style.display = 'block';
         }
       })
@@ -12200,7 +11959,6 @@
             '<button type="button" class="ghost sm" onclick="toggleAllRotasiDropdown(\'picAwal\', false)">Reset</button>' +
           '</div>' +
         '</div>' +
-        '<div class="tg-info" style="margin:0 0 8px">Pilih PIC sumber (bisa pilih banyak):</div>' +
         '<div class="fbox" id="fbox_rot_picAwal" style="background:#fff;padding:0;border:0">' +
           '<button type="button" class="enum-btn" id="picAwalDropdownButton" onclick="toggleRotasiDropdownMenu(\'picAwal\')">' +
             '<span class="txt" id="picAwalLabel">Pilih PIC Awal...</span><span>▾</span>' +
@@ -12218,7 +11976,6 @@
             '<button type="button" class="ghost sm" onclick="toggleAllRotasiDropdown(\'targetPic\', false)">Reset</button>' +
           '</div>' +
         '</div>' +
-        '<div class="tg-info" style="margin:0 0 8px">Pilih PIC tujuan alokasi (bisa pilih banyak):</div>' +
         '<div class="fbox" id="fbox_rot_targetPic" style="background:#fff;padding:0;border:0;margin-bottom:12px">' +
           '<button type="button" class="enum-btn" id="targetPicDropdownButton" onclick="toggleRotasiDropdownMenu(\'targetPic\')">' +
             '<span class="txt" id="targetPicLabel">Pilih PIC Tujuan...</span><span>▾</span>' +
@@ -12240,7 +11997,7 @@
             '<span id="checkedCountBadge" class="st-hijau">Dicentang: 0</span>' +
           '</div>' +
           '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%;max-width:420px">' +
-            '<input type="text" id="rotSearchInput" class="filter-input" oninput="renderRotasiTable()" placeholder="🔍 Cari Kolom A (User ID) atau D (Nama)...">' +
+            '<input type="text" id="rotSearchInput" class="filter-input" oninput="renderRotasiTable()" placeholder="🔍 Cari User ID atau Nama...">' +
             '<button type="button" class="btn-refresh" onclick="loadRotasiData()" title="Segarkan">' +
               '<i class="bi bi-arrow-clockwise" id="rotRefreshIcon"></i> Segarkan' +
             '</button>' +
@@ -12265,7 +12022,7 @@
             '</thead>' +
             '<tbody id="rotTableBody">' +
               '<tr>' +
-                '<td colspan="8" style="text-align:center;padding:24px;color:var(--muted)">Memuat data dari Google Sheets...</td>' +
+                '<td colspan="8" style="text-align:center;padding:24px;color:var(--muted)">Memuat data...</td>' +
               '</tr>' +
             '</tbody>' +
           '</table>' +
@@ -12280,7 +12037,7 @@
     if (ic) ic.className = 'spin-sm';
     const tbody = $('rotTableBody');
     if (tbody) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted)">Memuat data dari Google Sheets...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted)">Memuat data...</td></tr>';
     }
     api('getInitialData').then(data => {
       if ($('rotRefreshIcon')) $('rotRefreshIcon').className = 'bi bi-arrow-clockwise';
@@ -12334,7 +12091,7 @@
     const select = $('selectBA');
     if (!select) return;
     select.innerHTML =
-      '<option value="ALL">Semua BA</option>' +
+      '<option value="ALL">Semua</option>' +
       '<option value="EMPTY">(Kosong)</option>' +
       baList.map(val => '<option value="' + esc(val) + '">' + esc(val) + '</option>').join('');
     if (rotActiveBA !== 'ALL' && rotActiveBA !== 'EMPTY' && baList.indexOf(rotActiveBA) < 0) rotActiveBA = 'ALL';
@@ -12350,7 +12107,7 @@
     const select = $('selectBD');
     if (!select) return;
     select.innerHTML =
-      '<option value="ALL">Semua BD</option>' +
+      '<option value="ALL">Semua</option>' +
       '<option value="EMPTY">(Kosong)</option>' +
       bdList.map(val => '<option value="' + esc(val) + '">' + esc(val) + '</option>').join('');
     if (rotActiveBD !== 'ALL' && rotActiveBD !== 'EMPTY' && bdList.indexOf(rotActiveBD) < 0) rotActiveBD = 'ALL';
@@ -12605,9 +12362,9 @@
     const btn = $('btnAssign');
     if (btn) {
       btn.disabled = true;
-      btn.textContent = '⏳ Mengubah Kolom AT & Mencatat Histori...';
+      btn.textContent = '⏳ Memproses...';
     }
-    pesan('assignStatus', 'Memproses pembaruan ke Google Sheets...', 'ok');
+    pesan('assignStatus', 'Memproses pembaruan...', 'ok');
 
     const shuffledTargetPics = [...targetPicsArray].sort(() => Math.random() - 0.5);
 
@@ -13233,7 +12990,6 @@
       '<div class="pf-hero">' +
         '<div class="pf-hero-left">' +
           '<h2 class="pf-hero-title">📈 FOX PERFORMANCE</h2>' +
-          '<p class="pf-hero-sub">Monitoring Realtime Koleksi, PTP, Plan Closing & Produktivitas Area</p>' +
           '<div class="pf-clock-badge" id="pfLiveClock"><i class="far fa-clock"></i> Memuat waktu...</div>' +
         '</div>' +
         '<div class="pf-actions">' +
@@ -13248,7 +13004,6 @@
         '<div class="pf-kpi-card clickable" onclick="bukaModalPaymentPerformance()">' +
           '<div class="pf-kpi-top"><span class="pf-kpi-lbl" id="pfLblPayment">Total Payment</span><span class="pf-kpi-ic"><i class="fas fa-wallet"></i></span></div>' +
           '<div class="pf-kpi-val" id="pfValPayment">Rp 0,-</div>' +
-          '<div class="pf-kpi-hint" style="color:var(--primary)">Klik rincian Payment ➔</div>' +
         '</div>' +
         '<div class="pf-kpi-card c-target">' +
           '<div class="pf-kpi-top"><span class="pf-kpi-lbl" id="pfLblTarget">Target (1%)</span><span class="pf-kpi-ic"><i class="fas fa-bullseye"></i></span></div>' +
@@ -13257,7 +13012,6 @@
         '<div class="pf-kpi-card c-ptp clickable" onclick="bukaModalPtpPerformance()">' +
           '<div class="pf-kpi-top"><span class="pf-kpi-lbl" id="pfLblPtp">PTP</span><span class="pf-kpi-ic"><i class="fas fa-handshake"></i></span></div>' +
           '<div class="pf-kpi-val" id="pfValPtp">Rp 0,-</div>' +
-          '<div class="pf-kpi-hint">Klik rincian PTP ➔</div>' +
         '</div>' +
         '<div class="pf-kpi-card c-plan">' +
           '<div class="pf-kpi-top"><span class="pf-kpi-lbl" id="pfLblPlan">Plan Closing</span><span class="pf-kpi-ic"><i class="fas fa-flag-checkered"></i></span></div>' +
@@ -13396,7 +13150,6 @@
       return;
     }
 
-    // Kelompokkan per Area (Kolom F dari file user login)
     const groupMap = {};
     const groups = [];
     list.forEach(item => {
@@ -13939,7 +13692,7 @@
       btn.disabled = true;
       btn.innerHTML = '<span class="spin-sm"></span> Menarik...';
     }
-    tampilPesanEmailBlast_('Menarik seluruh email dari LIST_AKUN...', 'ok');
+    tampilPesanEmailBlast_('Menarik data email...', 'ok');
 
     api('tarikAllEmail')
       .then(resMsg => {
@@ -14202,15 +13955,15 @@
 
       // KOTAK KOMPOSISI AKUN
       '<div class="lh-section-box">' +
-        '<div class="lh-sec-head amber"><span>📦 Komposisi Akun</span><span style="font-size:10px;opacity:0.9">Ketuk kartu untuk rincian</span></div>' +
+        '<div class="lh-sec-head amber"><span>📦 Komposisi Akun</span></div>' +
         '<div id="lh-komposisi-akun-container" class="lh-komposisi-grid">' +
-          '<div style="padding:16px;text-align:center;color:var(--muted);font-size:12px;grid-column:1/-1">Pilih DC lalu tekan Search untuk memuat komposisi akun...</div>' +
+          '<div style="padding:16px;text-align:center;color:var(--muted);font-size:12px;grid-column:1/-1">Belum ada data.</div>' +
         '</div>' +
       '</div>' +
 
       // KOTAK HASIL REPORT
       '<div class="lh-section-box">' +
-        '<div class="lh-sec-head indigo"><span>📝 Hasil Report</span><span style="font-size:10px;opacity:0.9">Ketuk angka</span></div>' +
+        '<div class="lh-sec-head indigo"><span>📝 Hasil Report</span></div>' +
         '<div class="lh-cika-Report-inner-6">' +
           '<div class="lh-stat-cell"><div class="lh-stat-lbl">ACC</div><a id="lh-rep-acc" onclick="openLhDetailModal(\'rep_acc\', \'DETAIL REPORT - ACC\')" class="lh-link-num" style="color:#059669">-</a></div>' +
           '<div class="lh-stat-cell"><div class="lh-stat-lbl">Blm FU</div><a id="lh-rep-belum" onclick="openLhDetailModal(\'rep_belum\', \'DETAIL REPORT - BELUM FU\')" class="lh-link-num" style="color:#ea580c">-</a></div>' +
@@ -14225,7 +13978,7 @@
       '<div class="lh-amount-target-grid">' +
         // AMOUNT ALL
         '<div class="lh-section-box" style="margin-bottom:0">' +
-          '<div class="lh-sec-head rose"><span>💰 Amount All</span><span style="font-size:10px;opacity:0.9">Ketuk nominal</span></div>' +
+          '<div class="lh-sec-head rose"><span>💰 Amount All</span></div>' +
           '<div class="lh-amount-inner-4">' +
             '<div class="lh-stat-cell"><div class="lh-stat-lbl">Amount All (OS)</div><a id="lh-amount-os" onclick="openLhAmountModal(\'os\', \'DETAIL AMOUNT ALL - OS\')" class="lh-amt-val" style="color:#be123c">-</a></div>' +
             '<div class="lh-stat-cell"><div class="lh-stat-lbl">Total Payment</div><a id="lh-amount-payment" onclick="openLhAmountModal(\'payment\', \'DETAIL TOTAL PAYMENT\')" class="lh-amt-val" style="color:#059669">-</a></div>' +
@@ -14255,7 +14008,7 @@
         '<div class="lh-act-table-wrap">' +
           '<table class="lh-act-table">' +
             '<thead id="lh-head-activity-main"></thead>' +
-            '<tbody id="lh-body-activity-main"><tr><td colspan="32" style="text-align:center;padding:24px;color:var(--muted)">Pilih DC lalu tekan Search untuk melihat Report Activity.</td></tr></tbody>' +
+            '<tbody id="lh-body-activity-main"><tr><td colspan="32" style="text-align:center;padding:24px;color:var(--muted)">Belum ada data.</td></tr></tbody>' +
           '</table>' +
         '</div>' +
       '</div>';
@@ -14748,10 +14501,6 @@
 
   // ============================================================================
   // MENU PUSAT KOMUNIKASI -> SUB MENU: DAFTAR HADIR
-  // Sumber File: 1JGkYTqyFDnGkVTqZrUE-W8x0t_lUy2TM39Hmr4BLE-4
-  // Filter: Kolom A (Tanggal) otomatis default ke tanggal hari ini saat dibuka
-  // Urutan Kartu: 1) Nama (Kolom B), 2) Foto (Kolom D), 3) Jam Masuk (Kolom C)
-  // Tampilan: 2 Foto dalam satu baris (Grid 2 Kolom)
   // ============================================================================
   let DH_STATE = {
     today: '',
@@ -14799,7 +14548,6 @@
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">' +
             '<div>' +
               '<h3 class="pt" style="margin:0">📋 Daftar Hadir Karyawan</h3>' +
-              '<div class="lk-sm" style="margin-top:2px">Pusat Komunikasi • Rekap Kehadiran &amp; Foto Masuk Harian</div>' +
             '</div>' +
             '<div style="display:flex;gap:6px">' +
               '<button type="button" class="outline sm" onclick="pilihHariIniDaftarHadir()">📅 Hari Ini</button>' +
@@ -14810,15 +14558,14 @@
           '<div class="dh-filter-bar">' +
             '<div class="dh-filter-box">' +
               '<div class="dh-filter-lbl">' +
-                '<span>📅 Filter Tanggal (Kolom A)</span>' +
-                '<span id="dhBadgeDefaultToday" style="color:#059669">Otomatis Hari Ini</span>' +
+                '<span>📅 Filter Tanggal</span>' +
               '</div>' +
               '<select id="dhSelectTanggal" onchange="ubahFilterTanggalDaftarHadir(this.value)">' +
                 '<option value="' + esc(nowIso) + '">' + esc(formatLabelTanggalIndo_(nowIso, nowIso)) + '</option>' +
               '</select>' +
             '</div>' +
             '<div class="dh-filter-box">' +
-              '<div class="dh-filter-lbl"><span>🔍 Cari Nama (Kolom B)</span></div>' +
+              '<div class="dh-filter-lbl"><span>🔍 Cari Nama</span></div>' +
               '<input type="text" id="dhInputCari" placeholder="Ketik nama karyawan..." oninput="ubahCariNamaDaftarHadir(this.value)">' +
             '</div>' +
           '</div>' +
@@ -14844,9 +14591,9 @@
         '<div class="panel" id="dhPanelGridHadir">' +
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:4px">' +
             '<h3 class="pt" style="margin:0" id="dhGridTitle">📸 Foto Kehadiran Masuk</h3>' +
-            '<span class="pic-badge" id="dhGridSubtitle">2 Foto / Baris</span>' +
+            '<span class="pic-badge" id="dhGridSubtitle"></span>' +
           '</div>' +
-          '<div id="dhGridBody" class="placeholder">Memuat daftar hadir tanggal hari ini...</div>' +
+          '<div id="dhGridBody" class="placeholder">Memuat daftar hadir...</div>' +
         '</div>' +
       '</div>';
 
@@ -14872,7 +14619,6 @@
       }
       DH_STATE.tanggalList = rawDates;
 
-      // Sebelum dipilih manual, otomatis tampilkan filter pada tanggal saat ini (hari ini)
       if (!DH_STATE.selectedDate || rawDates.indexOf(DH_STATE.selectedDate) < 0) {
         DH_STATE.selectedDate = serverToday || (rawDates[0] || '');
       }
@@ -14895,13 +14641,6 @@
       return '<option value="' + esc(tgl) + '"' + selected + '>' + esc(formatLabelTanggalIndo_(tgl, DH_STATE.today)) + '</option>';
     }).join('');
     sel.value = DH_STATE.selectedDate;
-
-    const badge = $('dhBadgeDefaultToday');
-    if (badge) {
-      const isToday = (DH_STATE.selectedDate === DH_STATE.today);
-      badge.textContent = isToday ? 'Otomatis Hari Ini' : 'Filter Tanggal';
-      badge.style.color = isToday ? '#059669' : '#0284c7';
-    }
   }
 
   function ubahFilterTanggalDaftarHadir(tglBaru) {
@@ -14938,20 +14677,16 @@
     const tglPilih = DH_STATE.selectedDate;
     const qLower = String(DH_STATE.searchQuery || '').toLowerCase();
 
-    // Filter baris berdasarkan Kolom A (tanggal)
     const hadirTanggalIni = (DH_STATE.items || []).filter(it => String(it.tanggal || '').trim() === tglPilih);
 
-    // Urutkan berdasarkan Jam Masuk (Kolom C) paling pagi ke terbaru
     hadirTanggalIni.sort((a, b) => String(a.jamMasuk || '').localeCompare(String(b.jamMasuk || '')));
 
-    // Catat nama-nama yang sudah absen pada tanggal terpilih
     const sudahAbsenMap = {};
     hadirTanggalIni.forEach(it => {
       const nmKey = String(it.nama || '').trim().toLowerCase();
       if (nmKey) sudahAbsenMap[nmKey] = true;
     });
 
-    // Hitung daftar karyawan yang BELUM melakukan absensi pada tanggal terpilih
     const belumAbsenAll = (DH_STATE.semuaKaryawan || []).filter(u => {
       const k = String(u.nama || '').trim().toLowerCase();
       return k && !sudahAbsenMap[k];
@@ -14976,7 +14711,6 @@
     if ($('dhCountBelum')) $('dhCountBelum').textContent = belumAbsenAll.length;
     if ($('dhCountTotal')) $('dhCountTotal').textContent = totalTim;
 
-    // Render Box Siapa Saja yang Belum Melakukan Absensi
     const belumBox = $('dhBelumAbsenContainer');
     if (belumBox) {
       if (belumAbsenFiltered.length > 0) {
@@ -15009,7 +14743,6 @@
       }
     }
 
-    // Render Grid 2 Foto Sebaris (Urutan: 1. Nama [Kolom B], 2. Foto [Kolom D], 3. Jam Masuk [Kolom C])
     if ($('dhGridTitle')) {
       $('dhGridTitle').textContent = '📸 Daftar Hadir (' + hadirFiltered.length + ' Masuk)';
     }
@@ -15039,13 +14772,10 @@
         : '<div class="dh-card-foto-empty">📷<br>Tanpa Foto</div>';
 
       return '<div class="dh-card">' +
-        // 1. Nama dari Kolom B
         '<div class="dh-card-nama" title="' + esc(it.nama) + '">' + esc(it.nama) + '</div>' +
-        // 2. Tampilkan Foto dari Kolom D
         '<div class="dh-card-foto-wrap" onclick="bukaPreviewFotoDaftarHadir(' + idx + ')">' +
           fotoHtml +
         '</div>' +
-        // 3. Jam Masuk dari Kolom C
         '<div class="dh-card-jam">' +
           '<span>🕒 Jam Masuk:</span>' +
           '<b>' + esc(it.jamMasuk || '-') + '</b>' +
@@ -15114,8 +14844,6 @@
 
   // ============================================================================
   // MENU PUSAT ADMINISTRASI -> SUB MENU: TAMBAHKAN KARYAWAN
-  // Target Spreadsheet ID: 14OOcJdkgf6HiCMRLp55xRB1FsrQz9SgcPyAv_jkmkhs
-  // Kolom A: Nama | Kolom B: Jabatan | Kolom C: Password | Kolom D: Email
   // ============================================================================
   let TK_STATE = {
     items: [],
@@ -15149,29 +14877,29 @@
         '<div class="panel">' +
           '<h3 class="pt" style="margin:0 0 12px">➕ Tambahkan Karyawan</h3>' +
 
-          '<label for="tkNama">Nama (Kolom A)</label>' +
+          '<label for="tkNama">Nama</label>' +
           '<input type="text" id="tkNama" placeholder="Masukkan nama karyawan..." autocomplete="off">' +
 
-          '<label for="tkJabatan">Jabatan (Kolom B)</label>' +
+          '<label for="tkJabatan">Jabatan</label>' +
           '<select id="tkJabatan">' +
             '<option value="">-- Pilih Jabatan --</option>' +
             jabOpts +
           '</select>' +
 
-          '<label for="tkPassword">Password (Kolom C)</label>' +
+          '<label for="tkPassword">Password</label>' +
           '<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">' +
             '<input type="text" id="tkPassword" placeholder="Masukkan password..." style="margin-bottom:0;flex:1" autocomplete="off">' +
             '<button type="button" class="outline sm" onclick="isiPasswordAcakTambahKaryawan()" title="Buat Password Otomatis">🎲 Acak</button>' +
           '</div>' +
 
-          '<label for="tkEmail">Email (Kolom D)</label>' +
+          '<label for="tkEmail">Email</label>' +
           '<input type="email" id="tkEmail" placeholder="Contoh: karyawan@email.com" autocomplete="off">' +
 
-          '<label for="tkArea">Area (Kolom F)</label>' +
+          '<label for="tkArea">Area</label>' +
           '<input type="text" id="tkArea" list="tkAreaList" placeholder="Masukkan area (contoh: Bogor)..." autocomplete="off">' +
           '<datalist id="tkAreaList">' + areaOpts + '</datalist>' +
 
-          '<label for="tkFoto">Foto Profil (Kolom E)</label>' +
+          '<label for="tkFoto">Foto Profil</label>' +
           '<input type="file" id="tkFoto" accept="image/*" onchange="pilihFotoTambahKaryawan(this)">' +
           '<div id="tkFotoPreviewWrap" class="hidden" style="display:flex;align-items:center;gap:10px;margin:-4px 0 14px;padding:8px 10px;background:var(--surface-soft);border:1px solid var(--line);border-radius:10px">' +
             '<img id="tkFotoPreview" src="" alt="Preview Foto" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--primary);flex-shrink:0">' +
@@ -15318,8 +15046,8 @@
             '<th>Jabatan</th>' +
             '<th>Password</th>' +
             '<th>Email</th>' +
-            '<th>Foto (Kol E)</th>' +
-            '<th>Area (Kol F)</th>' +
+            '<th>Foto</th>' +
+            '<th>Area</th>' +
             '<th class="c" style="width:90px">Aksi</th>' +
           '</tr>' +
         '</thead>' +
@@ -15353,7 +15081,7 @@
     if (!jabatan) return pesan('tkMsg', 'Jabatan wajib dipilih.', 'err');
     if (!password) return pesan('tkMsg', 'Password wajib diisi.', 'err');
     if (!email) return pesan('tkMsg', 'Email wajib diisi.', 'err');
-    if (!area) return pesan('tkMsg', 'Area (Kolom F) wajib diisi.', 'err');
+    if (!area) return pesan('tkMsg', 'Area wajib diisi.', 'err');
 
     pesan('tkMsg', '', '');
     const btn = $('tkBtnSimpan');
@@ -15645,17 +15373,16 @@
             '<div class="sw-brand-icon">★</div>' +
             '<div>' +
               '<h2 class="sw-brand-title">Mesin Putar Berhadiah</h2>' +
-              '<p class="sw-brand-sub">20 Pilihan Spesial • 40 Segmen • Khusus DC &amp; FC</p>' +
             '</div>' +
           '</div>' +
 
           '<div class="sw-header-right">' +
-            '<div class="sw-ticket-pill" title="1 Hari Absen di KANTOR = 1 Kesempatan Putar (Akumulasi)">' +
+            '<div class="sw-ticket-pill">' +
               '<span>🎟️ Sisa Kesempatan:</span>' +
               '<span class="sw-ticket-count" id="swSisaKesempatanBadge">' + SW_STATE.sisaKesempatan + '</span>' +
             '</div>' +
 
-            '<button type="button" class="sw-icon-btn" id="swRefreshBtn" title="Segarkan Kesempatan &amp; Historis" onclick="segarkanDataSpinWheels()">' +
+            '<button type="button" class="sw-icon-btn" id="swRefreshBtn" title="Segarkan" onclick="segarkanDataSpinWheels()">' +
               '🔄' +
             '</button>' +
 
@@ -15674,7 +15401,7 @@
 
         '<div style="display:flex;justify-content:center;margin-top:6px">' +
           '<div id="swAbsenSummaryPill" style="font-size:11.5px;color:#99f6e4;background:rgba(6,13,24,0.55);border:1px solid rgba(45,212,191,0.25);padding:4px 12px;border-radius:999px;text-align:center">' +
-            'Memuat data absensi KANTOR untuk <strong>' + esc(S.nama) + '</strong>...' +
+            '<strong>' + esc(S.nama) + '</strong>' +
           '</div>' +
         '</div>' +
 
@@ -15702,7 +15429,7 @@
           '</div>' +
 
           '<div id="liveBanner" class="sw-live-banner">' +
-            '<span id="liveBannerText">🎯 Tekan <strong style="color:#fcd34d">PUTAR SEKARANG</strong> untuk mulai mengundi!</span>' +
+            '<span id="liveBannerText">🎯 Siap Diputar</span>' +
           '</div>' +
 
           '<button type="button" id="mainSpinBtn" class="sw-cta-btn" onclick="mulaiPutarSpinWheels()">' +
@@ -15717,7 +15444,7 @@
             '<div id="modalEmojiWrap" style="width:72px;height:72px;margin:0 auto 14px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:40px;background:rgba(245,158,11,0.2);border:1px solid rgba(251,191,36,0.45)">🎉</div>' +
             '<div id="modalSubtitle" style="font-size:11.5px;font-weight:800;letter-spacing:1px;color:#fcd34d;text-transform:uppercase">SELAMAT! ANDA MENDAPATKAN</div>' +
             '<h3 id="modalTitle" style="font-size:24px;font-weight:900;color:#ffffff;margin:8px 0;line-height:1.3">Cash 100 rb</h3>' +
-            '<p id="modalDesc" style="font-size:13px;color:#cbd5e1;margin:0 0 18px;line-height:1.5">Selamat! Keberuntungan berpihak padamu hari ini.</p>' +
+            '<p id="modalDesc" style="font-size:13px;color:#cbd5e1;margin:0 0 18px;line-height:1.5"></p>' +
             '<div style="display:flex;gap:10px;justify-content:center">' +
               '<button type="button" id="modalSpinAgainBtn" class="sw-cta-btn" style="flex:1;min-height:42px;padding:10px 16px;font-size:14px" onclick="tutupModalHasilSpin();mulaiPutarSpinWheels()">Putar Lagi</button>' +
               '<button type="button" style="padding:10px 18px;min-height:42px;border-radius:14px;background:rgba(255,255,255,0.12);color:#e2e8f0;border:1px solid rgba(255,255,255,0.15);font-weight:700" onclick="tutupModalHasilSpin()">Tutup</button>' +
@@ -15731,7 +15458,7 @@
             '<div class="sw-hist-head">' +
               '<div>' +
                 '<h3 style="margin:0;font-size:16.5px;font-weight:800;color:#ffffff">📋 Historis Hadiah Spin Wheels</h3>' +
-                '<div id="historySummarySubtitle" style="font-size:11.5px;color:#99f6e4;margin-top:2px">Format: TANGGAL DAN JAM / USERLOGIN / MENDAPATKAN HADIAH</div>' +
+                '<div id="historySummarySubtitle" style="font-size:11.5px;color:#99f6e4;margin-top:2px"></div>' +
               '</div>' +
               '<button type="button" class="sw-icon-btn" style="width:34px;height:34px;min-height:34px" onclick="tutupModalHistorisSpin()">✕</button>' +
             '</div>' +
@@ -15777,10 +15504,10 @@
     }
     if ($('swAbsenSummaryPill')) {
       $('swAbsenSummaryPill').innerHTML =
-        'Userlogin: <strong>' + esc(S.nama) + '</strong> (' + esc(S.jabatan) + ') • ' +
-        'Total Hari Absen KANTOR: <strong>' + SW_STATE.totalKesempatan + '</strong> • ' +
+        '<strong>' + esc(S.nama) + '</strong> • ' +
+        'Total: <strong>' + SW_STATE.totalKesempatan + '</strong> • ' +
         'Terpakai: <strong>' + SW_STATE.terpakaiKesempatan + '</strong> • ' +
-        'Sisa Kesempatan: <strong style="color:#fcd34d">' + SW_STATE.sisaKesempatan + 'x Putar</strong>';
+        'Sisa: <strong style="color:#fcd34d">' + SW_STATE.sisaKesempatan + 'x</strong>';
     }
     if ($('historyCountBadge')) {
       const cnt = SW_STATE.spinHistory.length;
@@ -16105,7 +15832,6 @@
       $('liveBannerText').innerHTML = '✨ <strong style="color:#fcd34d">Roda sedang berputar...</strong> Semoga beruntung!';
     }
 
-    // Simpan ke spreadsheet 1z1DUUWeyIpPuQDinYDSNb_N69ZNJFWxiguVGhDd0uyA di background
     apiSilent_('putarSpinWheel', S.token, winningPrize.id).then(res => {
       if (res && res.sukses) {
         swApplyServerData_(res);
@@ -16279,7 +16005,7 @@
     const logBox = $('historyTabLog');
     const recapBox = $('historyTabRecap');
     if ($('historySummarySubtitle')) {
-      $('historySummarySubtitle').textContent = 'Total ' + list.length + ' putaran tercatat (TANGGAL DAN JAM / USERLOGIN / MENDAPATKAN HADIAH)';
+      $('historySummarySubtitle').textContent = 'Total ' + list.length + ' putaran';
     }
 
     if (logBox) {
@@ -16343,8 +16069,7 @@
       '<div class="sw-setting-wrap">' +
         '<div class="sw-setting-head">' +
           '<div>' +
-            '<h3 style="margin:0;font-size:18px;font-weight:800;color:#fcd34d">⚙️ Pengaturan Kuota Spin Wheels (20 Pilihan)</h3>' +
-            '<div style="font-size:12px;color:#99f6e4;margin-top:3px">Khusus Jabatan DIREKTUR • Tersimpan di Spreadsheet 1z1DUUWeyIpPuQDinYDSNb_N69ZNJFWxiguVGhDd0uyA</div>' +
+            '<h3 style="margin:0;font-size:18px;font-weight:800;color:#fcd34d">⚙️ Pengaturan Kuota Spin Wheels</h3>' +
           '</div>' +
           '<button type="button" class="sw-icon-btn" style="width:auto;padding:0 14px;font-size:12.5px;font-weight:700;gap:6px" onclick="muatDataSpinSettingDariServer_()">' +
             '🔄 Refresh Data' +
@@ -16361,7 +16086,6 @@
                 '<input type="radio" name="swDrawMode" value="exact" ' + (SW_STATE.drawMode === 'exact' ? 'checked' : '') + ' style="width:auto;margin:3px 0 0">' +
                 '<div>' +
                   '<div style="font-weight:800;font-size:13.5px;color:#ffffff">Kuota Pasti (Stok Berkurang)</div>' +
-                  '<div style="font-size:11.5px;color:#cbd5e1;margin-top:3px">Stok berkurang 1 tiap keluar. Dijamin keluar persis sesuai jumlah kuota.</div>' +
                 '</div>' +
               '</label>' +
 
@@ -16369,7 +16093,6 @@
                 '<input type="radio" name="swDrawMode" value="probability" ' + (SW_STATE.drawMode === 'probability' ? 'checked' : '') + ' style="width:auto;margin:3px 0 0">' +
                 '<div>' +
                   '<div style="font-weight:800;font-size:13.5px;color:#ffffff">Probabilitas Tetap (Tak Terbatas)</div>' +
-                  '<div style="font-size:11.5px;color:#cbd5e1;margin-top:3px">Kuota dipakai sebagai rasio peluang tetap tanpa mengurangi stok.</div>' +
                 '</div>' +
               '</label>' +
             '</div>' +
@@ -16377,7 +16100,7 @@
 
           '<div>' +
             '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px">' +
-              '<div style="font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:#5eead4">2. Atur Kuota Manual (20 Pilihan Hadiah)</div>' +
+              '<div style="font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:#5eead4">2. Atur Kuota Manual</div>' +
               '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
                 '<button type="button" style="padding:6px 11px;min-height:32px;border-radius:8px;font-size:11.5px;font-weight:700;background:rgba(255,255,255,0.1);color:#e2e8f0;border:1px solid rgba(255,255,255,0.15)" onclick="setBatchKuotaSpin_(\'zero\')">Nolkan Semua</button>' +
                 '<button type="button" style="padding:6px 11px;min-height:32px;border-radius:8px;font-size:11.5px;font-weight:700;background:rgba(20,184,166,0.22);color:#99f6e4;border:1px solid rgba(45,212,191,0.35)" onclick="setBatchKuotaSpin_(\'one\')">Set Semua = 1</button>' +
@@ -16398,7 +16121,7 @@
                 '<tbody id="swQuotaTableBody"></tbody>' +
                 '<tfoot>' +
                   '<tr style="background:rgba(15,118,110,0.25);font-weight:800">' +
-                    '<td style="padding:11px 12px;color:#ffffff">Total (20 Pilihan)</td>' +
+                    '<td style="padding:11px 12px;color:#ffffff">Total</td>' +
                     '<td id="swTotalInitCell" style="padding:11px 12px;text-align:center;color:#fcd34d;font-size:15px">250</td>' +
                     '<td id="swTotalRemCell" style="padding:11px 12px;text-align:center;color:#6ee7b7;font-size:15px">250</td>' +
                     '<td id="swTotalPctCell" style="padding:11px 12px;text-align:right;color:#99f6e4">100%</td>' +
@@ -16411,7 +16134,6 @@
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(6,13,24,0.55);border:1px solid rgba(255,255,255,0.12)">' +
             '<div>' +
               '<div style="font-size:13.5px;font-weight:700;color:#ffffff">Tampilkan sisa kuota hadiah di layar Spin Wheels</div>' +
-              '<div style="font-size:11.5px;color:#94a3b8;margin-top:2px">Jika dimatikan, DC &amp; FC hanya melihat sisa kesempatan putar milik mereka.</div>' +
             '</div>' +
             '<input type="checkbox" id="swShowRemainingChk" ' + (SW_STATE.showRemainingOnMain ? 'checked' : '') + ' style="width:20px;height:20px;margin:0;accent-color:#f59e0b">' +
           '</div>' +
@@ -16422,7 +16144,7 @@
           '</div>' +
 
           '<div>' +
-            '<div style="font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:#5eead4;margin-bottom:8px">3. Rekap Kesempatan Putar Userlogin (Berdasarkan Absen "KANTOR")</div>' +
+            '<div style="font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:#5eead4;margin-bottom:8px">3. Rekap Kesempatan Putar</div>' +
             '<div style="border:1px solid rgba(255,255,255,0.12);border-radius:14px;overflow:auto;max-height:320px;background:rgba(6,13,24,0.6)">' +
               '<table class="sw-quota-table">' +
                 '<thead>' +
